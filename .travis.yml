@@ -10,10 +10,3 @@ services:
 - postgresql
 before_script:
 - psql -c 'create database testtelescopesdb;' -U postgres
-deploy:
-  provider: heroku
-  api_key:
-    secure: KC03/k8+c+fSYgTPoB3C5FFoVVDKT+1p4+wBRKcUV6/LMW156g5SJO7ahR9w1aVEfZ4l27MRvPWRJKWtDGyHonQUt5RR5cBxfALy183T3CnFo/97t6mHPjn2Mnh/n6QLLkpAl2LVIG71tMDX0v3/Do1NElHvQ3YmpuIUa+3neYMv/jQ8q9HOgGUgy8fznm63y2btqgsu1tCMVgr2QiK1FgHaSuIHs4DfOCNvYCX9rfqj7DiISMbuA+yEri3E44IutKIbLw6QBq4iTaul8hHjImJ5Io2nNcAHoxgy4s04VQXderYUCAOUpTK66GDcp/YUKeIVH2/q7a98nsRCe2DPVPrih+06bv6euRKcIdlaBApsdMGmghqvJUFi8djboLlvwvfc3xK8od4L2QP7jM5jMnzbFMwc8Zp68NvThMcjhrzW5/U+hEFCuoScwx2nm6BOHnyj71gDhOHnkga+RFqE+eFTn2wHWT8AzTZ2PTFD3le3yCSpi8Pzf4b/u/Kt68NluU10HnbFk9SqVm4rYdLreh/0OkK7o39Cg6NhE2AmUAzk6uYxYGeg2zNNcliU0hQKvkEbSiuMK83V9FpO5G3MtzlgW+0E14R6xCDKkPGpQjcmySh2PXBkipDMfq3IwuWUEqP5mYK+ksrvoXiT2eXqphHKuBWy59/FDrroZTTjdnY=
-  app: myrsoiapp
-  on:
-    all_branches: true

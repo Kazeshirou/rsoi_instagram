@@ -1,10 +1,13 @@
 var express = require('express');
 var createError = require('http-errors');
 var path = require('path');
-
+var morgan = require('morgan');
+var logger = require(path.join(__dirname, 'utilities/logger'));
 var telescopeRouter = require(path.join(__dirname, 'components/telescopes/router'));
 
 var app = express();
+
+app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
 

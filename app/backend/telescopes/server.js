@@ -2,7 +2,8 @@ var http = require('http');
 var path = require('path');
 var config = require(path.join(__dirname,'/config/', (process.env.NODE_ENV || 'development')));
 var app = require(path.join(__dirname,'app'));
-var db = require(path.join(__dirname,'/db'));
+var db = require(path.join(__dirname, '/db'));
+var logger = require(path.join(__dirname, 'utilities/logger'));
 
 var server = http.createServer(app);
 var port = normalizePort(process.env.PORT || config.port);
@@ -10,12 +11,12 @@ var port = normalizePort(process.env.PORT || config.port);
 db
     .sync()
     .then(() => {
-        console.log('Tables have been sync successfully.');
+        logger.info('Tables have been sync successfully.', { message: 'Tables have been sync successfully.' });
         server.listen(port);        
         
     })
     .catch(err => {
-        console.error('Unable to sync tables:', err);
+        logger.info('Unable to sync tables', { message: 'Unable to sync tables'});
         exit(1);
     });
 
