@@ -1,8 +1,8 @@
 var path = require('path');
 var Telescope = require(path.join(__dirname, 'model'));
 
-function all(limit, page) {
-    return Telescope.findAll(limit, page);
+function all(page) {
+    return Telescope.findAll(page);
 }
 
 function count() {

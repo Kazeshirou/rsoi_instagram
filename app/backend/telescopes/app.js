@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
     res.status(err.status || 501);
     res.json({
-        'err': req.app.get('env') === 'development' ? err : {},
+        'err': req.app.get('env') == 'development' ? err : {},
     });
 })
 

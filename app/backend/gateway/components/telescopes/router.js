@@ -4,7 +4,9 @@ var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    return telescope.all(req.body.limit || 3, req.body.page || 1)
+    req.query.page = req.query.page || 1;
+    req.query.limit = req.query.limit || 3;
+    return telescope.all(req.query)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
         })

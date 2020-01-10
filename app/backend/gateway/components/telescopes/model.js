@@ -20,6 +20,7 @@ function http_request(opt, resolve, reject, request_data) {
         });
 
         res.on('end', () => {
+            console.log(res)
             try {
                 if (body.length)
                     body = JSON.parse(Buffer.concat(body).toString());
@@ -59,11 +60,11 @@ async function findByName(name) {
     });
 }
 
-async function findAll(limit, page) {
+async function findAll(page) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
-        opt.path = '/api/';
-        http_request(opt, resolve, reject, { page: page, limit: limit });
+        opt.path = '/api/?page=' + page.page + '&limit=' + page.limit;
+        http_request(opt, resolve, reject);
     });
 }
 

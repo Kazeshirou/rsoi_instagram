@@ -5,12 +5,12 @@ var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    console.log(req.body)
-    return telescope.all(req.body.limit || 5, req.body.page || 1)
+    return telescope.all(req.query.limit || 5, req.query.page || 1)
         .then((telescopes) => {
-            res.json({ 'telescopes': telescopes.toJSON() });
+            res.json({ 'telescopes': telescopes});
         })
         .catch((err) => {
+            console.log(err);
             next(err);
         });
 });
