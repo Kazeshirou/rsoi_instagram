@@ -8,6 +8,7 @@ var opt = {
     agent: false,
     headers: {
         'Content-Type': 'application/json',
+        'Transfer-Encoding': 'chunked'
     }
 }
 
