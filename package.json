@@ -12,7 +12,8 @@
     "dstart_objects": "nodemon ./app/backend/objects/server.js",
     "start_visibility": "node ./app/backend/visibility/server.js",
     "dstart_visibility": "nodemon ./app/backend/visibility/server.js",
-    "test": "nyc mocha --timeout 10000 \"./app/backend/*/{,!(node_modules)/**/}*test.js\""
+    "test": "mocha --timeout 10000 \"./app/backend/*/{,!(node_modules)/**/}*test.js\"",
+    "coverage": "nyc npm run test"
   },
   "repository": {
     "type": "git",
