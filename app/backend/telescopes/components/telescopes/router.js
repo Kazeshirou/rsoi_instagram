@@ -5,9 +5,20 @@ var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    return telescope.all()
+    console.log(req.body)
+    return telescope.all(req.body.limit || 5, req.body.page || 1)
         .then((telescopes) => {
-            res.json({ 'telescopes': telescopes });
+            res.json({ 'telescopes': telescopes.toJSON() });
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
+router.get('/count', async (req, res, next) => {
+    return telescope.count()
+        .then((telescopes_count) => {
+            res.json({ 'telescopes_count': telescopes_count });
         })
         .catch((err) => {
             next(err);

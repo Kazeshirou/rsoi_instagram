@@ -1,29 +1,34 @@
 var path = require('path');
 var Telescope = require(path.join(__dirname, 'model'));
 
-async function all() {
-    return Telescope.findAll();
+function all(limit, page) {
+    return Telescope.findAll(limit, page);
 }
 
-async function byName(name) {
-    return Telescope.findAll(name);
+function count() {
+    return Telescope.count();
 }
 
-async function create(name, type, country, city) {
-    return Telescope.createTelescope(name, type, country, city);
+function byName(name) {
+    return Telescope.findByName(name);
 }
 
-async function deleteByName(name) {
+function create(telescope) {
+    return Telescope.createTelescope(telescope);
+}
+
+function deleteByName(name) {
     return Telescope.deleteTelescope(name);
 }
 
-async function updateByName(name, type, country, city) {
-    return Telescope.updateTelescope(name, type, country, city);
+function updateByName(telescope) {
+    return Telescope.updateTelescope(telescope);
 }
 
 module.exports = {
     all,
     byName,
+    count,
     create,
     deleteByName,
     updateByName

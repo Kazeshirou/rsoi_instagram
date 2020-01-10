@@ -1,12 +1,16 @@
 var path = require('path');
 var Telescope = require(path.join(__dirname, 'model'));
 
-async function all() {
-    return Telescope.findAll();
+async function all(limit, page) {
+    return Telescope.all(limit, page);
+}
+
+async function count() {
+    return Telescope.count();
 }
 
 async function byName(name) {
-    return Telescope.findAll(name);
+    return Telescope.findByName(name);
 }
 
 async function create(telescope) {
@@ -24,6 +28,7 @@ async function updateByName(telescope) {
 module.exports = {
     all,
     byName,
+    count,
     create,
     deleteByName,
     updateByName

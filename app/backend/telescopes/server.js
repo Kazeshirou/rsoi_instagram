@@ -11,12 +11,12 @@ var port = normalizePort(process.env.PORT || config.port);
 db
     .sync()
     .then(() => {
-        logger.info('Tables have been sync successfully.', { message: 'Tables have been sync successfully.' });
+        logger.info('Tables have been sync successfully.');
         server.listen(port);        
         
     })
     .catch(err => {
-        logger.info('Unable to sync tables', { message: 'Unable to sync tables'});
+        logger.error('Unable to sync tables');
         exit(1);
     });
 

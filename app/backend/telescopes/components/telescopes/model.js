@@ -3,20 +3,20 @@ var Sequelize = require('sequelize');
 var Model = Sequelize.Model;
 var db = require(path.join(__dirname, '../../db/'));
 
-class Telescope extends Model {}
+class Telescope extends Model { }
 
 Telescope.init({
-    id : {
+    id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    name : { 
+    name: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
     },
-    type : {
+    type: {
         type: Sequelize.STRING,
         allowNull: false
     },
@@ -28,69 +28,89 @@ Telescope.init({
         type: Sequelize.STRING,
         allowNull: false
     },
-}, { sequelize : db, timestamps : true, modelName : "Telescope" });
+}, { sequelize: db, timestamps: true, modelName: "Telescope" });
 
 async function createTelescope(telescope) {
-    return Telescope.create(telescope)
-        .then((telescope) => { 
-            return { success: true, telescope: telescope };
-        })
-        .catch((err) => {
-            return { success: false, msg: err.original.detail };
-        });
+    return new Promise((resolve, reject) => {
+        Telescope.create(telescope)
+            .then((telescope) => {
+                resolve({ success: true, telescope: telescope });
+            })
+            .catch((err) => {
+                console.log(err);
+                resolve({ success: false, msg: err.original.detail });
+            });
+    });
 }
 
-async function findAll(name) {
-    if (name) {
-        return Telescope.findAll({
+async function findByName(name) {
+    return new Promise((resolve, reject) => {
+        Telescope.findAll({
             where: {
                 name: name
             }
         })
             .then((telescopes) => {
                 if (telescopes.length == 1) {
-                    return { 
-                        success: true, 
+                    resolve({
+                        success: true,
                         telescope: telescopes[0]
-                    };
+                    });
                 } else {
-                    return { success: false };
-                } 
+                    resolve({ success: false });
+                }
             })
-    } else {
-        return Telescope.findAll()
-            .then((telescopes) => { return telescopes; });
-    }
+    });
+}
+
+async function all(limit, page) {
+    return new Promise((resolve, reject) => {
+        Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
+            .then((telescopes) => { resolve(telescopes); });
+    });
+}
+
+async function count() {
+    return new Promise((resolve, reject) => {
+        Telescope.count()
+            .then((count) => { resolve(count); });
+    });
 }
 
 async function deleteTelescope(name) {
-    return Telescope.destroy({
-        where: {
-            name: name
-        }
-    })
-        .then((telescope) => { 
-            if (telescope > 0) {
-                return { success: true };
-            } else {
-                return { success: false };
+    return new Promise((resolve, reject) => {
+        Telescope.destroy({
+            where: {
+                name: name
             }
-        });
+        })
+            .then((telescope) => {
+                if (telescope > 0) {
+                    resolve({ success: true });
+                } else {
+                    resolve({ success: false });
+                }
+            });
+    });
 }
 
 async function updateTelescope(telescope) {
-    return Telescope.update(telescope, { where: { name: telescope.name } })
-        .then((telescope_num) => { 
-            return { success: true, telescope_num: telescope_num };
-        })
-        .catch((err) => {
-            return { success: false, msg: err.original.detail };
-        });
+    return new Promise((resolve, reject) => {
+        Telescope.update(telescope, { where: { name: telescope.name } })
+            .then((telescope_num) => {
+                resolve({ success: true, telescope_num: telescope_num });
+            })
+            .catch((err) => {
+                resolve({ success: false, msg: err.original.detail });
+            });
+    });
 }
 
 module.exports = {
     createTelescope,
     deleteTelescope,
     updateTelescope,
-    findAll
+    all,
+    count,
+    findByName
 };

@@ -8,7 +8,7 @@
     "dstart_gateway": "nodemon ./app/backend/gateway/server.js",
     "start_telescopes": "node ./app/backend/telescopes/server.js",
     "dstart_telescopes": "nodemon ./app/backend/telescopes/server.js",
-    "test": "mocha --timeout 10000 app/backend/**/*test.js"
+    "test": "mocha --timeout 10000 './app/backend/*/{,!(node_modules)/**/}*test.js'"
   },
   "repository": {
     "type": "git",

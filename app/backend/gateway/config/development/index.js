@@ -1,8 +1,8 @@
 var config = {
-    db: {
-      connectionString: 'postgres://postgres:postgres@localhost:5432/telescopesdb'
-    },
-    port: 49001
+    port: 49001,
+    telescopes: {
+        port: 49002
+    }
 };
 
 module.exports = config;

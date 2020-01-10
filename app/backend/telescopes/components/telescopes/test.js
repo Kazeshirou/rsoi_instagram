@@ -28,6 +28,18 @@ describe('Telescopes', () => {
                     done();
                 });
         });
+
+        it('it should GET count of the telescopes', (done) => {
+            chai.request(server)
+                .get('/api/telescopes/count')
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.telescopes_count.should.be.a('number');
+                    res.body.telescopes_count.should.be.eql(0);
+                    done();
+                });
+        });
         it('it should not GET telescope with name tel1', (done) => {
             chai.request(server)
                 .get('/api/telescopes/tel1')
@@ -85,6 +97,17 @@ describe('Telescopes', () => {
                     done();
                 });
         });
+        it('it should GET count of the telescopes', (done) => {
+            chai.request(server)
+                .get('/api/telescopes/count')
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.telescopes_count.should.be.a('number');
+                    res.body.telescopes_count.should.be.eql(1);
+                    done();
+                });
+        });
         it('it should GET telescope with name tel1', (done) => {
             chai.request(server)
                 .get('/api/telescopes/tel1')
@@ -98,7 +121,7 @@ describe('Telescopes', () => {
         });
     });
 
-    describe('/put telescopes', () => {
+    describe('/PUT telescopes', () => {
         tel2 = {
             "name": "tel1",
             "type": "type2",

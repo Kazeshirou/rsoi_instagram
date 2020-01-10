@@ -1,8 +1,8 @@
 var config = {
-    db: {
-      connectionString: process.env.DATABASE_URL
-    },
-    port: 49001
+    port: 49001,
+    telescopes: {
+        port: 49002
+    }
 };
 
 module.exports = config;

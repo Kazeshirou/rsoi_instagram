@@ -4,77 +4,63 @@ var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    return telescope.all()
-        .then((telescopes) => {
-            res.json({ 'telescopes': telescopes });
+    return telescope.all(req.body.limit || 3, req.body.page || 1)
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err);
-            res.status(501).json(err);
+            console.log(err)
+            next(err);
+        });
+});
+
+router.get('/count', async (req, res, next) => {
+    return telescope.count()
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
+        })
+        .catch((err) => {
+            next(err);
         });
 });
 
 router.get('/:name', async (req, res, next) => {
     return telescope.byName(req.params.name)
         .then((result) => {
-            if (result.success) {
-                res.json({ 'telescope': result.telescope });
-            } else {
-                res.status(404).end();
-            }
+            res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err);
-            res.status(501).json(err);
+            next(err);
         });
 });
 
 router.post('/', async (req, res, next) => {
-    return telescope.create(req.query.name, req.query.type, req.query.country, req.query.city)
+    return telescope.create(req.body)
         .then((result) => {
-            if (result.success) {
-                res.status(201).json({ 'telescope': result.telescope });
-            } else {
-                res.status(400).json({'error message' : result.msg});
-            }
+            res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err);
-            res.status(501).json(err);
+            next(err);
         });
 });
 
 router.put('/', async (req, res, next) => {
-    return telescope.updateByName(req.query.name, req.query.type, req.query.country, req.query.city)
+    return telescope.updateByName(req.body)
         .then((result) => {
-            if (result.success) {
-                if (result.telescope_num > 0) {
-                    res.status(204).end();
-                } else {
-                    res.status(404).end();
-                }
-            } else {
-                res.status(400).json({'error message' : result.msg});
-            }
+            res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err);
-            res.status(501).json(err);
+            next(err);
         });
 });
 
 router.delete('/:name', async (req, res, next) => {
     return telescope.deleteByName(req.params.name)
-        .then((success) => {
-            if (success.success) {
-                res.status(204).end();
-            } else {
-                res.status(404).end();
-            }
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err);
-            res.status(501).json(err);
+            next(err);
         });
 });
 
