@@ -12,7 +12,7 @@
     "dstart_objects": "nodemon ./app/backend/objects/server.js",
     "start_visibility": "node ./app/backend/visibility/server.js",
     "dstart_visibility": "nodemon ./app/backend/visibility/server.js",
-    "test": "mocha --timeout 10000 './app/backend/*/{,!(node_modules)/**/}*test.js'"
+    "test": "nyc mocha --timeout 10000 \"./app/backend/*/{,!(node_modules)/**/}*test.js\""
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "mocha": "^6.2.2",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.4",
+    "nyc": "^15.0.0",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.1",
