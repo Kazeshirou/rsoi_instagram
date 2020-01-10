@@ -2,13 +2,11 @@
   "name": "lab2-microservices-kazeshirou",
   "version": "1.0.0",
   "description": "",
-  "main": "app/server.js",
+  "main": "server.js",
   "scripts": {
-    "start_gateway": "node ./app/backend/gateway/server.js",
-    "dstart_gateway": "nodemon ./app/backend/gateway/server.js",
-    "start_telescopes": "node ./app/backend/telescopes/server.js",
-    "dstart_telescopes": "nodemon ./app/backend/telescopes/server.js",
-    "test": "mocha --timeout 10000 './app/backend/*/{,!(node_modules)/**/}*test.js'"
+    "start": "node .",
+    "dstart": "nodemon .",
+    "test": "mocha --timeout 10000 components/**/*test.js"
   },
   "repository": {
     "type": "git",
