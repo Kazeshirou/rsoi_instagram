@@ -19,7 +19,7 @@ describe('Telescopes', () => {
         });
         it('it should GET all the telescopes', (done) => {
             chai.request(server)
-                .get('/api/telescopes/')
+                .get('/api/v1/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -31,7 +31,7 @@ describe('Telescopes', () => {
 
         it('it should GET count of the telescopes', (done) => {
             chai.request(server)
-                .get('/api/telescopes/count')
+                .get('/api/v1/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -42,7 +42,7 @@ describe('Telescopes', () => {
         });
         it('it should not GET telescope with name tel1', (done) => {
             chai.request(server)
-                .get('/api/telescopes/tel1')
+                .get('/api/v1/tel1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();
@@ -60,7 +60,7 @@ describe('Telescopes', () => {
 
         it('it should create telescope', (done) => {
             chai.request(server)
-                .post('/api/telescopes/')
+                .post('/api/v1/')
                 .send(tel1)
                 .end((err, res) => {
                     res.should.have.status(201);
@@ -71,7 +71,7 @@ describe('Telescopes', () => {
         });
         it('it should not create telescope', (done) => {
             chai.request(server)
-                .post('/api/telescopes/')
+                .post('/api/v1/')
                 .send(tel1)
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -88,7 +88,7 @@ describe('Telescopes', () => {
         });
         it('it should GET all the telescopes', (done) => {
             chai.request(server)
-                .get('/api/telescopes/')
+                .get('/api/v1/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -99,7 +99,7 @@ describe('Telescopes', () => {
         });
         it('it should GET count of the telescopes', (done) => {
             chai.request(server)
-                .get('/api/telescopes/count')
+                .get('/api/v1/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -110,7 +110,7 @@ describe('Telescopes', () => {
         });
         it('it should GET telescope with name tel1', (done) => {
             chai.request(server)
-                .get('/api/telescopes/tel1')
+                .get('/api/v1/tel1')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -136,7 +136,7 @@ describe('Telescopes', () => {
         };
         it('it should update telescope', (done) => {
             chai.request(server)
-                .put('/api/telescopes/')
+                .put('/api/v1/')
                 .send(tel2)
                 .end((err, res) => {
                     res.should.have.status(204);
@@ -145,7 +145,7 @@ describe('Telescopes', () => {
         });
         it('it should not update telescope', (done) => {
             chai.request(server)
-                .put('/api/telescopes/')
+                .put('/api/v1/')
                 .send(notfoundtel)
                 .end((err, res) => {
                     res.should.have.status(404);
@@ -157,7 +157,7 @@ describe('Telescopes', () => {
     describe('/DELETE telescopes', () => {
         it('it should delete telescope', (done) => {
             chai.request(server)
-                .delete('/api/telescopes/tel1')
+                .delete('/api/v1/tel1')
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
@@ -165,7 +165,7 @@ describe('Telescopes', () => {
         });
         it('it should not delete telescope', (done) => {
             chai.request(server)
-                .delete('/api/telescopes/tel1')
+                .delete('/api/v1/tel1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();

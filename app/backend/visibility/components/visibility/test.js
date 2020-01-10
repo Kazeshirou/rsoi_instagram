@@ -19,7 +19,7 @@ describe('Visibility', () => {
         });
         it('it should GET all the visibility', (done) => {
             chai.request(server)
-                .get('/api/visibility/')
+                .get('/api/v1/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -31,7 +31,7 @@ describe('Visibility', () => {
 
         it('it should GET count of the visibility', (done) => {
             chai.request(server)
-                .get('/api/visibility/count')
+                .get('/api/v1/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -40,9 +40,9 @@ describe('Visibility', () => {
                     done();
                 });
         });
-        it('it should not GET visibility with name tel1', (done) => {
+        it('it should not GET visibility with id 1', (done) => {
             chai.request(server)
-                .get('/api/visibility/tel1')
+                .get('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();
@@ -51,28 +51,26 @@ describe('Visibility', () => {
     });
 
     describe('/POST visibility', () => {
-        tel1 = {
-            "name": "tel1",
-            "type": "type1",
-            "country": "country1",
-            "city": "city1"
+        vis1 = {
+            "telescopeid": 1,
+            "objectid": 1,
         };
 
         it('it should create visibility', (done) => {
             chai.request(server)
-                .post('/api/visibility/')
-                .send(tel1)
+                .post('/api/v1/')
+                .send(vis1)
                 .end((err, res) => {
                     res.should.have.status(201);
                     res.body.visibility.should.be.a('object');
-                    res.body.visibility.name.should.be.eql('tel1');
+                    res.body.visibility.telescopeid.should.be.eql(1);
                     done();
                 });
         });
         it('it should not create visibility', (done) => {
             chai.request(server)
-                .post('/api/visibility/')
-                .send(tel1)
+                .post('/api/v1/')
+                .send(vis1)
                 .end((err, res) => {
                     res.should.have.status(400);
                     done();
@@ -88,7 +86,7 @@ describe('Visibility', () => {
         });
         it('it should GET all the visibility', (done) => {
             chai.request(server)
-                .get('/api/visibility/')
+                .get('/api/v1/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -99,7 +97,7 @@ describe('Visibility', () => {
         });
         it('it should GET count of the visibility', (done) => {
             chai.request(server)
-                .get('/api/visibility/count')
+                .get('/api/v1/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -108,36 +106,34 @@ describe('Visibility', () => {
                     done();
                 });
         });
-        it('it should GET visibility with name tel1', (done) => {
+        it('it should GET visibility with id 1', (done) => {
             chai.request(server)
-                .get('/api/visibility/tel1')
+                .get('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.visibility.should.be.a('object');
-                    res.body.visibility.name.should.be.eql('tel1');
+                    res.body.visibility.id.should.be.eql(1);
                     done();
                 });
         });
     });
 
     describe('/PUT visibility', () => {
-        tel2 = {
-            "name": "tel1",
-            "type": "type2",
-            "country": "country2",
-            "city": "city2"
+        vis2 = {
+            "id" : 1,
+            "telescopeid": 1,
+            "objectid": 2,
         };
-        notfoundtel = {
-            "name": "tel2",
-            "type": "type2",
-            "country": "country2",
-            "city": "city2"
+        notfoundvis = {
+            "id": 2,
+            "telescopeid": 1,
+            "objectid": 1,
         };
         it('it should update visibility', (done) => {
             chai.request(server)
-                .put('/api/visibility/')
-                .send(tel2)
+                .put('/api/v1/')
+                .send(vis2)
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
@@ -145,8 +141,8 @@ describe('Visibility', () => {
         });
         it('it should not update visibility', (done) => {
             chai.request(server)
-                .put('/api/visibility/')
-                .send(notfoundtel)
+                .put('/api/v1/')
+                .send(notfoundvis)
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();
@@ -157,7 +153,7 @@ describe('Visibility', () => {
     describe('/DELETE visibility', () => {
         it('it should delete visibility', (done) => {
             chai.request(server)
-                .delete('/api/visibility/tel1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
@@ -165,7 +161,7 @@ describe('Visibility', () => {
         });
         it('it should not delete visibility', (done) => {
             chai.request(server)
-                .delete('/api/visibility/tel1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();

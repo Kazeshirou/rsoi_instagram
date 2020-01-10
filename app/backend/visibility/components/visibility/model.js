@@ -14,10 +14,12 @@ Visibility.init({
     telescopeid: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: 'compositeIndex'
     },
     objectid: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: 'compositeIndex'
     }
 
 }, { sequelize: db, timestamps: true, modelName: "Visibility" });
