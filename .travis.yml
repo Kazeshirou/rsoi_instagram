@@ -10,3 +10,5 @@ services:
 - postgresql
 before_script:
 - psql -c 'create database testtelescopesdb;' -U postgres
+- psql -c 'create database testobjectsdb;' -U postgres
+- psql -c 'create database testvisibilitydb;' -U postgres

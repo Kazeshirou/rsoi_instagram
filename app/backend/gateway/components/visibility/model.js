@@ -4,7 +4,7 @@ var http = require('http');
 
 var opt = {
     host: '127.0.0.1',
-    port: config.telescopes.port,
+    port: config.visibility.port,
     agent: false,
     headers: {
         'Content-Type': 'application/json',
@@ -52,11 +52,11 @@ function http_request(opt, resolve, reject, request_data) {
     req.end();
 }
 
-async function createTelescope(telescope) {
+async function createVisibility(visibility) {
     return new Promise((resolve, reject) => {
         opt.method = 'POST';
         opt.path = '/api/v1/';
-        http_request(opt, resolve, reject, telescope);
+        http_request(opt, resolve, reject, visibility);
     });
 }
 
@@ -84,7 +84,7 @@ async function count() {
     });
 }
 
-async function deleteTelescope(name) {
+async function deleteVisibility(name) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/' + name;
@@ -92,18 +92,18 @@ async function deleteTelescope(name) {
     });
 }
 
-async function updateTelescope(telescope) {
+async function updateVisibility(visibility) {
     return new Promise((resolve, reject) => {
         opt.method = 'PUT';
         opt.path = '/api/v1/';
-        http_request(opt, resolve, reject, telescope);
+        http_request(opt, resolve, reject, visibility);
     });
 }
 
 module.exports = {
-    createTelescope,
-    deleteTelescope,
-    updateTelescope,
+    createVisibility,
+    deleteVisibility,
+    updateVisibility,
     findAll,
     count,
     findByName

@@ -3,38 +3,30 @@ var Sequelize = require('sequelize');
 var Model = Sequelize.Model;
 var db = require(path.join(__dirname, '../../db/'));
 
-class Telescope extends Model { }
+class Visibility extends Model { }
 
-Telescope.init({
+Visibility.init({
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    name: {
-        type: Sequelize.STRING,
+    telescopeid: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true
     },
-    type: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    country: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    city: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-}, { sequelize: db, timestamps: true, modelName: "Telescope" });
+    objectid: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    }
 
-async function createTelescope(telescope) {
+}, { sequelize: db, timestamps: true, modelName: "Visibility" });
+
+async function createVisibility(visibility) {
     return new Promise((resolve, reject) => {
-        Telescope.create(telescope)
-            .then((telescope) => {
-                resolve({ success: true, telescope: telescope });
+        Visibility.create(visibility)
+            .then((visibility) => {
+                resolve({ success: true, visibility: visibility });
             })
             .catch((err) => {
                 console.log(err);
@@ -43,18 +35,18 @@ async function createTelescope(telescope) {
     });
 }
 
-async function findByName(name) {
+async function findById(id) {
     return new Promise((resolve, reject) => {
-        Telescope.findAll({
+        Visibility.findAll({
             where: {
-                name: name
+                id: id
             }
         })
-            .then((telescopes) => {
-                if (telescopes.length == 1) {
+            .then((visibility) => {
+                if (visibility.length == 1) {
                     resolve({
                         success: true,
-                        telescope: telescopes[0]
+                        visibility: visibility[0]
                     });
                 } else {
                     resolve({ success: false });
@@ -65,27 +57,27 @@ async function findByName(name) {
 
 async function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((telescopes) => { resolve(telescopes); });
+        Visibility.findAll({ offset: (page - 1) * limit, limit: limit })
+            .then((visibility) => { resolve(visibility); });
     });
 }
 
 async function count() {
     return new Promise((resolve, reject) => {
-        Telescope.count()
+        Visibility.count()
             .then((count) => { resolve(count); });
     });
 }
 
-async function deleteTelescope(name) {
+async function deleteVisibility(id) {
     return new Promise((resolve, reject) => {
-        Telescope.destroy({
+        Visibility.destroy({
             where: {
-                name: name
+                id: id
             }
         })
-            .then((telescope) => {
-                if (telescope > 0) {
+            .then((visibility) => {
+                if (visibility > 0) {
                     resolve({ success: true });
                 } else {
                     resolve({ success: false });
@@ -94,11 +86,11 @@ async function deleteTelescope(name) {
     });
 }
 
-async function updateTelescope(telescope) {
+async function updateVisibility(visibility) {
     return new Promise((resolve, reject) => {
-        Telescope.update(telescope, { where: { name: telescope.name } })
-            .then((telescope_num) => {
-                resolve({ success: true, telescope_num: telescope_num });
+        Visibility.update(visibility, { where: { id: visibility.id } })
+            .then((visibility_num) => {
+                resolve({ success: true, visibility_num: visibility_num });
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
@@ -107,10 +99,10 @@ async function updateTelescope(telescope) {
 }
 
 module.exports = {
-    createTelescope,
-    deleteTelescope,
-    updateTelescope,
+    createVisibility,
+    deleteVisibility,
+    updateVisibility,
     all,
     count,
-    findByName
+    findById
 };

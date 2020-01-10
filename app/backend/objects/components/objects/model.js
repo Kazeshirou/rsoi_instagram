@@ -3,9 +3,9 @@ var Sequelize = require('sequelize');
 var Model = Sequelize.Model;
 var db = require(path.join(__dirname, '../../db/'));
 
-class Telescope extends Model { }
+class Object extends Model { }
 
-Telescope.init({
+Object.init({
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -16,25 +16,25 @@ Telescope.init({
         allowNull: false,
         unique: true
     },
-    type: {
-        type: Sequelize.STRING,
+    coord1: {
+        type: Sequelize.DOUBLE,
         allowNull: false
     },
-    country: {
-        type: Sequelize.STRING,
+    coord2: {
+        type: Sequelize.DOUBLE,
         allowNull: false
     },
-    city: {
-        type: Sequelize.STRING,
+    coord3: {
+        type: Sequelize.DOUBLE,
         allowNull: false
     },
-}, { sequelize: db, timestamps: true, modelName: "Telescope" });
+}, { sequelize: db, timestamps: true, modelName: "Object" });
 
-async function createTelescope(telescope) {
+async function createObject(object) {
     return new Promise((resolve, reject) => {
-        Telescope.create(telescope)
-            .then((telescope) => {
-                resolve({ success: true, telescope: telescope });
+        Object.create(object)
+            .then((object) => {
+                resolve({ success: true, object: object });
             })
             .catch((err) => {
                 console.log(err);
@@ -45,16 +45,16 @@ async function createTelescope(telescope) {
 
 async function findByName(name) {
     return new Promise((resolve, reject) => {
-        Telescope.findAll({
+        Object.findAll({
             where: {
                 name: name
             }
         })
-            .then((telescopes) => {
-                if (telescopes.length == 1) {
+            .then((objects) => {
+                if (objects.length == 1) {
                     resolve({
                         success: true,
-                        telescope: telescopes[0]
+                        object: objects[0]
                     });
                 } else {
                     resolve({ success: false });
@@ -65,27 +65,27 @@ async function findByName(name) {
 
 async function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((telescopes) => { resolve(telescopes); });
+        Object.findAll({ offset: (page - 1) * limit, limit: limit })
+            .then((objects) => { resolve(objects); });
     });
 }
 
 async function count() {
     return new Promise((resolve, reject) => {
-        Telescope.count()
+        Object.count()
             .then((count) => { resolve(count); });
     });
 }
 
-async function deleteTelescope(name) {
+async function deleteObject(name) {
     return new Promise((resolve, reject) => {
-        Telescope.destroy({
+        Object.destroy({
             where: {
                 name: name
             }
         })
-            .then((telescope) => {
-                if (telescope > 0) {
+            .then((object) => {
+                if (object > 0) {
                     resolve({ success: true });
                 } else {
                     resolve({ success: false });
@@ -94,11 +94,11 @@ async function deleteTelescope(name) {
     });
 }
 
-async function updateTelescope(telescope) {
+async function updateObject(object) {
     return new Promise((resolve, reject) => {
-        Telescope.update(telescope, { where: { name: telescope.name } })
-            .then((telescope_num) => {
-                resolve({ success: true, telescope_num: telescope_num });
+        Object.update(object, { where: { name: object.name } })
+            .then((object_num) => {
+                resolve({ success: true, object_num: object_num });
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
@@ -107,9 +107,9 @@ async function updateTelescope(telescope) {
 }
 
 module.exports = {
-    createTelescope,
-    deleteTelescope,
-    updateTelescope,
+    createObject,
+    deleteObject,
+    updateObject,
     all,
     count,
     findByName

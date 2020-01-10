@@ -10,39 +10,39 @@ var db = require(path.join(__dirname,'../../db/'));
 
 chai.use(chaiHttp);
 
-describe('Telescopes', () => {
-    describe('/GET telescopes', () => {
+describe('Objects', () => {
+    describe('/GET objects', () => {
         before((done) => {
             db.sync()
                 .then(() => done())
                 .catch((err) => done(err));
         });
-        it('it should GET all the telescopes', (done) => {
+        it('it should GET all the objects', (done) => {
             chai.request(server)
-                .get('/api/telescopes/')
+                .get('/api/objects/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.telescopes.should.be.a('array');
-                    res.body.telescopes.length.should.be.eql(0);
+                    res.body.objects.should.be.a('array');
+                    res.body.objects.length.should.be.eql(0);
                     done();
                 });
         });
 
-        it('it should GET count of the telescopes', (done) => {
+        it('it should GET count of the objects', (done) => {
             chai.request(server)
-                .get('/api/telescopes/count')
+                .get('/api/objects/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.telescopes_count.should.be.a('number');
-                    res.body.telescopes_count.should.be.eql(0);
+                    res.body.objects_count.should.be.a('number');
+                    res.body.objects_count.should.be.eql(0);
                     done();
                 });
         });
-        it('it should not GET telescope with name tel1', (done) => {
+        it('it should not GET object with name tel1', (done) => {
             chai.request(server)
-                .get('/api/telescopes/tel1')
+                .get('/api/objects/tel1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();
@@ -50,7 +50,7 @@ describe('Telescopes', () => {
         });
     });
 
-    describe('/POST telescopes', () => {
+    describe('/POST objects', () => {
         tel1 = {
             "name": "tel1",
             "type": "type1",
@@ -58,20 +58,20 @@ describe('Telescopes', () => {
             "city": "city1"
         };
 
-        it('it should create telescope', (done) => {
+        it('it should create object', (done) => {
             chai.request(server)
-                .post('/api/telescopes/')
+                .post('/api/objects/')
                 .send(tel1)
                 .end((err, res) => {
                     res.should.have.status(201);
-                    res.body.telescope.should.be.a('object');
-                    res.body.telescope.name.should.be.eql('tel1');
+                    res.body.object.should.be.a('object');
+                    res.body.object.name.should.be.eql('tel1');
                     done();
                 });
         });
-        it('it should not create telescope', (done) => {
+        it('it should not create object', (done) => {
             chai.request(server)
-                .post('/api/telescopes/')
+                .post('/api/objects/')
                 .send(tel1)
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -80,48 +80,48 @@ describe('Telescopes', () => {
         });
     });
 
-    describe('/GET telescopes', () => {
+    describe('/GET objects', () => {
         before((done) => {
             db.sync()
                 .then(() => done())
                 .catch((err) => done(err));
         });
-        it('it should GET all the telescopes', (done) => {
+        it('it should GET all the objects', (done) => {
             chai.request(server)
-                .get('/api/telescopes/')
+                .get('/api/objects/')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.telescopes.should.be.a('array');
-                    res.body.telescopes.length.should.be.eql(1);
+                    res.body.objects.should.be.a('array');
+                    res.body.objects.length.should.be.eql(1);
                     done();
                 });
         });
-        it('it should GET count of the telescopes', (done) => {
+        it('it should GET count of the objects', (done) => {
             chai.request(server)
-                .get('/api/telescopes/count')
+                .get('/api/objects/count')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.telescopes_count.should.be.a('number');
-                    res.body.telescopes_count.should.be.eql(1);
+                    res.body.objects_count.should.be.a('number');
+                    res.body.objects_count.should.be.eql(1);
                     done();
                 });
         });
-        it('it should GET telescope with name tel1', (done) => {
+        it('it should GET object with name tel1', (done) => {
             chai.request(server)
-                .get('/api/telescopes/tel1')
+                .get('/api/objects/tel1')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.telescope.should.be.a('object');
-                    res.body.telescope.name.should.be.eql('tel1');
+                    res.body.object.should.be.a('object');
+                    res.body.object.name.should.be.eql('tel1');
                     done();
                 });
         });
     });
 
-    describe('/PUT telescopes', () => {
+    describe('/PUT objects', () => {
         tel2 = {
             "name": "tel1",
             "type": "type2",
@@ -134,18 +134,18 @@ describe('Telescopes', () => {
             "country": "country2",
             "city": "city2"
         };
-        it('it should update telescope', (done) => {
+        it('it should update object', (done) => {
             chai.request(server)
-                .put('/api/telescopes/')
+                .put('/api/objects/')
                 .send(tel2)
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
                 });
         });
-        it('it should not update telescope', (done) => {
+        it('it should not update object', (done) => {
             chai.request(server)
-                .put('/api/telescopes/')
+                .put('/api/objects/')
                 .send(notfoundtel)
                 .end((err, res) => {
                     res.should.have.status(404);
@@ -154,18 +154,18 @@ describe('Telescopes', () => {
         });
     });    
 
-    describe('/DELETE telescopes', () => {
-        it('it should delete telescope', (done) => {
+    describe('/DELETE objects', () => {
+        it('it should delete object', (done) => {
             chai.request(server)
-                .delete('/api/telescopes/tel1')
+                .delete('/api/objects/tel1')
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
                 });
         });
-        it('it should not delete telescope', (done) => {
+        it('it should not delete object', (done) => {
             chai.request(server)
-                .delete('/api/telescopes/tel1')
+                .delete('/api/objects/tel1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();

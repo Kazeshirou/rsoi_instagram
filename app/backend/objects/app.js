@@ -3,7 +3,7 @@ var createError = require('http-errors');
 var path = require('path');
 var morgan = require('morgan');
 var logger = require(path.join(__dirname, 'utilities/logger'));
-var telescopeRouter = require(path.join(__dirname, 'components/telescopes/router'));
+var objectRouter = require(path.join(__dirname, 'components/objects/router'));
 
 var app = express();
 
@@ -11,7 +11,7 @@ app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
 
-app.use('/api/', telescopeRouter);
+app.use('/api/v1/', objectRouter);
 
 app.use(function (req, res, next) {
     next(createError(404));

@@ -11,7 +11,7 @@ app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
 
-app.use('/api/', telescopeRouter);
+app.use('/api/v1/', telescopeRouter);
 
 app.use(function (req, res, next) {
     next(createError(404));

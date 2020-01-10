@@ -2,12 +2,12 @@
 var express = require('express');
 var createError = require('http-errors');
 var router = express.Router();
-var telescope = require(__dirname);
+var visibility = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    return telescope.all(req.query.limit || 5, req.query.page || 1)
-        .then((telescopes) => {
-            res.json({ 'telescopes': telescopes});
+    return visibility.all(req.query.limit || 5, req.query.page || 1)
+        .then((visibility) => {
+            res.json({ 'visibility': visibility});
         })
         .catch((err) => {
             console.log(err);
@@ -16,20 +16,20 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/count', async (req, res, next) => {
-    return telescope.count()
-        .then((telescopes_count) => {
-            res.json({ 'telescopes_count': telescopes_count });
+    return visibility.count()
+        .then((visibility_count) => {
+            res.json({ 'visibility_count': visibility_count });
         })
         .catch((err) => {
             next(err);
         });
 });
 
-router.get('/:name', async (req, res, next) => {
-    return telescope.byName(req.params.name)
+router.get('/:id', async (req, res, next) => {
+    return visibility.byId(req.params.id)
         .then((result) => {
             if (result.success) {
-                res.json({ 'telescope': result.telescope });
+                res.json({ 'visibility': result.visibility });
             } else {
                 next();
             }
@@ -40,10 +40,10 @@ router.get('/:name', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    return telescope.create(req.body)
+    return visibility.create(req.body)
         .then((result) => {
             if (result.success) {
-                res.status(201).json({ 'telescope': result.telescope });
+                res.status(201).json({ 'visibility': result.visibility });
             } else {
                 next(createError(400, result.msg));
             }
@@ -54,10 +54,10 @@ router.post('/', async (req, res, next) => {
 });
 
 router.put('/', async (req, res, next) => {
-    return telescope.updateByName(req.body)
+    return visibility.updateById(req.body)
         .then((result) => {
             if (result.success) {
-                if (result.telescope_num > 0) {
+                if (result.visibility_num > 0) {
                     res.status(204).end();
                 } else {
                     next();
@@ -71,8 +71,8 @@ router.put('/', async (req, res, next) => {
         });
 });
 
-router.delete('/:name', async (req, res, next) => {
-    return telescope.deleteByName(req.params.name)
+router.delete('/:id', async (req, res, next) => {
+    return visibility.deleteById(req.params.id)
         .then((success) => {
             if (success.success) {
                 res.status(204).end();

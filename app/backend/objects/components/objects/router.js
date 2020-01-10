@@ -1,13 +1,12 @@
-
 var express = require('express');
 var createError = require('http-errors');
 var router = express.Router();
-var telescope = require(__dirname);
+var object = require(__dirname);
 
 router.get('/', async (req, res, next) => {
-    return telescope.all(req.query.limit || 5, req.query.page || 1)
-        .then((telescopes) => {
-            res.json({ 'telescopes': telescopes});
+    return object.all(req.query.limit || 5, req.query.page || 1)
+        .then((objects) => {
+            res.json({ 'objects': objects});
         })
         .catch((err) => {
             console.log(err);
@@ -16,9 +15,9 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/count', async (req, res, next) => {
-    return telescope.count()
-        .then((telescopes_count) => {
-            res.json({ 'telescopes_count': telescopes_count });
+    return object.count()
+        .then((objects_count) => {
+            res.json({ 'objects_count': objects_count });
         })
         .catch((err) => {
             next(err);
@@ -26,10 +25,10 @@ router.get('/count', async (req, res, next) => {
 });
 
 router.get('/:name', async (req, res, next) => {
-    return telescope.byName(req.params.name)
+    return object.byName(req.params.name)
         .then((result) => {
             if (result.success) {
-                res.json({ 'telescope': result.telescope });
+                res.json({ 'object': result.object });
             } else {
                 next();
             }
@@ -40,10 +39,10 @@ router.get('/:name', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    return telescope.create(req.body)
+    return object.create(req.body)
         .then((result) => {
             if (result.success) {
-                res.status(201).json({ 'telescope': result.telescope });
+                res.status(201).json({ 'object': result.object });
             } else {
                 next(createError(400, result.msg));
             }
@@ -54,10 +53,10 @@ router.post('/', async (req, res, next) => {
 });
 
 router.put('/', async (req, res, next) => {
-    return telescope.updateByName(req.body)
+    return object.updateByName(req.body)
         .then((result) => {
             if (result.success) {
-                if (result.telescope_num > 0) {
+                if (result.object_num > 0) {
                     res.status(204).end();
                 } else {
                     next();
@@ -72,7 +71,7 @@ router.put('/', async (req, res, next) => {
 });
 
 router.delete('/:name', async (req, res, next) => {
-    return telescope.deleteByName(req.params.name)
+    return object.deleteByName(req.params.name)
         .then((success) => {
             if (success.success) {
                 res.status(204).end();

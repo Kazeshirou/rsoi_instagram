@@ -3,7 +3,7 @@ var format = winston.format;
 
 var logger = new winston.createLogger({
     format: format.combine(
-        format.label({ label: 'telescopes'}),
+        format.label({ label: 'objects'}),
         format.timestamp(),
         format.prettyPrint(),
         format.colorize()
