@@ -1,10 +1,21 @@
 
 var express = require('express');
 var createError = require('http-errors');
+var { check, validationResult } = require('express-validator');
 var router = express.Router();
 var telescope = require(__dirname);
 
-router.get('/', async (req, res, next) => {
+router.get('/', [
+    check('limit').isInt(),
+    check('page').isInt(),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ err: errors.array() });
+        }
+        next();
+    },
+    (req, res, next) => {
     return telescope.all(req.query.limit || 5, req.query.page || 1)
         .then((telescopes) => {
             res.json({ 'telescopes': telescopes});
@@ -13,7 +24,8 @@ router.get('/', async (req, res, next) => {
             console.log(err);
             next(err);
         });
-});
+    }
+]);
 
 router.get('/count', async (req, res, next) => {
     return telescope.count()
@@ -25,7 +37,16 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
-router.get('/id/:id', async (req, res, next) => {
+router.get('/id/:id', [
+    check('id').isInt(),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ err: errors.array() });
+        }
+        next();
+    },
+    (req, res, next) => {
     return telescope.byId(req.params.id)
         .then((result) => {
             if (result.success) {
@@ -37,9 +58,10 @@ router.get('/id/:id', async (req, res, next) => {
         .catch((err) => {
             next(err);
         });
-});
+    }
+]);
 
-router.get('/:name', async (req, res, next) => {
+router.get('/:name', (req, res, next) => {
     return telescope.byName(req.params.name)
         .then((result) => {
             if (result.success) {
@@ -53,7 +75,21 @@ router.get('/:name', async (req, res, next) => {
         });
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', [
+    check('name').isLength({min: 1}),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ err: errors.array() });
+        }
+        req.body = {
+            name: req.body.name,
+            city: req.body.city,
+            country: req.body.country
+        }
+        next();
+    },
+    (req, res, next) => {
     return telescope.create(req.body)
         .then((result) => {
             if (result.success) {
@@ -65,9 +101,24 @@ router.post('/', async (req, res, next) => {
         .catch((err) => {
             next(err);
         });
-});
+    }
+]);
 
-router.put('/', async (req, res, next) => {
+router.put('/', [
+    check('name').isLength({ min: 1 }),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ err: errors.array() });
+        }
+        req.body = {
+            name: req.body.name,
+            city: req.body.city,
+            country: req.body.country
+        }
+        next();
+    },
+    (req, res, next) => {
     return telescope.updateByName(req.body)
         .then((result) => {
             if (result.success) {
@@ -83,9 +134,19 @@ router.put('/', async (req, res, next) => {
         .catch((err) => {
             next(err);
         });
-});
+    }
+]);
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', [
+    check('id').isInt(),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ err: errors.array() });
+        }
+        next();
+    },
+    (req, res, next) => {
     return telescope.deleteById(req.params.id)
         .then((success) => {
             if (success.success) {
@@ -97,6 +158,7 @@ router.delete('/:id', async (req, res, next) => {
         .catch((err) => {
             next(err);
         });
-});
+    }
+]);
 
 module.exports = router;

@@ -14,7 +14,10 @@ Object.init({
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        validate: {
+            notEmpty: true
+        }
     },
     coord1: {
         type: Sequelize.DOUBLE,

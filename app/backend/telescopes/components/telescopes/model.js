@@ -14,19 +14,25 @@ Telescope.init({
     name: {
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
         unique: true
     },
     type: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: ''
     },
     country: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: ''
     },
     city: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: ''
     },
 }, { sequelize: db, timestamps: true, modelName: "Telescope" });
 

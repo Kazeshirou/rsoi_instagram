@@ -78,7 +78,7 @@ function create(visibility) {
                     result.statusCode = 400;
                     result.body = {
                         err: {
-                            message: 'Can\'t fined telescope with id = ' + visibility.telescopeid
+                            message: 'Can\'t found telescope with id = ' + visibility.telescopeid
                         }
                     };
                     resolve(result);
@@ -89,7 +89,7 @@ function create(visibility) {
                     result.statusCode = 400;
                     result.body = {
                         err: {
-                            message: 'Can\'t fined object with id = ' + visibility.objectid
+                            message: 'Can\'t found object with id = ' + visibility.objectid
                         }
                     };
                     resolve(result);
