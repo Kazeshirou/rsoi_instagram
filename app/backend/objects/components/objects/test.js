@@ -19,7 +19,7 @@ describe('Objects', () => {
         });
         it('it should GET all the objects', (done) => {
             chai.request(server)
-                .get('/api/v1/')
+                .get('/api/v1/?page=1&limit=5')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -88,7 +88,7 @@ describe('Objects', () => {
         });
         it('it should GET all the objects', (done) => {
             chai.request(server)
-                .get('/api/v1/')
+                .get('/api/v1/?page=1&limit=5')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
