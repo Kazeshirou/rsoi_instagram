@@ -157,7 +157,7 @@ describe('Objects', () => {
     describe('/DELETE objects', () => {
         it('it should delete object', (done) => {
             chai.request(server)
-                .delete('/api/v1/obj1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
@@ -165,7 +165,7 @@ describe('Objects', () => {
         });
         it('it should not delete object', (done) => {
             chai.request(server)
-                .delete('/api/v1/obj1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();

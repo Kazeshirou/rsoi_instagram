@@ -1,7 +1,7 @@
 var path = require('path');
 var Visibility = require(path.join(__dirname, 'model'));
 var Telescopes = require(path.join(__dirname, '../telescopes'));
-var Objects = require(path.join(__dirname, '../objects'));
+var Objects = require(path.join(__dirname, '../objects'));;
 
 function all(page) {
     return new Promise((resolve, reject) => {
@@ -21,15 +21,16 @@ function all(page) {
                     .then(res => {
                         result.statusCode = 200;
                         result.body.visibility = res.map(resi => {
-                            if (resi.statusCode != 200) {
-                                return null;
-                            }
+                                if (resi.statusCode != 200) {
+                                    return null;
+                                }
 
-                            return resi.body.visibility;
-                        });
+                                return resi.body.visibility;
+                            })
+                            .filter(resi => {
+                                return resi ? true : false;
+                             });
 
-                        console.log(result);
-                        result.body.visibility;
                         resolve(result);
                     })
                     .catch(err => reject(err));
@@ -45,7 +46,6 @@ function count() {
 
 function byId(id) {
     return new Promise((resolve, reject) => {
-        console.log(id)
         Visibility.findById(id)
             .then(result => {
                 if (result.statusCode != 200) {
@@ -57,31 +57,8 @@ function byId(id) {
 
                 Promise.all([Telescopes.byId(visibility.telescopeid), Objects.byId(visibility.objectid)])
                     .then(res => {
-                        if (res[0].statusCode != 200) {
-                            var res0 = {};
-                            res0.statusCode = 400;
-                            res0.body = {
-                                err: {
-                                    message: 'Can\'t fined telescope with id = ' + visibility.telescopeid
-                                }
-                            };
-                            resolve(res0);
-                            return;
-                        }
-                        if (res[1].statusCode != 200) {
-                            var res1 = {};
-                            res1.statusCode = 400;
-                            res1.body = {
-                                err: {
-                                    message: 'Can\'t fined object with id = ' + visibility.telescopeid
-                                }
-                            };
-                            resolve(res1);
-                            return;
-                        }
-
-                        result.body.visibility.telescopename = res[0].body.telescope.name;
-                        result.body.visibility.objectname = res[1].body.object.name;
+                        result.body.visibility.telescopename = res[0].body.telescope ? res[0].body.telescope.name : null;
+                        result.body.visibility.objectname = res[1].body.object ? res[1].body.object.name : null;
                         resolve(result);
                     })
                     .catch(err => {
@@ -112,7 +89,7 @@ function create(visibility) {
                     result.statusCode = 400;
                     result.body = {
                         err: {
-                            message: 'Can\'t fined object with id = ' + visibility.telescopeid
+                            message: 'Can\'t fined object with id = ' + visibility.objectid
                         }
                     };
                     resolve(result);
@@ -133,10 +110,20 @@ function deleteById(id) {
     return Visibility.deleteVisibility(id);
 }
 
+function deleteByTelescopeid(id) {
+    return Visibility.deleteVisibilityByTelescopeid(id);
+}
+
+function deleteByObjectid(id) {
+    return Visibility.deleteVisibilityByObjectid(id);
+}
+
 module.exports = {
     all,
     byId,
     count,
     create,
-    deleteById
+    deleteById,
+    deleteByTelescopeid,
+    deleteByObjectid
 };

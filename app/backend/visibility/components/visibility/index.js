@@ -21,8 +21,16 @@ async function deleteById(id) {
     return Visibility.deleteVisibility(id);
 }
 
-async function updateById(visibility) {
-    return Visibility.updateVisibility(visibility);
+async function deleteByTelescopeid(id) {
+    return Visibility.deleteVisibilityByTelescopeid(id);
+}
+
+async function deleteByObjectid(id) {
+    return Visibility.deleteVisibilityByObjectid(id);
+}
+
+async function deleteById(id) {
+    return Visibility.deleteVisibility(id);
 }
 
 module.exports = {
@@ -31,5 +39,6 @@ module.exports = {
     count,
     create,
     deleteById,
-    updateById
+    deleteByObjectid,
+    deleteByTelescopeid
 };

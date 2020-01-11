@@ -21,8 +21,8 @@ async function create(object) {
     return Object.createObject(object);
 }
 
-async function deleteByName(name) {
-    return Object.deleteObject(name);
+async function deleteById(id) {
+    return Object.deleteObject(id);
 }
 
 async function updateByName(object) {
@@ -35,6 +35,6 @@ module.exports = {
     byId,
     count,
     create,
-    deleteByName,
+    deleteById,
     updateByName
 };

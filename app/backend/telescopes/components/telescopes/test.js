@@ -157,7 +157,7 @@ describe('Telescopes', () => {
     describe('/DELETE telescopes', () => {
         it('it should delete telescope', (done) => {
             chai.request(server)
-                .delete('/api/v1/tel1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(204);
                     done();
@@ -165,7 +165,7 @@ describe('Telescopes', () => {
         });
         it('it should not delete telescope', (done) => {
             chai.request(server)
-                .delete('/api/v1/tel1')
+                .delete('/api/v1/1')
                 .end((err, res) => {
                     res.should.have.status(404);
                     done();

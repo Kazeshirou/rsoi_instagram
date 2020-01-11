@@ -92,10 +92,10 @@ async function count() {
     });
 }
 
-async function deleteTelescope(name) {
+async function deleteTelescope(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
-        opt.path = '/api/v1/' + name;
+        opt.path = '/api/v1/' + id;
         http_request(opt, resolve, reject);
     });
 }

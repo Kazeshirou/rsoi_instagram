@@ -37,26 +37,6 @@ async function createVisibility(visibility) {
     });
 }
 
-async function findById(id) {
-    return new Promise((resolve, reject) => {
-        Visibility.findAll({
-            where: {
-                id: id
-            }
-        })
-            .then((visibility) => {
-                if (visibility.length == 1) {
-                    resolve({
-                        success: true,
-                        visibility: visibility[0]
-                    });
-                } else {
-                    resolve({ success: false });
-                }
-            })
-    });
-}
-
 async function all(limit, page) {
     return new Promise((resolve, reject) => {
         Visibility.findAll({ offset: (page - 1) * limit, limit: limit })
@@ -88,22 +68,65 @@ async function deleteVisibility(id) {
     });
 }
 
-async function updateVisibility(visibility) {
+async function deleteVisibilityByTelescopeid(id) {
     return new Promise((resolve, reject) => {
-        Visibility.update(visibility, { where: { id: visibility.id } })
-            .then((visibility_num) => {
-                resolve({ success: true, visibility_num: visibility_num });
-            })
-            .catch((err) => {
-                resolve({ success: false, msg: err.original.detail });
+        Visibility.destroy({
+            where: {
+                telescopeid: id
+            }
+        })
+            .then((visibility) => {
+                if (visibility > 0) {
+                    resolve({ success: true });
+                } else {
+                    resolve({ success: false });
+                }
             });
+    });
+}
+
+async function deleteVisibilityByObjectid(id) {
+    return new Promise((resolve, reject) => {
+        Visibility.destroy({
+            where: {
+                objectid: id
+            }
+        })
+            .then((visibility) => {
+                if (visibility > 0) {
+                    resolve({ success: true });
+                } else {
+                    resolve({ success: false });
+                }
+            });
+    });
+}
+
+async function findById(id) {
+    return new Promise((resolve, reject) => {
+        Visibility.findAll({
+            where: {
+                id: id
+            }
+        })
+            .then((visibility) => {
+                if (visibility.length == 1) {
+                    resolve({
+                        success: true,
+                        visibility: visibility[0]
+                    });
+                } else {
+                    resolve({ success: false });
+                }
+            })
     });
 }
 
 module.exports = {
     createVisibility,
     deleteVisibility,
-    updateVisibility,
+    deleteVisibilityByObjectid,
+    deleteVisibilityByTelescopeid,
     all,
     count,
     findById

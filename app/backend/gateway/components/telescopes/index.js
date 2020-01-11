@@ -21,8 +21,23 @@ function create(telescope) {
     return Telescope.createTelescope(telescope);
 }
 
-function deleteByName(name) {
-    return Telescope.deleteTelescope(name);
+function deleteById(id) {
+    return new Promise((resolve, reject) => {
+        Telescope.deleteTelescope(id)
+            .then(res => {
+                var Visibility = require(path.join(__dirname, '../visibility'));
+                Visibility.deleteByTelescopeid(id)
+                    .then(res1 => {
+                        resolve(res);
+                    })
+                    .catch(err => {
+                        resolve(err);
+                    })
+            })
+            .catch(err => {
+                reject(err);
+            })
+    })
 }
 
 function updateByName(telescope) {
@@ -35,6 +50,6 @@ module.exports = {
     byId,
     count,
     create,
-    deleteByName,
+    deleteById,
     updateByName
 };

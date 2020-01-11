@@ -92,9 +92,27 @@ async function deleteVisibility(id) {
     });
 }
 
+async function deleteVisibilityByObjectid(id) {
+    return new Promise((resolve, reject) => {
+        opt.method = 'DELETE';
+        opt.path = '/api/v1/objectid/' + id;
+        http_request(opt, resolve, reject);
+    });
+}
+
+async function deleteVisibilityByTelescopeid(id) {
+    return new Promise((resolve, reject) => {
+        opt.method = 'DELETE';
+        opt.path = '/api/v1/telescopeid/' + id;
+        http_request(opt, resolve, reject);
+    });
+}
+
 module.exports = {
     createVisibility,
     deleteVisibility,
+    deleteVisibilityByObjectid,
+    deleteVisibilityByTelescopeid,
     findAll,
     count,
     findById

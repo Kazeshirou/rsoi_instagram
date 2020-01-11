@@ -97,11 +97,11 @@ async function count() {
     });
 }
 
-async function deleteTelescope(name) {
+async function deleteTelescope(id) {
     return new Promise((resolve, reject) => {
         Telescope.destroy({
             where: {
-                name: name
+                id: id
             }
         })
             .then((telescope) => {

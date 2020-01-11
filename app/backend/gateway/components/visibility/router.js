@@ -56,4 +56,24 @@ router.delete('/:id', async (req, res, next) => {
         });
 });
 
+router.delete('/telescopeid/:id', async (req, res, next) => {
+    return visibility.deleteByTelescopeid(req.params.id)
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
+router.delete('/objectid/:id', async (req, res, next) => {
+    return visibility.deleteByObjectid(req.params.id)
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
 module.exports = router;

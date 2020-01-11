@@ -1,6 +1,7 @@
 var path = require('path');
 var Object = require(path.join(__dirname, 'model'));
 
+
 function all(page) {
     return Object.findAll(page);
 }
@@ -21,8 +22,23 @@ function create(object) {
     return Object.createObject(object);
 }
 
-function deleteByName(name) {
-    return Object.deleteObject(name);
+function deleteById(id) {
+    return new Promise((resolve, reject) => {
+        Object.deleteObject(id)
+            .then(res => {
+                var Visibility = require(path.join(__dirname, '../visibility'));
+                Visibility.deleteByObjectid(id)
+                    .then(res1 => {
+                        resolve(res);
+                    })
+                    .catch(err => {
+                        resolve(err);
+                    })
+            })
+            .catch(err => {
+                reject(err);
+            })
+    })
 }
 
 function updateByName(object) {
@@ -35,6 +51,6 @@ module.exports = {
     byId,
     count,
     create,
-    deleteByName,
+    deleteById,
     updateByName
 };

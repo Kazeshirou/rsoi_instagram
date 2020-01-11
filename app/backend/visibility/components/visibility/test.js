@@ -119,37 +119,6 @@ describe('Visibility', () => {
         });
     });
 
-    describe('/PUT visibility', () => {
-        vis2 = {
-            "id" : 1,
-            "telescopeid": 1,
-            "objectid": 2,
-        };
-        notfoundvis = {
-            "id": 2,
-            "telescopeid": 1,
-            "objectid": 1,
-        };
-        it('it should update visibility', (done) => {
-            chai.request(server)
-                .put('/api/v1/')
-                .send(vis2)
-                .end((err, res) => {
-                    res.should.have.status(204);
-                    done();
-                });
-        });
-        it('it should not update visibility', (done) => {
-            chai.request(server)
-                .put('/api/v1/')
-                .send(notfoundvis)
-                .end((err, res) => {
-                    res.should.have.status(404);
-                    done();
-                });
-        });
-    });    
-
     describe('/DELETE visibility', () => {
         it('it should delete visibility', (done) => {
             chai.request(server)

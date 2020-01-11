@@ -21,8 +21,8 @@ async function create(telescope) {
     return Telescope.createTelescope(telescope);
 }
 
-async function deleteByName(name) {
-    return Telescope.deleteTelescope(name);
+async function deleteById(id) {
+    return Telescope.deleteTelescope(id);
 }
 
 async function updateByName(telescope) {
@@ -35,6 +35,6 @@ module.exports = {
     byId,
     count,
     create,
-    deleteByName,
+    deleteById,
     updateByName
 };

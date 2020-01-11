@@ -84,8 +84,8 @@ router.put('/', async (req, res, next) => {
         });
 });
 
-router.delete('/:name', async (req, res, next) => {
-    return object.deleteByName(req.params.name)
+router.delete('/:id', async (req, res, next) => {
+    return object.deleteById(req.params.id)
         .then((success) => {
             if (success.success) {
                 res.status(204).end();

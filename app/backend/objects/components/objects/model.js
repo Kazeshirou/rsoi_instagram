@@ -97,11 +97,11 @@ async function count() {
     });
 }
 
-async function deleteObject(name) {
+async function deleteObject(id) {
     return new Promise((resolve, reject) => {
         Object.destroy({
             where: {
-                name: name
+                id: id
             }
         })
             .then((object) => {

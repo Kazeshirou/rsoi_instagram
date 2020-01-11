@@ -53,17 +53,13 @@ router.post('/', async (req, res, next) => {
         });
 });
 
-router.put('/', async (req, res, next) => {
-    return visibility.updateById(req.body)
-        .then((result) => {
-            if (result.success) {
-                if (result.visibility_num > 0) {
-                    res.status(204).end();
-                } else {
-                    next();
-                }
+router.delete('/:id', async (req, res, next) => {
+    return visibility.deleteById(req.params.id)
+        .then((success) => {
+            if (success.success) {
+                res.status(204).end();
             } else {
-                next(createError(400, result.msg));
+                next();
             }
         })
         .catch((err) => {
@@ -71,8 +67,22 @@ router.put('/', async (req, res, next) => {
         });
 });
 
-router.delete('/:id', async (req, res, next) => {
-    return visibility.deleteById(req.params.id)
+router.delete('/telescopeid/:id', async (req, res, next) => {
+    return visibility.deleteByTelescopeid(req.params.id)
+        .then((success) => {
+            if (success.success) {
+                res.status(204).end();
+            } else {
+                next();
+            }
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
+router.delete('/objectid/:id', async (req, res, next) => {
+    return visibility.deleteByObjectid(req.params.id)
         .then((success) => {
             if (success.success) {
                 res.status(204).end();
