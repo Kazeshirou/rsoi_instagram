@@ -60,10 +60,10 @@ async function createVisibility(visibility) {
     });
 }
 
-async function findByName(name) {
+async function findById(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
-        opt.path = '/api/v1/' + name;
+        opt.path = '/api/v1/' + id;
         http_request(opt, resolve, reject);
     });
 }
@@ -84,27 +84,18 @@ async function count() {
     });
 }
 
-async function deleteVisibility(name) {
+async function deleteVisibility(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
-        opt.path = '/api/v1/' + name;
+        opt.path = '/api/v1/' + id;
         http_request(opt, resolve, reject);
-    });
-}
-
-async function updateVisibility(visibility) {
-    return new Promise((resolve, reject) => {
-        opt.method = 'PUT';
-        opt.path = '/api/v1/';
-        http_request(opt, resolve, reject, visibility);
     });
 }
 
 module.exports = {
     createVisibility,
     deleteVisibility,
-    updateVisibility,
     findAll,
     count,
-    findByName
+    findById
 };

@@ -13,6 +13,10 @@ async function byName(name) {
     return Telescope.findByName(name);
 }
 
+async function byId(id) {
+    return Telescope.findById(id);
+}
+
 async function create(telescope) {
     return Telescope.createTelescope(telescope);
 }
@@ -28,6 +32,7 @@ async function updateByName(telescope) {
 module.exports = {
     all,
     byName,
+    byId,
     count,
     create,
     deleteByName,

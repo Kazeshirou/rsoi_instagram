@@ -38,6 +38,20 @@ router.get('/:name', async (req, res, next) => {
         });
 });
 
+router.get('/id/:id', async (req, res, next) => {
+    return object.byId(req.params.id)
+        .then((result) => {
+            if (result.success) {
+                res.json({ 'object': result.object });
+            } else {
+                next();
+            }
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
 router.post('/', async (req, res, next) => {
     return object.create(req.body)
         .then((result) => {

@@ -26,8 +26,8 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
-router.get('/:name', async (req, res, next) => {
-    return visibility.byName(req.params.name)
+router.get('/:id', async (req, res, next) => {
+    return visibility.byId(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
         })
@@ -46,18 +46,8 @@ router.post('/', async (req, res, next) => {
         });
 });
 
-router.put('/', async (req, res, next) => {
-    return visibility.updateByName(req.body)
-        .then((result) => {
-            res.status(result.statusCode).json(result.body);
-        })
-        .catch((err) => {
-            next(err);
-        });
-});
-
-router.delete('/:name', async (req, res, next) => {
-    return visibility.deleteByName(req.params.name)
+router.delete('/:id', async (req, res, next) => {
+    return visibility.deleteById(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
         })

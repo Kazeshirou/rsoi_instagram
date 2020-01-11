@@ -13,6 +13,10 @@ function byName(name) {
     return Telescope.findByName(name);
 }
 
+function byId(id) {
+    return Telescope.findById(id);
+}
+
 function create(telescope) {
     return Telescope.createTelescope(telescope);
 }
@@ -28,6 +32,7 @@ function updateByName(telescope) {
 module.exports = {
     all,
     byName,
+    byId,
     count,
     create,
     deleteByName,

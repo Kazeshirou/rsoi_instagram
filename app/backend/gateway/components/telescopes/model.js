@@ -68,6 +68,14 @@ async function findByName(name) {
     });
 }
 
+async function findById(id) {
+    return new Promise((resolve, reject) => {
+        opt.method = 'GET';
+        opt.path = '/api/v1/id/' + id;
+        http_request(opt, resolve, reject);
+    });
+}
+
 async function findAll(page) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
@@ -106,5 +114,6 @@ module.exports = {
     updateTelescope,
     findAll,
     count,
-    findByName
+    findByName,
+    findById
 };

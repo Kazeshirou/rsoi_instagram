@@ -63,6 +63,26 @@ async function findByName(name) {
     });
 }
 
+async function findById(id) {
+    return new Promise((resolve, reject) => {
+        Object.findAll({
+            where: {
+                id: id
+            }
+        })
+            .then((objects) => {
+                if (objects.length == 1) {
+                    resolve({
+                        success: true,
+                        object: objects[0]
+                    });
+                } else {
+                    resolve({ success: false });
+                }
+            })
+    });
+}
+
 async function all(limit, page) {
     return new Promise((resolve, reject) => {
         Object.findAll({ offset: (page - 1) * limit, limit: limit })
@@ -112,5 +132,6 @@ module.exports = {
     updateObject,
     all,
     count,
-    findByName
+    findByName,
+    findById
 };

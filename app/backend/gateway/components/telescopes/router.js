@@ -26,6 +26,16 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
+router.get('/id/:id', async (req, res, next) => {
+    return telescope.byId(req.params.id)
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
 router.get('/:name', async (req, res, next) => {
     return telescope.byName(req.params.name)
         .then((result) => {

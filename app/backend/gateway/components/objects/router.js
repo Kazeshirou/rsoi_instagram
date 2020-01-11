@@ -36,6 +36,16 @@ router.get('/:name', async (req, res, next) => {
         });
 });
 
+router.get('/id/:id', async (req, res, next) => {
+    return object.byId(req.params.id)
+        .then((result) => {
+            res.status(result.statusCode).json(result.body);
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
 router.post('/', async (req, res, next) => {
     return object.create(req.body)
         .then((result) => {

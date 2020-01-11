@@ -13,6 +13,10 @@ function byName(name) {
     return Object.findByName(name);
 }
 
+function byId(id) {
+    return Object.findById(id);
+}
+
 function create(object) {
     return Object.createObject(object);
 }
@@ -28,6 +32,7 @@ function updateByName(object) {
 module.exports = {
     all,
     byName,
+    byId,
     count,
     create,
     deleteByName,

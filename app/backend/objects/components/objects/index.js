@@ -13,6 +13,10 @@ async function byName(name) {
     return Object.findByName(name);
 }
 
+async function byId(id) {
+    return Object.findById(id);
+}
+
 async function create(object) {
     return Object.createObject(object);
 }
@@ -28,6 +32,7 @@ async function updateByName(object) {
 module.exports = {
     all,
     byName,
+    byId,
     count,
     create,
     deleteByName,

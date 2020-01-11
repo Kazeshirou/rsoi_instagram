@@ -63,6 +63,26 @@ async function findByName(name) {
     });
 }
 
+async function findById(id) {
+    return new Promise((resolve, reject) => {
+        Telescope.findAll({
+            where: {
+                id: id
+            }
+        })
+            .then((telescopes) => {
+                if (telescopes.length == 1) {
+                    resolve({
+                        success: true,
+                        telescope: telescopes[0]
+                    });
+                } else {
+                    resolve({ success: false });
+                }
+            })
+    });
+}
+
 async function all(limit, page) {
     return new Promise((resolve, reject) => {
         Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
@@ -112,5 +132,6 @@ module.exports = {
     updateTelescope,
     all,
     count,
-    findByName
+    findByName,
+    findById
 };

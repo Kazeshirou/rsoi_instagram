@@ -17,14 +17,15 @@ app.use('/api/v1/telescopes', telescopeRouter);
 app.use('/api/v1/objects', objectRouter);
 app.use('/api/v1/visibility', visibilityRouter);
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     next(createError(404));
 })
 
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
     res.status(err.status || 501);
+    logger.info({ message : err });
     res.json({
-        'err': req.app.get('env') === 'development' ? err : {},
+        'err': process.env.NODE_ENV == 'development' ? err : {},
     });
 })
 
