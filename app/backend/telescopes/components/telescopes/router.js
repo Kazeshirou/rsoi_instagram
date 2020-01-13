@@ -95,7 +95,7 @@ router.post('/', [
             if (result.success) {
                 res.status(201).json({ 'telescope': result.telescope });
             } else {
-                next(createError(400, result.msg));
+                next(createError(422, result.msg));
             }
         })
         .catch((err) => {
@@ -128,7 +128,7 @@ router.put('/', [
                     next();
                 }
             } else {
-                next(createError(400, result.msg));
+                next(createError(422, result.msg));
             }
         })
         .catch((err) => {
