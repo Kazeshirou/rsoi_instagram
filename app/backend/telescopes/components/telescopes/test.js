@@ -74,7 +74,7 @@ describe('Telescopes', () => {
                 .post('/api/v1/')
                 .send(tel1)
                 .end((err, res) => {
-                    res.should.have.status(400);
+                    res.should.have.status(422);
                     done();
                 });
         });

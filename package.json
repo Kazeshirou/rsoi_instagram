@@ -34,6 +34,7 @@
     "morgan": "^1.9.1",
     "nodemon": "^1.19.4",
     "nyc": "^15.0.0",
+    "openapi-client-axios": "^3.3.2",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.1",
