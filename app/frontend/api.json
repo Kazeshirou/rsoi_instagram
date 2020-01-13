@@ -1,0 +1,684 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "lab2",
+    "contact": {}
+  },
+  "host": "localhost:49001",
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/telescopes": {
+      "get": {
+        "summary": "get telescopes",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "gettelescopes",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "post": {
+        "summary": "post telescopes",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "posttelescopes",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/posttelescopesrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "put": {
+        "summary": "put telescopes",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "puttelescopes",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/puttelescopesrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/telescopes/id/3": {
+      "get": {
+        "summary": "get telescopes by  id",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "gettelescopesbyid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/telescopes/11": {
+      "delete": {
+        "summary": "delete telescopes by id",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "deletetelescopesbyid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/objects": {
+      "get": {
+        "summary": "get objects",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "getobjects",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "post": {
+        "summary": "post objects",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "postobjects",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/postobjectsrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "put": {
+        "summary": "put objects",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "putobjects",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/putobjectsrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/objects/obj5": {
+      "get": {
+        "summary": "get objects by name",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "getobjectsbyname",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/objects/15": {
+      "delete": {
+        "summary": "delete objects by id",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "deleteobjectsbyid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/visibility": {
+      "get": {
+        "summary": "get visibility",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "getvisibility",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "post": {
+        "summary": "post visibility",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "postvisibility",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/postvisibilityrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/visibility/13": {
+      "get": {
+        "summary": "get visibility by id",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "getvisibilitybyid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete visibility by id",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "deletevisibilitybyid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/visibility/objectid/5": {
+      "delete": {
+        "summary": "delete visibility by objectid",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "deletevisibilitybyobjectid",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "posttelescopesrequest": {
+      "title": "posttelescopesrequest",
+      "example": {
+        "name": "tel1",
+        "type": "type1",
+        "country": "country1",
+        "city": "city1"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "country",
+        "city"
+      ]
+    },
+    "puttelescopesrequest": {
+      "title": "puttelescopesrequest",
+      "example": {
+        "name": "tel2",
+        "id": 19,
+        "type": "type2",
+        "country": "country1",
+        "city": "city1"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "id",
+        "type",
+        "country",
+        "city"
+      ]
+    },
+    "postobjectsrequest": {
+      "title": "postobjectsrequest",
+      "example": {
+        "name": "obj3",
+        "coord1": 1,
+        "coord2": 2.0,
+        "coord3": 3.0
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "coord1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "coord2": {
+          "type": "number",
+          "format": "double"
+        },
+        "coord3": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "required": [
+        "name",
+        "coord1",
+        "coord2",
+        "coord3"
+      ]
+    },
+    "putobjectsrequest": {
+      "title": "putobjectsrequest",
+      "example": {
+        "name": "obj2",
+        "coord1": 1.0,
+        "coord2": 2.0,
+        "coord3": 4.0
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "coord1": {
+          "type": "number",
+          "format": "double"
+        },
+        "coord2": {
+          "type": "number",
+          "format": "double"
+        },
+        "coord3": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "required": [
+        "name",
+        "coord1",
+        "coord2",
+        "coord3"
+      ]
+    },
+    "postvisibilityrequest": {
+      "title": "postvisibilityrequest",
+      "example": {
+        "telescopeid": 12,
+        "objectid": 17
+      },
+      "type": "object",
+      "properties": {
+        "telescopeid": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "objectid": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "telescopeid",
+        "objectid"
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "Misc",
+      "description": ""
+    }
+  ]
+}
