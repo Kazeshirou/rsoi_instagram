@@ -1,31 +1,31 @@
 var path = require('path');
 var Object = require(path.join(__dirname, 'model'));
 
-async function all(limit, page) {
+function all(limit, page) {
     return Object.all(limit, page);
 }
 
-async function count() {
+function count() {
     return Object.count();
 }
 
-async function byName(name) {
+function byName(name) {
     return Object.findByName(name);
 }
 
-async function byId(id) {
+function byId(id) {
     return Object.findById(id);
 }
 
-async function create(object) {
+function create(object) {
     return Object.createObject(object);
 }
 
-async function deleteById(id) {
+function deleteById(id) {
     return Object.deleteObject(id);
 }
 
-async function updateByName(object) {
+function updateByName(object) {
     return Object.updateObject(object);
 }
 

@@ -6,12 +6,12 @@ var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', [
-    check('limit').isInt(),
-    check('page').isInt(),
+    check('limit').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('page').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -21,13 +21,12 @@ router.get('/', [
             res.json({ 'telescopes': telescopes});
         })
         .catch((err) => {
-            console.log(err);
             next(err);
         });
     }
 ]);
 
-router.get('/count', async (req, res, next) => {
+router.get('/count',  (req, res, next) => {
     return telescope.count()
         .then((telescopes_count) => {
             res.json({ 'telescopes_count': telescopes_count });
@@ -38,11 +37,11 @@ router.get('/count', async (req, res, next) => {
 });
 
 router.get('/id/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -76,11 +75,11 @@ router.get('/:name', (req, res, next) => {
 });
 
 router.post('/', [
-    check('name').isLength({min: 1}),
+    check('name').not().isEmpty().withMessage("Необходимо задать."),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         req.body = {
             name: req.body.name,
@@ -95,7 +94,7 @@ router.post('/', [
             if (result.success) {
                 res.status(201).json({ 'telescope': result.telescope });
             } else {
-                next(createError(422, result.msg));
+                next(createError(400, result.msg));
             }
         })
         .catch((err) => {
@@ -105,11 +104,11 @@ router.post('/', [
 ]);
 
 router.put('/', [
-    check('name').isLength({ min: 1 }),
+    check('name').not().isEmpty().withMessage("Необходимо задать."),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         req.body = {
             name: req.body.name,
@@ -128,7 +127,7 @@ router.put('/', [
                     next();
                 }
             } else {
-                next(createError(422, result.msg));
+                next(createError(400, result.msg));
             }
         })
         .catch((err) => {
@@ -138,11 +137,11 @@ router.put('/', [
 ]);
 
 router.delete('/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },

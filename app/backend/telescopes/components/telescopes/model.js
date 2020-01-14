@@ -36,20 +36,19 @@ Telescope.init({
     },
 }, { sequelize: db, timestamps: true, modelName: "Telescope" });
 
-async function createTelescope(telescope) {
+function createTelescope(telescope) {
     return new Promise((resolve, reject) => {
         Telescope.create(telescope)
             .then((telescope) => {
                 resolve({ success: true, telescope: telescope });
             })
             .catch((err) => {
-                console.log(err);
                 resolve({ success: false, msg: err.original.detail });
             });
     });
 }
 
-async function findByName(name) {
+function findByName(name) {
     return new Promise((resolve, reject) => {
         Telescope.findAll({
             where: {
@@ -66,10 +65,11 @@ async function findByName(name) {
                     resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 
-async function findById(id) {
+function findById(id) {
     return new Promise((resolve, reject) => {
         Telescope.findAll({
             where: {
@@ -86,24 +86,27 @@ async function findById(id) {
                     resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 
-async function all(limit, page) {
+function all(limit, page) {
     return new Promise((resolve, reject) => {
         Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((telescopes) => { resolve(telescopes); });
+            .then((telescopes) => { resolve(telescopes); })
+            .catch((err) => reject(err));
     });
 }
 
-async function count() {
+function count() {
     return new Promise((resolve, reject) => {
         Telescope.count()
-            .then((count) => { resolve(count); });
+            .then((count) => { resolve(count); })
+            .catch((err) => reject(err));
     });
 }
 
-async function deleteTelescope(id) {
+function deleteTelescope(id) {
     return new Promise((resolve, reject) => {
         Telescope.destroy({
             where: {
@@ -116,11 +119,12 @@ async function deleteTelescope(id) {
                 } else {
                     resolve({ success: false });
                 }
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function updateTelescope(telescope) {
+function updateTelescope(telescope) {
     return new Promise((resolve, reject) => {
         Telescope.update(telescope, { where: { name: telescope.name } })
             .then((telescope_num) => {

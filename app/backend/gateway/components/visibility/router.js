@@ -3,7 +3,7 @@ var express = require('express');
 var router = express.Router();
 var visibility = require(__dirname);
 
-router.get('/', async (req, res, next) => {
+router.get('/', (req, res, next) => {
     req.query.page = req.query.page || 1;
     req.query.limit = req.query.limit || 3;
     return visibility.all(req.query)
@@ -16,7 +16,7 @@ router.get('/', async (req, res, next) => {
         });
 });
 
-router.get('/count', async (req, res, next) => {
+router.get('/count', (req, res, next) => {
     return visibility.count()
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -26,7 +26,7 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', (req, res, next) => {
     return visibility.byId(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -36,7 +36,7 @@ router.get('/:id', async (req, res, next) => {
         });
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', (req, res, next) => {
     return visibility.create(req.body)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -46,7 +46,7 @@ router.post('/', async (req, res, next) => {
         });
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
     return visibility.deleteById(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -56,7 +56,7 @@ router.delete('/:id', async (req, res, next) => {
         });
 });
 
-router.delete('/telescopeid/:id', async (req, res, next) => {
+router.delete('/telescopeid/:id', (req, res, next) => {
     return visibility.deleteByTelescopeid(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -66,7 +66,7 @@ router.delete('/telescopeid/:id', async (req, res, next) => {
         });
 });
 
-router.delete('/objectid/:id', async (req, res, next) => {
+router.delete('/objectid/:id', (req, res, next) => {
     return visibility.deleteByObjectid(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);

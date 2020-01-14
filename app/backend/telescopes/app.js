@@ -18,10 +18,18 @@ app.use(function (req, res, next) {
 })
 
 app.use(function (err, req, res, next) {
-    res.status(err.status || 501);
-    logger.info({ message: err });
+    var error;
+    if (!err.status) {
+        error = createError(501);
+        error.detail = err;
+    } else {
+        error = err;
+    }
+    res.status(error.status);
+
+    logger.info({ err: error });
     res.json({
-        'err': req.app.get('env') == 'development' ? err : {},
+        'err': error,
     });
 })
 

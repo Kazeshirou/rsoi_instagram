@@ -6,12 +6,12 @@ var router = express.Router();
 var visibility = require(__dirname);
 
 router.get('/', [
-    check('limit').isInt(),
-    check('page').isInt(),
+    check('limit').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('page').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -21,12 +21,11 @@ router.get('/', [
             res.json({ 'visibility': visibility});
         })
         .catch((err) => {
-            console.log(err);
             next(err);
         });
 }]);
 
-router.get('/count', async (req, res, next) => {
+router.get('/count', (req, res, next) => {
     return visibility.count()
         .then((visibility_count) => {
             res.json({ 'visibility_count': visibility_count });
@@ -41,7 +40,7 @@ router.get('/:id', [
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -61,12 +60,12 @@ router.get('/:id', [
 ]);
 
 router.post('/', [
-    check('telescopeid').isInt(),
-    check('objectid').isInt(),
+    check('telescopeid').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('objectid').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         req.body = {
             telescopeid: req.body.telescopeid,
@@ -90,11 +89,11 @@ router.post('/', [
 ]);
 
 router.delete('/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -114,11 +113,11 @@ router.delete('/:id', [
 ]);
 
 router.delete('/telescopeid/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -138,11 +137,11 @@ router.delete('/telescopeid/:id', [
 ]);
 
 router.delete('/objectid/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },

@@ -52,7 +52,7 @@ function http_request(opt, resolve, reject, request_data) {
     req.end();
 }
 
-async function createTelescope(telescope) {
+function createTelescope(telescope) {
     return new Promise((resolve, reject) => {
         opt.method = 'POST';
         opt.path = '/api/v1/';
@@ -60,7 +60,7 @@ async function createTelescope(telescope) {
     });
 }
 
-async function findByName(name) {
+function findByName(name) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/' + name;
@@ -68,7 +68,7 @@ async function findByName(name) {
     });
 }
 
-async function findById(id) {
+function findById(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/id/' + id;
@@ -76,7 +76,7 @@ async function findById(id) {
     });
 }
 
-async function findAll(page) {
+function findAll(page) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/?page=' + page.page + '&limit=' + page.limit;
@@ -84,7 +84,7 @@ async function findAll(page) {
     });
 }
 
-async function count() {
+function count() {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/count';
@@ -92,7 +92,7 @@ async function count() {
     });
 }
 
-async function deleteTelescope(id) {
+function deleteTelescope(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/' + id;
@@ -100,7 +100,7 @@ async function deleteTelescope(id) {
     });
 }
 
-async function updateTelescope(telescope) {
+function updateTelescope(telescope) {
     return new Promise((resolve, reject) => {
         opt.method = 'PUT';
         opt.path = '/api/v1/';

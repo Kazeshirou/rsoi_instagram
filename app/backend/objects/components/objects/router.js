@@ -5,12 +5,12 @@ var router = express.Router();
 var object = require(__dirname);
 
 router.get('/', [
-    check('limit').isInt(),
-    check('page').isInt(),
+    check('limit').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('page').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -20,13 +20,12 @@ router.get('/', [
             res.json({ 'objects': objects});
         })
         .catch((err) => {
-            console.log(err);
             next(err);
         });
     }
 ]);
 
-router.get('/count', async (req, res, next) => {
+router.get('/count', (req, res, next) => {
     return object.count()
         .then((objects_count) => {
             res.json({ 'objects_count': objects_count });
@@ -36,7 +35,7 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
-router.get('/:name', async (req, res, next) => {
+router.get('/:name', (req, res, next) => {
     return object.byName(req.params.name)
         .then((result) => {
             if (result.success) {
@@ -51,11 +50,11 @@ router.get('/:name', async (req, res, next) => {
 });
 
 router.get('/id/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },
@@ -75,14 +74,14 @@ router.get('/id/:id', [
 ]);
 
 router.post('/', [
-    check('name').isLength({ min: 1 }),
-    check('coord1').isFloat(),
-    check('coord2').isFloat(),
-    check('coord3').isFloat(),
+    check('name').not().isEmpty().withMessage("Необходимо задать."),
+    check('coord1').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
+    check('coord2').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
+    check('coord3').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         req.body = {
             name: req.body.name,
@@ -108,14 +107,14 @@ router.post('/', [
 ]);
 
 router.put('/', [
-    check('name').isLength({ min: 1 }),
-    check('coord1').isFloat(),
-    check('coord2').isFloat(),
-    check('coord3').isFloat(),
+    check('name').not().isEmpty().withMessage("Необходимо задать."),
+    check('coord1').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
+    check('coord2').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
+    check('coord3').not().isEmpty().withMessage("Необходимо задать.").isFloat().withMessage("Необходимо число"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         req.body = {
             name: req.body.name,
@@ -145,11 +144,11 @@ router.put('/', [
 ]);
 
 router.delete('/:id', [
-    check('id').isInt(),
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ err: errors.array() });
+            return res.status(400).json({ err: errors.array() });
         }
         next();
     },

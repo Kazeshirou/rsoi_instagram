@@ -10,7 +10,7 @@ var objectRouter = require(path.join(__dirname, 'components/objects/router'));
 
 var app = express();
 
-app.use(cors({ origin: 'http://localhost:3000'}));
+app.use(cors());
 app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
@@ -23,11 +23,19 @@ app.use((req, res, next) => {
     next(createError(404));
 })
 
-app.use((err, req, res, next) => {
-    res.status(err.status || 501);
-    logger.info({ message : err });
+app.use(function (err, req, res, next) {
+    var error;
+    if (!err.status) {
+        error = createError(501);
+        error.detail = err;
+    } else {
+        error = err;
+    }
+    res.status(error.status);
+
+    logger.info({ err: error });
     res.json({
-        'err': process.env.NODE_ENV == 'development' ? err : {},
+        'err': error,
     });
 })
 
