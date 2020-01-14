@@ -249,7 +249,7 @@ class VisibilityPage extends React.Component {
     getAll = (active) => {
         return api.get('/visibility', {
             params: {
-                page: (this.state.activePage + 1),
+                page: (this.state.activePage + 1) <= 0 ? 1 : (this.state.activePage + 1),
                 limit: this.state.itemsPerPage
             }
         })
