@@ -3,20 +3,19 @@ var express = require('express');
 var router = express.Router();
 var object = require(__dirname);
 
-router.get('/', async (req, res, next) => {
-    req.query.page = req.query.page || 1;
+router.get('/', (req, res, next) => {
+    req.query.page = req.query.page || 0;
     req.query.limit = req.query.limit || 3;
     return object.all(req.query)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err)
             next(err);
         });
 });
 
-router.get('/count', async (req, res, next) => {
+router.get('/count', (req, res, next) => {
     return object.count()
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -26,7 +25,7 @@ router.get('/count', async (req, res, next) => {
         });
 });
 
-router.get('/:name', async (req, res, next) => {
+router.get('/:name', (req, res, next) => {
     return object.byName(req.params.name)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -36,7 +35,7 @@ router.get('/:name', async (req, res, next) => {
         });
 });
 
-router.get('/id/:id', async (req, res, next) => {
+router.get('/id/:id', (req, res, next) => {
     return object.byId(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -46,7 +45,7 @@ router.get('/id/:id', async (req, res, next) => {
         });
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', (req, res, next) => {
     return object.create(req.body)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -56,7 +55,7 @@ router.post('/', async (req, res, next) => {
         });
 });
 
-router.put('/', async (req, res, next) => {
+router.put('/', (req, res, next) => {
     return object.updateByName(req.body)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
@@ -66,7 +65,7 @@ router.put('/', async (req, res, next) => {
         });
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
     return object.deleteById(req.params.id)
         .then((result) => {
             res.status(result.statusCode).json(result.body);

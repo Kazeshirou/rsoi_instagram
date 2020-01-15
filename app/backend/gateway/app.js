@@ -1,5 +1,4 @@
 var express = require('express');
-var createError = require('http-errors');
 var path = require('path');
 var morgan = require('morgan');
 var cors = require('cors');
@@ -10,7 +9,7 @@ var objectRouter = require(path.join(__dirname, 'components/objects/router'));
 
 var app = express();
 
-app.use(cors({ origin: 'http://localhost:3000'}));
+app.use(cors());
 app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
@@ -20,15 +19,35 @@ app.use('/api/v1/objects', objectRouter);
 app.use('/api/v1/visibility', visibilityRouter);
 
 app.use((req, res, next) => {
-    next(createError(404));
+    next({
+        statusCode: 404,
+        body: {
+            err: {
+                message: "Запрашиваемый ресурс не найден."
+            }
+        }
+    });
 })
 
-app.use((err, req, res, next) => {
-    res.status(err.status || 501);
-    logger.info({ message : err });
-    res.json({
-        'err': process.env.NODE_ENV == 'development' ? err : {},
-    });
+app.use(function (err, req, res, next) {
+    var error = {}
+    if (!err.statusCode) {
+        error = {
+            statusCode: 501,
+            body: {
+                err: {
+                    message: "Неожиданная ошибка сервера.",
+                    detail: err
+                }
+            }
+        }
+    } else {
+        error = err;
+    }
+
+    res.status(error.statusCode);
+    res.json(err.body);
+    logger.error(error.body);
 })
 
 module.exports = app;

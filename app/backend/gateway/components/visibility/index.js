@@ -1,40 +1,64 @@
 var path = require('path');
 var Visibility = require(path.join(__dirname, 'model'));
 var Telescopes = require(path.join(__dirname, '../telescopes'));
-var Objects = require(path.join(__dirname, '../objects'));;
+var Objects = require(path.join(__dirname, '../objects'));
+var logger = require(path.join(__dirname, '../../utilities/logger'));
+
+
+function resolve_refs(telescopeid, objectid) {
+    return new Promise((resolve) => {
+        Promise.allSettled([Telescopes.byId(telescopeid), Objects.byId(objectid)])
+            .then(([telescoperes, objectres]) => {
+                var result = { telescopename: null, objectname: null };
+                if (telescoperes.status == 'fulfilled' &&
+                    telescoperes.value.statusCode == 200) {
+                    result.telescopename = telescoperes.value.body.telescope.name;
+                }
+                if (objectres.status == 'fulfilled' &&
+                    objectres.value.statusCode == 200) {
+                    result.objectname = objectres.value.body.object.name;
+                }
+                resolve(result);
+            })
+            .catch(err => {
+                logger.error(err);
+                resolve({ telescopename: null, objectname: null });
+            });
+    });
+}
 
 function all(page) {
     return new Promise((resolve, reject) => {
         Visibility.findAll(page)
             .then(result => {
                 if (result.statusCode != 200) {
-                    resolve(result)
-                    return
+                    return resolve(result)
                 }
 
-                promises = [];
-                for (let vis of result.body.visibility) {
-                    promises.push(byId(vis.id));
-                }
-
-                Promise.all(promises)
+                var promises = result.body.visibility.map(vis =>
+                    resolve_refs(vis.telescopeid, vis.objectid));
+                Promise.allSettled(promises)
                     .then(res => {
-                        result.statusCode = 200;
-                        result.body.visibility = res.map(resi => {
-                                if (resi.statusCode != 200) {
-                                    return null;
-                                }
+                        var visibility = res.map((resi, i) => {
+                            var visi = result.body.visibility[i]
+                            if (resi.status != "fulfilled") {
+                                logger.error(resi.value);
+                                return visi;
+                            }
 
-                                return resi.body.visibility;
-                            })
-                            .filter(resi => {
-                                return resi ? true : false;
-                             });
+                            visi.telescopename = resi.value.telescopename;
+                            visi.objectname = resi.value.objectname
+
+                            return visi;
+                        });
+
+                        result.body = {
+                            visibility: visibility
+                        };
 
                         resolve(result);
                     })
-                    .catch(err => reject(err));
-            
+                    .catch(err => reject(err))
             })
             .catch(err => reject(err));
     });
@@ -49,21 +73,22 @@ function byId(id) {
         Visibility.findById(id)
             .then(result => {
                 if (result.statusCode != 200) {
-                    resolve(result)
-                    return
+                    return resolve(result)
                 }
 
                 var visibility = result.body.visibility;
-
-                Promise.all([Telescopes.byId(visibility.telescopeid), Objects.byId(visibility.objectid)])
-                    .then(res => {
-                        result.body.visibility.telescopename = res[0].body.telescope ? res[0].body.telescope.name : null;
-                        result.body.visibility.objectname = res[1].body.object ? res[1].body.object.name : null;
+                resolve_refs(visibility.telescopeid, visibility.objectid)
+                    .then(({ telescopename, objectname }) => {
+                        visibility.telescopename = telescopename;
+                        visibility.objectname = objectname;
+                        result.body.visibility = visibility
                         resolve(result);
                     })
                     .catch(err => {
-                        reject(err);
+                        logger.error(err);
+                        resolve(result);
                     });
+                    
             })
             .catch(err => reject(err));
     });
@@ -77,9 +102,7 @@ function create(visibility) {
                     var result = {};
                     result.statusCode = 400;
                     result.body = {
-                        err: {
-                            message: 'Can\'t found telescope with id = ' + visibility.telescopeid
-                        }
+                        message: 'Can\'t found telescope with id = ' + visibility.telescopeid
                     };
                     resolve(result);
                     return;
@@ -88,9 +111,7 @@ function create(visibility) {
                     var result = {};
                     result.statusCode = 400;
                     result.body = {
-                        err: {
-                            message: 'Can\'t found object with id = ' + visibility.objectid
-                        }
+                        message: 'Can\'t found object with id = ' + visibility.objectid
                     };
                     resolve(result);
                     return;

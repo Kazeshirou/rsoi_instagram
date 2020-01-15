@@ -1,5 +1,7 @@
 var path = require('path');
 var Telescope = require(path.join(__dirname, 'model'));
+var logger = require(path.join(__dirname, '../../utilities/logger'))
+
 
 function all(page) {
     return Telescope.findAll(page);
@@ -23,20 +25,40 @@ function create(telescope) {
 
 function deleteById(id) {
     return new Promise((resolve, reject) => {
-        Telescope.deleteTelescope(id)
-            .then(res => {
-                var Visibility = require(path.join(__dirname, '../visibility'));
-                Visibility.deleteByTelescopeid(id)
-                    .then(res1 => {
-                        resolve(res);
-                    })
-                    .catch(err => {
-                        resolve(err);
-                    })
-            })
-            .catch(err => {
-                reject(err);
-            })
+    Telescope.deleteTelescope(id)
+        .then(res => {
+            if (res.statusCode !== 204) {
+                return resolve(res);
+            }
+
+            let Visibility = require(path.join(__dirname, '../visibility'));
+            Visibility.deleteByTelescopeid(id)
+                .then(res1 => {
+                    if (res1.statusCode !== 204) {
+                        logger.error({
+                            message: `Телескоп с id = ${id} удалён, но не удалось удалить все связанные с ним видимости.`
+                        });
+                    }
+                    return resolve(res);
+                })
+                .catch(err => {
+                    if (err.statusCode === 424) {
+                        logger.error({
+                            message: `Телескоп с id = ${id} удалён, но сервис видимостей был не доступен.`,
+                            detail: err
+                        });
+                    } else {
+                        logger.error({
+                            message: `Телескоп с id = ${id} удалён, но при удалении связанных видимостей возникли проблемы.`,
+                            detail: err
+                        });
+                    }
+                    return resolve(res);
+                })
+        })
+        .catch(err => {
+            return reject(err);
+        })
     })
 }
 

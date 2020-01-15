@@ -14,44 +14,47 @@ Visibility.init({
     telescopeid: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'compositeIndex'
+        unique: 'compositeIndex',
+        validate: { min: 1}
     },
     objectid: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: 'compositeIndex'
+        unique: 'compositeIndex',
+        validate: { min: 1 }
     }
 
 }, { sequelize: db, timestamps: true, modelName: "Visibility" });
 
-async function createVisibility(visibility) {
+function createVisibility(visibility) {
     return new Promise((resolve, reject) => {
         Visibility.create(visibility)
             .then((visibility) => {
                 resolve({ success: true, visibility: visibility });
             })
             .catch((err) => {
-                console.log(err);
                 resolve({ success: false, msg: err.original.detail });
             });
     });
 }
 
-async function all(limit, page) {
+function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Visibility.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((visibility) => { resolve(visibility); });
+        Visibility.findAll({ offset: page * limit, limit: limit })
+            .then((visibility) => { resolve(visibility); })
+            .catch ((err) => reject(err));
     });
 }
 
-async function count() {
+function count() {
     return new Promise((resolve, reject) => {
         Visibility.count()
-            .then((count) => { resolve(count); });
+            .then((count) => { resolve(count); })
+            .catch((err) => reject(err));
     });
 }
 
-async function deleteVisibility(id) {
+function deleteVisibility(id) {
     return new Promise((resolve, reject) => {
         Visibility.destroy({
             where: {
@@ -64,11 +67,12 @@ async function deleteVisibility(id) {
                 } else {
                     resolve({ success: false });
                 }
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function deleteVisibilityByTelescopeid(id) {
+function deleteVisibilityByTelescopeid(id) {
     return new Promise((resolve, reject) => {
         Visibility.destroy({
             where: {
@@ -81,11 +85,12 @@ async function deleteVisibilityByTelescopeid(id) {
                 } else {
                     resolve({ success: false });
                 }
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function deleteVisibilityByObjectid(id) {
+function deleteVisibilityByObjectid(id) {
     return new Promise((resolve, reject) => {
         Visibility.destroy({
             where: {
@@ -98,11 +103,12 @@ async function deleteVisibilityByObjectid(id) {
                 } else {
                     resolve({ success: false });
                 }
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function findById(id) {
+function findById(id) {
     return new Promise((resolve, reject) => {
         Visibility.findAll({
             where: {
@@ -119,6 +125,7 @@ async function findById(id) {
                     resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 

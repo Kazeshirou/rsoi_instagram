@@ -19,7 +19,7 @@ describe('Visibility', () => {
         });
         it('it should GET all the visibility', (done) => {
             chai.request(server)
-                .get('/api/v1/?page=1&limit=5')
+                .get('/api/v1/?page=0&limit=5')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -86,7 +86,7 @@ describe('Visibility', () => {
         });
         it('it should GET all the visibility', (done) => {
             chai.request(server)
-                .get('/api/v1/?page=1&limit=5')
+                .get('/api/v1/?page=0&limit=5')
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');

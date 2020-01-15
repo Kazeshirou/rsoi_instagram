@@ -21,32 +21,41 @@ Object.init({
     },
     coord1: {
         type: Sequelize.DOUBLE,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     coord2: {
         type: Sequelize.DOUBLE,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     coord3: {
         type: Sequelize.DOUBLE,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
 }, { sequelize: db, timestamps: true, modelName: "Object" });
 
-async function createObject(object) {
+ function createObject(object) {
     return new Promise((resolve, reject) => {
         Object.create(object)
             .then((object) => {
                 resolve({ success: true, object: object });
             })
             .catch((err) => {
-                console.log(err);
                 resolve({ success: false, msg: err.original.detail });
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function findByName(name) {
+ function findByName(name) {
     return new Promise((resolve, reject) => {
         Object.findAll({
             where: {
@@ -55,18 +64,19 @@ async function findByName(name) {
         })
             .then((objects) => {
                 if (objects.length == 1) {
-                    resolve({
+                    return resolve({
                         success: true,
                         object: objects[0]
                     });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 
-async function findById(id) {
+ function findById(id) {
     return new Promise((resolve, reject) => {
         Object.findAll({
             where: {
@@ -75,32 +85,35 @@ async function findById(id) {
         })
             .then((objects) => {
                 if (objects.length == 1) {
-                    resolve({
+                    return resolve({
                         success: true,
                         object: objects[0]
                     });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 
-async function all(limit, page) {
+ function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Object.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((objects) => { resolve(objects); });
+        Object.findAll({ offset: page * limit, limit: limit })
+            .then((objects) => resolve(objects))
+            .catch((err) => reject(err));
     });
 }
 
-async function count() {
+ function count() {
     return new Promise((resolve, reject) => {
         Object.count()
-            .then((count) => { resolve(count); });
+            .then((count) => resolve(count))
+            .catch((err) => reject(err));
     });
 }
 
-async function deleteObject(id) {
+ function deleteObject(id) {
     return new Promise((resolve, reject) => {
         Object.destroy({
             where: {
@@ -109,15 +122,16 @@ async function deleteObject(id) {
         })
             .then((object) => {
                 if (object > 0) {
-                    resolve({ success: true });
+                    return resolve({ success: true });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
-async function updateObject(object) {
+ function updateObject(object) {
     return new Promise((resolve, reject) => {
         Object.update(object, { where: { name: object.name } })
             .then((object_num) => {
@@ -125,7 +139,8 @@ async function updateObject(object) {
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
