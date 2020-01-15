@@ -68,9 +68,11 @@ router.put('/', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
     return object.deleteById(req.params.id)
         .then((result) => {
+            console.log("suc")
             res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
+            console.log("err")
             next(err);
         });
 });

@@ -185,4 +185,31 @@ router.delete('/:id', [
     }
 ]);
 
+router.get('/recovery/:id', [
+    check('id').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    (req, res, next) => {
+        var errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
+        }
+        next();
+    },
+    (req, res, next) => {
+        return object.recoveryById(req.params.id)
+            .then((success) => {
+                if (success.success) {
+                    res.status(204).end();
+                } else {
+                    next();
+                }
+            })
+            .catch((err) => {
+                next(err);
+            });
+    }
+]);
+
 module.exports = router;

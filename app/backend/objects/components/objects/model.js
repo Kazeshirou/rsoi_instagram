@@ -40,7 +40,7 @@ Object.init({
             notEmpty: true
         }
     },
-}, { sequelize: db, timestamps: true, modelName: "Object" });
+}, { sequelize: db, timestamps: true, paranoid: true, modelName: "Object" });
 
  function createObject(object) {
     return new Promise((resolve, reject) => {
@@ -131,6 +131,37 @@ Object.init({
     });
 }
 
+function deleteObject(id) {
+    return new Promise((resolve, reject) => {
+        Object.destroy({
+            where: {
+                id: id
+            }
+        })
+            .then((object) => {
+                if (object > 0) {
+                    return resolve({ success: true });
+                } else {
+                    return resolve({ success: false });
+                }
+            })
+            .catch((err) => reject(err));
+    });
+}
+
+function recoveryObject(id) {
+    return new Promise((resolve, reject) => {
+        Object.update({ deletedAt: null }, { where: { id: id }, paranoid: false })
+            .then((object_num) => {
+                resolve({ success: true, object_num: object_num });
+            })
+            .catch((err) => {
+                resolve({ success: false, msg: err.original.detail });
+            })
+            .catch((err) => reject(err));
+    });
+}
+
  function updateObject(object) {
     return new Promise((resolve, reject) => {
         Object.update(object, { where: { name: object.name } })
@@ -147,6 +178,7 @@ Object.init({
 module.exports = {
     createObject,
     deleteObject,
+    recoveryObject,
     updateObject,
     all,
     count,

@@ -118,6 +118,13 @@ function deleteObject(id) {
     });
 }
 
+function recoveryObject(id) {
+    return new Promise((resolve, reject) => {
+        opt.method = 'GET';
+        opt.path = '/api/v1/recovery/' + id;
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
+    });
+}
 function updateObject(object) {
     return new Promise((resolve, reject) => {
         opt.method = 'PUT';
@@ -129,6 +136,7 @@ function updateObject(object) {
 module.exports = {
     createObject,
     deleteObject,
+    recoveryObject,
     updateObject,
     findAll,
     count,

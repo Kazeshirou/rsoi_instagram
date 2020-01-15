@@ -25,6 +25,10 @@ function deleteById(id) {
     return Object.deleteObject(id);
 }
 
+function recoveryById(id) {
+    return Object.recoveryObject(id);
+}
+
 function updateByName(object) {
     return Object.updateObject(object);
 }
@@ -36,5 +40,6 @@ module.exports = {
     count,
     create,
     deleteById,
+    recoveryById,
     updateByName
 };

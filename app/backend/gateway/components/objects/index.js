@@ -28,7 +28,7 @@ function deleteById(id) {
         Object.deleteObject(id)
             .then(res => {
                 if (res.statusCode !== 204) {
-                    return resolve(res);
+                    return reject(res);
                 }
 
                 let Visibility = require(path.join(__dirname, '../visibility'));
@@ -43,23 +43,40 @@ function deleteById(id) {
                     })
                     .catch(err => {
                         if (err.statusCode === 424) {
-                            logger.error({
-                                message: `Объект с id = ${id} удалён, но сервис видимостей был не доступен.`,
-                                detail: err
-                            });
+                            Object.recoveryObject(id)
+                                .then(res2 => {
+                                    if (res2.statusCode !== 204) {
+                                        err.statusCode = 503;
+                                        err.body = {
+                                            message: `При попытке удалить объект с id = ${id}, но сервис видимостей был не доступен, и объект восстановить не удалось`,
+                                            detail: res2.body
+                                        };
+                                        return reject(err);
+                                    }
+
+                                    err.statusCode = 503;
+                                    err.body = {
+                                        message: `При попытке удалить объект с id = ${id}, сервис видимостей был не доступен, поэтому объект восстановлен`
+                                    }
+                                    return reject(err);
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                })                 
                         } else {
                             logger.error({
                                 message: `Объект с id = ${id} удалён, но при удалении связанных видимостей возникли проблемы.`,
                                 detail: err
                             });
+
+                            return resolve(res);
                         }
-                        return resolve(res);
                     })
             })
             .catch(err => {
                 return reject(err);
             })
-    })
+    });
 }
 
 function updateByName(object) {
