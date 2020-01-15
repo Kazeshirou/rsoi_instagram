@@ -19,7 +19,7 @@ const api = axios.create({
     baseURL: "http://localhost:49001/api/v1/",
     responseType: "json",
     validateStatus: (status) => {
-        return true;
+        return status !== 424 && status !== 501;
     }
 });
 
@@ -134,7 +134,7 @@ class TelescopeUpdateForm extends React.Component {
                 <Formik
                     initialValues={{
                         city: this.props.item().city,
-                        contry: this.props.item().country
+                        country: this.props.item().country
                     }}
                     onSubmit={this.props.onSubmit}
                 >
@@ -235,8 +235,6 @@ class TelescopesPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
-            isLoaded: true,
             items: [],
             count: 0,
             showCreatePopup: false,
@@ -269,10 +267,8 @@ class TelescopesPage extends React.Component {
                 this.setState({ count: res.data.telescopes_count })
                 return res.data.telescopes_count;
             },
-                error => {
-                    this.setState({ error })
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
 
     create = (telescope, formikBag) => {
@@ -282,14 +278,11 @@ class TelescopesPage extends React.Component {
                     this.toggleCreatePopup();
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    this.toggleCreatePopup();
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     update = telescope => {
         telescope.name = this.state.updatedTelescope.name;
@@ -299,13 +292,11 @@ class TelescopesPage extends React.Component {
                     this.toggleUpdatePopup(null);
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     delete = ({ id }) => {
         return Promise.resolve(api.delete('/telescopes/' + id)
@@ -313,21 +304,23 @@ class TelescopesPage extends React.Component {
                 if (res.status >= 200 && res.status < 300) {
                     alert("Success!");
 
-                    var pageCount = Math.round((this.state.count - 1) / this.state.itemsPerPage);
-                    if (this.state.activePage === pageCount) {
+                    var pageCount = 0;
+                    if (this.state.count > 3) {
+                        pageCount = Math.round((this.state.count - 3) / this.state.itemsPerPage);
+                    }
+
+                    if (this.state.activePage > pageCount) {
                         return this.setState({
-                            activePage: pageCount - 1
+                            activePage: pageCount
                         }, () => this.getAll());
                     }
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     findById = () => {
         return Promise.resolve(api.get('/telescopes/id/' + this.state.searchValue)
@@ -342,10 +335,8 @@ class TelescopesPage extends React.Component {
                     });
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
 
     findByName = () => {
@@ -361,39 +352,30 @@ class TelescopesPage extends React.Component {
                     });
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
 
 
     getAll = (active) => {
         return api.get('/telescopes', {
             params: {
-                page: (this.state.activePage + 1),
+                page: this.state.activePage < 0 ? 0 : this.state.activePage,
                 limit: this.state.itemsPerPage
             }
         })
             .then(
                 (result) => {
                     this.setState({
-                        isLoaded: true,
-                        items: result.data.telescopes
+                        items: result.data.telescopes ? result.data.telescopes : []
                     });
                     this.getCount()
                     return result.data.telescopes;
                 },
                 // Примечание: важно обрабатывать ошибки именно здесь, а не в блоке catch(),
                 // чтобы не перехватывать исключения из ошибок в самих компонентах.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                    return [];
-                }
-            );
+                error => alert("Ошибка загрузки данных.")
+        );
     }
 
     componentDidMount() {
@@ -435,8 +417,7 @@ class TelescopesPage extends React.Component {
     render() {
         return (
             <div>
-                <h1 className="header">{!this.state.isLoaded ? "Загрузка" : "Telescopes"}</h1>
-                {this.state.error ? (<div>Ошибка : {JSON.stringify(this.state.error, null, 2)}</div>) : null}
+                <h1 className="header">Telescopes </h1>
                 <div style={{ margin: "auto", width: "fit-content" }}>
 
                     <div><label></label></div>
