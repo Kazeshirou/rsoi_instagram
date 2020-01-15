@@ -1,6 +1,9 @@
 var path = require('path');
 var config = require(path.join(__dirname, '../../config/', (process.env.NODE_ENV || 'development')));
 var http = require('http');
+var CircuitBreaker = require(path.join(__dirname, "../../utilities/circuitBreaker"))
+
+var visibilityCircuitBreaker = new CircuitBreaker(5, 10000, "Visibility");
 
 var opt = {
     host: '127.0.0.1',
@@ -12,7 +15,7 @@ var opt = {
     }
 }
 
-function http_request(opt, resolve, reject, request_data) {
+function httpRequest(opt, resolve, reject, request_data) {
     var req = http.request(opt, (res) => {
         var body = [];
 
@@ -62,11 +65,16 @@ function http_request(opt, resolve, reject, request_data) {
     req.end();
 }
 
+function httpRequestWithCircuitBreaker(opt, resolve, reject, object) {
+    return visibilityCircuitBreaker.call(res => { visibilityCircuitBreaker.log(); resolve(res) },
+        err => { visibilityCircuitBreaker.log(); reject(err) }, () => new Promise((res, rej) => httpRequest(opt, res, rej, object)));
+}
+
 function createVisibility(visibility) {
     return new Promise((resolve, reject) => {
         opt.method = 'POST';
         opt.path = '/api/v1/';
-        http_request(opt, resolve, reject, visibility);
+        httpRequestWithCircuitBreaker(opt, resolve, reject, visibility);
     });
 }
 
@@ -74,7 +82,7 @@ function findById(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/' + id;
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
@@ -82,7 +90,7 @@ function findAll(page) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/?page=' + page.page + '&limit=' + page.limit;
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
@@ -90,7 +98,7 @@ function count() {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/count';
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
@@ -98,7 +106,7 @@ function deleteVisibility(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/' + id;
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
@@ -106,7 +114,7 @@ function deleteVisibilityByObjectid(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/objectid/' + id;
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
@@ -114,7 +122,7 @@ function deleteVisibilityByTelescopeid(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/telescopeid/' + id;
-        http_request(opt, resolve, reject);
+        httpRequestWithCircuitBreaker(opt, resolve, reject);
     });
 }
 
