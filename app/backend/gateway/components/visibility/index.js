@@ -102,9 +102,7 @@ function create(visibility) {
                     var result = {};
                     result.statusCode = 400;
                     result.body = {
-                        err: {
-                            message: 'Can\'t found telescope with id = ' + visibility.telescopeid
-                        }
+                        message: 'Can\'t found telescope with id = ' + visibility.telescopeid
                     };
                     resolve(result);
                     return;
@@ -113,9 +111,7 @@ function create(visibility) {
                     var result = {};
                     result.statusCode = 400;
                     result.body = {
-                        err: {
-                            message: 'Can\'t found object with id = ' + visibility.objectid
-                        }
+                        message: 'Can\'t found object with id = ' + visibility.objectid
                     };
                     resolve(result);
                     return;

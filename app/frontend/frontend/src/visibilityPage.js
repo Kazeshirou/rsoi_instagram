@@ -19,7 +19,7 @@ const api = axios.create({
     baseURL: "http://localhost:49001/api/v1/",
     responseType: "json",
     validateStatus: (status) => {
-        return true;
+        return status !== 424 && status !== 501;
     }
 });
 
@@ -133,8 +133,6 @@ class VisibilityPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
-            isLoaded: true,
             items: [],
             count: 0,
             showCreatePopup: false,
@@ -167,10 +165,8 @@ class VisibilityPage extends React.Component {
                 this.setState({ count: res.data.visibility_count })
                 return res.data.visibility_count;
             },
-                error => {
-                    this.setState({ error })
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
 
     create = (visibility, formikBag) => {
@@ -180,14 +176,11 @@ class VisibilityPage extends React.Component {
                     this.toggleCreatePopup();
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    this.toggleCreatePopup();
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     update = visibility => {
         visibility.name = this.state.updatedVisibility.name;
@@ -197,13 +190,11 @@ class VisibilityPage extends React.Component {
                     this.toggleUpdatePopup(null);
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     delete = ({ id }) => {
         return Promise.resolve(api.delete('/visibility/' + id)
@@ -211,21 +202,23 @@ class VisibilityPage extends React.Component {
                 if (res.status >= 200 && res.status < 300) {
                     alert("Success!");
 
-                    var pageCount = Math.round((this.state.count - 1) / this.state.itemsPerPage);
-                    if (this.state.activePage === pageCount) {
+                    var pageCount = 0;
+                    if (this.state.count > 3) {
+                        pageCount = Math.round((this.state.count - 3) / this.state.itemsPerPage);
+                    }
+
+                    if (this.state.activePage > pageCount) {
                         return this.setState({
-                            activePage: pageCount - 1
+                            activePage: pageCount
                         }, () => this.getAll());
                     }
                     this.getAll();
                 } else {
-                    alert("Error: " + JSON.stringify(res.data));
+                    alert(`Error: ${JSON.stringify(res.data.message)}`);
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
     findById = () => {
         return Promise.resolve(api.get('/visibility/' + this.state.searchValue)
@@ -240,16 +233,14 @@ class VisibilityPage extends React.Component {
                     });
                 }
             },
-                error => {
-                    alert("Error: " + JSON.stringify(error, null, 2))
-                    return 0;
-                }));
+                error => alert("Ошибка загрузки данных."))
+        );
     }
 
     getAll = (active) => {
         return api.get('/visibility', {
             params: {
-                page: (this.state.activePage + 1) <= 0 ? 1 : (this.state.activePage + 1),
+                page: this.state.activePage < 0 ? 0 : this.state.activePage,
                 limit: this.state.itemsPerPage
             }
         })
@@ -264,13 +255,7 @@ class VisibilityPage extends React.Component {
                 },
                 // Примечание: важно обрабатывать ошибки именно здесь, а не в блоке catch(),
                 // чтобы не перехватывать исключения из ошибок в самих компонентах.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                    return [];
-                }
+                error => alert("Ошибка загрузки данных.")
             );
     }
 
@@ -313,8 +298,7 @@ class VisibilityPage extends React.Component {
     render() {
         return (
             <div>
-                <h1 className="header">{!this.state.isLoaded ? "Загрузка" : "Visibility"}</h1>
-                {this.state.error ? (<div>Ошибка : {JSON.stringify(this.state.error, null, 2)}</div>) : null}
+                <h1 className="header">Visibility </h1>
                 <div style={{ margin: "auto", width: "fit-content" }}>
 
                     <div><label></label></div>

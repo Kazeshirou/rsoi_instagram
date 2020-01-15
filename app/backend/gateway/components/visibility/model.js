@@ -24,8 +24,17 @@ function http_request(opt, resolve, reject, request_data) {
             try {
                 if (body.length)
                     body = JSON.parse(Buffer.concat(body).toString());
-            } catch (e) {
-                reject(e);
+            } catch (err) {
+                let error = {
+                    statusCode: 424,
+                    body: {
+                        err: {
+                            message: "Ошибка парсинга тела ответа от Visibility.",
+                            detail: err
+                        }
+                    }
+                }
+                reject(error);
             }
 
             res.body = body;
@@ -34,15 +43,16 @@ function http_request(opt, resolve, reject, request_data) {
     });
 
     req.on('error', (err) => {
-        var res = {
-            statusCode : 424,
+        let error = {
+            statusCode: 424,
             body: {
                 err: {
-                    message: "Failed Dependency"
+                    message: "Visibility не отвечает.",
+                    detail: err
                 }
             }
         }
-        reject(res);
+        reject(error);
     });
 
     if (request_data) {
