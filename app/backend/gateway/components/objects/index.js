@@ -1,5 +1,6 @@
 var path = require('path');
 var Object = require(path.join(__dirname, 'model'));
+var logger = require(path.join(__dirname, '../../utilities/logger'))
 
 
 function all(page) {
@@ -26,17 +27,37 @@ function deleteById(id) {
     return new Promise((resolve, reject) => {
         Object.deleteObject(id)
             .then(res => {
-                var Visibility = require(path.join(__dirname, '../visibility'));
+                if (res.statusCode !== 204) {
+                    return resolve(res);
+                }
+
+                let Visibility = require(path.join(__dirname, '../visibility'));
                 Visibility.deleteByObjectid(id)
                     .then(res1 => {
-                        resolve(res);
+                        if (res1.statusCode !== 204) {
+                            logger.error({
+                                message: `Объект с id = ${id} удалён, но не удалось удалить все связанные с ним видимости.`
+                            });
+                        }
+                        return resolve(res);
                     })
                     .catch(err => {
-                        resolve(err);
+                        if (err.statusCode === 424) {
+                            logger.error({
+                                message: `Объект с id = ${id} удалён, но сервис видимостей был не доступен.`,
+                                detail: err
+                            });
+                        } else {
+                            logger.error({
+                                message: `Объект с id = ${id} удалён, но при удалении связанных видимостей возникли проблемы.`,
+                                detail: err
+                            });
+                        }
+                        return resolve(res);
                     })
             })
             .catch(err => {
-                reject(err);
+                return reject(err);
             })
     })
 }

@@ -50,7 +50,8 @@ Object.init({
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
@@ -63,12 +64,12 @@ Object.init({
         })
             .then((objects) => {
                 if (objects.length == 1) {
-                    resolve({
+                    return resolve({
                         success: true,
                         object: objects[0]
                     });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
             })
             .catch((err) => reject(err));
@@ -84,21 +85,22 @@ Object.init({
         })
             .then((objects) => {
                 if (objects.length == 1) {
-                    resolve({
+                    return resolve({
                         success: true,
                         object: objects[0]
                     });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
             })
+            .catch((err) => reject(err));
     });
 }
 
  function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Object.findAll({ offset: (page - 1) * limit, limit: limit })
-            .then((objects) => { resolve(objects); })
+        Object.findAll({ offset: page * limit, limit: limit })
+            .then((objects) => resolve(objects))
             .catch((err) => reject(err));
     });
 }
@@ -106,7 +108,7 @@ Object.init({
  function count() {
     return new Promise((resolve, reject) => {
         Object.count()
-            .then((count) => { resolve(count); })
+            .then((count) => resolve(count))
             .catch((err) => reject(err));
     });
 }
@@ -120,9 +122,9 @@ Object.init({
         })
             .then((object) => {
                 if (object > 0) {
-                    resolve({ success: true });
+                    return resolve({ success: true });
                 } else {
-                    resolve({ success: false });
+                    return resolve({ success: false });
                 }
             })
             .catch((err) => reject(err));

@@ -44,7 +44,8 @@ function createTelescope(telescope) {
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 
@@ -92,7 +93,7 @@ function findById(id) {
 
 function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Telescope.findAll({ offset: (page - 1) * limit, limit: limit })
+        Telescope.findAll({ offset: page * limit, limit: limit })
             .then((telescopes) => { resolve(telescopes); })
             .catch((err) => reject(err));
     });
@@ -132,7 +133,8 @@ function updateTelescope(telescope) {
             })
             .catch((err) => {
                 resolve({ success: false, msg: err.original.detail });
-            });
+            })
+            .catch((err) => reject(err));
     });
 }
 

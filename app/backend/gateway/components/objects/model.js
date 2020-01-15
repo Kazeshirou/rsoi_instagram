@@ -24,8 +24,17 @@ function http_request(opt, resolve, reject, request_data) {
             try {
                 if (body.length)
                     body = JSON.parse(Buffer.concat(body).toString());
-            } catch (e) {
-                reject(e);
+            } catch (err) {
+                let error = {
+                    statusCode: 424,
+                    body: {
+                        err: {
+                            message: "Ошибка парсинга тела ответа от Objects.",
+                            detail: err
+                        }
+                    }
+                }
+                reject(error);
             }
 
             res.body = body;
@@ -34,15 +43,16 @@ function http_request(opt, resolve, reject, request_data) {
     });
 
     req.on('error', (err) => {
-        var res = {
+        let error = {
             statusCode : 424,
             body: {
                 err: {
-                    message: "Failed Dependency"
+                    message: "Objects не отвечает.",
+                    detail: err
                 }
             }
         }
-        resolve(res);
+        reject(error);
     });
 
     if (request_data) {
@@ -63,7 +73,7 @@ function createObject(object) {
 function findByName(name) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
-        opt.path = '/api/v1/' + name;
+        opt.path = encodeURI('/api/v1/' + name);
         http_request(opt, resolve, reject);
     });
 }

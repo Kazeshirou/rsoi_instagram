@@ -4,14 +4,13 @@ var router = express.Router();
 var object = require(__dirname);
 
 router.get('/', (req, res, next) => {
-    req.query.page = req.query.page || 1;
+    req.query.page = req.query.page || 0;
     req.query.limit = req.query.limit || 3;
     return object.all(req.query)
         .then((result) => {
             res.status(result.statusCode).json(result.body);
         })
         .catch((err) => {
-            console.log(err)
             next(err);
         });
 });

@@ -257,7 +257,7 @@ class VisibilityPage extends React.Component {
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        items: result.data.visibility
+                        items: result.data.visibility ? result.data.visibility  : []
                     });
                     this.getCount()
                     return result.data.visibility;

@@ -1,22 +1,24 @@
 
 var express = require('express');
-var createError = require('http-errors');
 var { check, validationResult } = require('express-validator');
 var router = express.Router();
 var telescope = require(__dirname);
 
 router.get('/', [
     check('limit').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
-    check('page').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('page').isInt({ min: 0 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ err: errors.array() });
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
         }
         next();
     },
     (req, res, next) => {
-    return telescope.all(req.query.limit || 5, req.query.page || 1)
+    return telescope.all(req.query.limit, req.query.page)
         .then((telescopes) => {
             res.json({ 'telescopes': telescopes});
         })
@@ -41,7 +43,10 @@ router.get('/id/:id', [
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ err: errors.array() });
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
         }
         next();
     },
@@ -79,7 +84,10 @@ router.post('/', [
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ err: errors.array() });
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
         }
         req.body = {
             name: req.body.name,
@@ -94,7 +102,9 @@ router.post('/', [
             if (result.success) {
                 res.status(201).json({ 'telescope': result.telescope });
             } else {
-                next(createError(400, result.msg));
+                res.status(400).json({
+                    message: result.msg
+                });
             }
         })
         .catch((err) => {
@@ -108,7 +118,10 @@ router.put('/', [
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ err: errors.array() });
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
         }
         req.body = {
             name: req.body.name,
@@ -127,7 +140,9 @@ router.put('/', [
                     next();
                 }
             } else {
-                next(createError(400, result.msg));
+                res.status(400).json({
+                    message: result.msg
+                });
             }
         })
         .catch((err) => {
@@ -141,7 +156,10 @@ router.delete('/:id', [
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ err: errors.array() });
+            return res.status(400).json({
+                message: "Ошибки валидации",
+                detail: errors.array()
+            });
         }
         next();
     },

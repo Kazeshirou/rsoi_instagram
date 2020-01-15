@@ -7,7 +7,7 @@ var visibility = require(__dirname);
 
 router.get('/', [
     check('limit').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
-    check('page').isInt({ min: 1 }).withMessage("Необходимо целое число >= 1"),
+    check('page').isInt({ min: 0 }).withMessage("Необходимо целое число >= 1"),
     (req, res, next) => {
         var errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -16,7 +16,7 @@ router.get('/', [
         next();
     },
     (req, res, next) => {
-    return visibility.all(req.query.limit || 5, req.query.page || 1)
+    return visibility.all(req.query.limit, req.query.page)
         .then((visibility) => {
             res.json({ 'visibility': visibility});
         })

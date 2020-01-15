@@ -40,7 +40,7 @@ function createVisibility(visibility) {
 
 function all(limit, page) {
     return new Promise((resolve, reject) => {
-        Visibility.findAll({ offset: (page - 1) * limit, limit: limit })
+        Visibility.findAll({ offset: page * limit, limit: limit })
             .then((visibility) => { resolve(visibility); })
             .catch ((err) => reject(err));
     });

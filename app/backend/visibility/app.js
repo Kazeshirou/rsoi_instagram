@@ -1,5 +1,4 @@
 var express = require('express');
-var createError = require('http-errors');
 var path = require('path');
 var morgan = require('morgan');
 var logger = require(path.join(__dirname, 'utilities/logger'));
@@ -13,24 +12,36 @@ app.use(express.json());
 
 app.use('/api/v1/', visibilityRouter);
 
-app.use(function (req, res, next) {
-    next(createError(404));
+app.use((req, res, next) => {
+    next({
+        statusCode: 404,
+        body: {
+            err: {
+                message: "Запрашиваемый ресурс не найден."
+            }
+        }
+    });
 })
 
 app.use(function (err, req, res, next) {
-    var error;
-    if (!err.status) {
-        error = createError(501);
-        error.detail = err;
+    var error = {}
+    if (!err.statusCode) {
+        error = {
+            statusCode: 501,
+            body: {
+                err: {
+                    message: "Неожиданная ошибка сервера.",
+                    detail: err
+                }
+            }
+        }
     } else {
         error = err;
     }
-    res.status(error.status);
 
-    logger.info({ err: error });
-    res.json({
-        'err': error,
-    });
+    res.status(error.statusCode);
+    res.json(err.body);
+    logger.error(error.body);
 })
 
 module.exports = app;
