@@ -1,7 +1,7 @@
 var logger = require("./logger");
 
 class CircuitBreaker {
-    constructor(failureThreshold, retryTimePeriod, name) {
+    constructor(failureThreshold, retryTimePeriod, name, recoveryCallback) {
         this.name = name;
         // We start in a closed state hoping that everything is fine
         this.state = 'CLOSED';
@@ -12,6 +12,7 @@ class CircuitBreaker {
         this.retryTimePeriod = retryTimePeriod;
         this.lastFailureTime = null;
         this.failureCount = 0;
+        this.recoveryCallback = recoveryCallback ? recoveryCallback : () => { };
     }
 
     log() {
@@ -66,6 +67,7 @@ class CircuitBreaker {
         this.failureCount = 0;
         this.lastFailureTime = null;
         this.state = 'CLOSED';
+        this.recoveryCallback();
     }
 
     // Set the current state of our circuit breaker.

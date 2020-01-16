@@ -1,9 +1,17 @@
 var path = require('path');
 var config = require(path.join(__dirname, '../../config/', (process.env.NODE_ENV || 'development')));
 var http = require('http');
-var CircuitBreaker = require(path.join(__dirname, "../../utilities/circuitBreaker"))
+var CircuitBreaker = require(path.join(__dirname, "../../utilities/circuitBreaker"));
+var queue = require(path.join(__dirname, '../../utilities/queue'));
+var logger = require(path.join(__dirname, '../../utilities/logger'));
 
-var visibilityCircuitBreaker = new CircuitBreaker(5, 10000, "Visibility");
+var visibilityCircuitBreaker = new CircuitBreaker(5, 10000, "Visibility", () => {
+    queue.get("visibility")
+        .then(reqs => {
+            var reqs = reqs.map(({ telescopeid }) => deleteVisibilityByTelescopeid(telescopeid).catch(err => logger.error(err)));
+        })
+        .catch(err => logger.error(err));
+});
 
 var opt = {
     host: '127.0.0.1',

@@ -1,7 +1,7 @@
 var path = require('path');
 var Telescope = require(path.join(__dirname, 'model'));
-var logger = require(path.join(__dirname, '../../utilities/logger'))
-
+var logger = require(path.join(__dirname, '../../utilities/logger'));
+var queue = require(path.join(__dirname, '../../utilities/queue'));
 
 function all(page) {
     return Telescope.findAll(page);
@@ -43,10 +43,15 @@ function deleteById(id) {
                 })
                 .catch(err => {
                     if (err.statusCode === 424) {
-                        logger.error({
-                            message: `Телескоп с id = ${id} удалён, но сервис видимостей был не доступен.`,
-                            detail: err
-                        });
+                        return queue.push("visibility", { telescopeid: id })
+                            .then(() => {
+                                logger.error({
+                                    message: `Телескоп с id = ${id} удалён, но сервис видимостей был не доступен.`,
+                                    detail: err
+                                });
+                                resolve(res);
+                            })
+                            .catch(err => reject(err));
                     } else {
                         logger.error({
                             message: `Телескоп с id = ${id} удалён, но при удалении связанных видимостей возникли проблемы.`,
