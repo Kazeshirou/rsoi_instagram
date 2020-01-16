@@ -19,14 +19,14 @@
     "type": "git",
     "url": "git+https://github.com/bmstu-rsoi/lab2-microservices-Kazeshirou.git"
   },
-  "nyc" : {
-      "exclude": [
-        "app/backend/gateway/utilities/*",
-        "app/backend/gateway/components/*/model.js",
-        "app/backend/*/{,!(gateway)}/components/*/model.js",
-        "app/backend/*/{,!(gateway)}/components/*/router.js",
-        "app/backend/**/test.js"
-      ]
+  "nyc": {
+    "exclude": [
+      "app/backend/gateway/utilities/*",
+      "app/backend/gateway/components/*/model.js",
+      "app/backend/*/{,!(gateway)}/components/*/model.js",
+      "app/backend/*/{,!(gateway)}/components/*/router.js",
+      "app/backend/**/test.js"
+    ]
   },
   "author": "Nataliya Zharova",
   "license": "ISC",
@@ -37,6 +37,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.3.1",
     "mocha": "^6.2.2",
