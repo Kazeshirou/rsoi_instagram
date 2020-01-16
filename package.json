@@ -13,11 +13,20 @@
     "start_visibility": "node ./app/backend/visibility/server.js",
     "dstart_visibility": "nodemon ./app/backend/visibility/server.js",
     "test": "mocha --timeout 10000 \"./app/backend/*/{,!(node_modules)/**/}*test.js\"",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test "
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bmstu-rsoi/lab2-microservices-Kazeshirou.git"
+  },
+  "nyc" : {
+      "exclude": [
+        "app/backend/gateway/utilities/*",
+        "app/backend/gateway/components/*/model.js",
+        "app/backend/*/{,!(gateway)}/components/*/model.js",
+        "app/backend/*/{,!(gateway)}/components/*/router.js",
+        "app/backend/**/test.js"
+      ]
   },
   "author": "Nataliya Zharova",
   "license": "ISC",
@@ -39,6 +48,7 @@
     "pg-hstore": "^2.3.3",
     "redis": "^2.8.0",
     "sequelize": "^5.21.1",
+    "sinon": "^8.1.0",
     "winston": "^3.2.1"
   }
 }

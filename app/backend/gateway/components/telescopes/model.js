@@ -15,7 +15,7 @@ var opt = {
     }
 }
 
-function httpRequest(opt, resolve, reject, request_data) {
+function httpRequestWithCircuitBreaker(opt, resolve, reject, request_data) {
     var req = http.request(opt, (res) => {
         var body = [];
 
