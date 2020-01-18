@@ -8,6 +8,9 @@ var config = {
     },
     visibility: {
         port: 49004
+    },
+    auth: {
+        port: 49005
     }
 };
 

@@ -106,7 +106,7 @@ class VisibilityCreateForm extends React.Component {
                         isValid,
                         errors,
                     }) => (
-                            <Form Form noValidate onSubmit={handleSubmit}>
+                            <Form noValidate onSubmit={handleSubmit}>
                                 <div style={{ margin: "auto", width: "fit-content" }}>
                                     {this.state.fields.map(field =>
                                         <div>
@@ -142,7 +142,8 @@ class VisibilityPage extends React.Component {
             itemsPerPage: 2,
             searching: false,
             searchBy: "",
-            searchValue: ""
+            searchValue: "",
+            login: false
         };
     }
 
@@ -160,8 +161,12 @@ class VisibilityPage extends React.Component {
     }
 
     getCount = () => {
-        return Promise.resolve(api.get('/visibility/count')
+        return Promise.resolve(api.get('/visibility/count', { headers: { Authorization: `Bearer ${this.props.token()}` }})
             .then(res => {
+                if (res.status === 401) {
+                    this.props.refreshToken()
+                    return
+                }
                 this.setState({ count: res.data.visibility_count })
                 return res.data.visibility_count;
             },
@@ -170,8 +175,12 @@ class VisibilityPage extends React.Component {
     }
 
     create = (visibility, formikBag) => {
-        return Promise.resolve(api.post('/visibility', visibility)
+        return Promise.resolve(api.post('/visibility', visibility, { headers: { Authorization: `Bearer ${this.props.token()}` } })
             .then(res => {
+                if (res.status === 401) {
+                    this.props.refreshToken()
+                    return
+                }
                 if (res.status >= 200 && res.status < 300) {
                     this.toggleCreatePopup();
                     this.getAll();
@@ -184,8 +193,12 @@ class VisibilityPage extends React.Component {
     }
     update = visibility => {
         visibility.name = this.state.updatedVisibility.name;
-        return Promise.resolve(api.put('/visibility', visibility)
+        return Promise.resolve(api.put('/visibility', visibility, { headers: { Authorization: `Bearer ${this.props.token()}` } })
             .then(res => {
+                if (res.status === 401) {
+                    this.props.refreshToken()
+                    return
+                }
                 if (res.status >= 200 && res.status < 300) {
                     this.toggleUpdatePopup(null);
                     this.getAll();
@@ -197,8 +210,12 @@ class VisibilityPage extends React.Component {
         );
     }
     delete = ({ id }) => {
-        return Promise.resolve(api.delete('/visibility/' + id)
+        return Promise.resolve(api.delete('/visibility/' + id, { headers: { Authorization: `Bearer ${this.props.token()}` } })
             .then(res => {
+                if (res.status === 401) {
+                    this.props.refreshToken()
+                    return
+                }
                 if (res.status >= 200 && res.status < 300) {
                     alert("Success!");
 
@@ -221,8 +238,12 @@ class VisibilityPage extends React.Component {
         );
     }
     findById = () => {
-        return Promise.resolve(api.get('/visibility/' + this.state.searchValue)
+        return Promise.resolve(api.get('/visibility/' + this.state.searchValue, { headers: { Authorization: `Bearer ${this.props.token()}` } })
             .then(res => {
+                if (res.status === 401) {
+                    this.props.refreshToken()
+                    return
+                }
                 if (res.status >= 200 && res.status < 300) {
                     var items = [];
                     items.push(res.data.visibility);
@@ -242,13 +263,18 @@ class VisibilityPage extends React.Component {
             params: {
                 page: this.state.activePage < 0 ? 0 : this.state.activePage,
                 limit: this.state.itemsPerPage
-            }
+            },
+            headers: { Authorization: `Bearer ${this.props.token()}` }
         })
             .then(
                 (result) => {
+                    if (result.status === 401) {
+                        this.props.refreshToken()
+                        return []
+                    }
                     this.setState({
                         isLoaded: true,
-                        items: result.data.visibility ? result.data.visibility  : []
+                        items: result.data.visibility ? result.data.visibility : []
                     });
                     this.getCount()
                     return result.data.visibility;

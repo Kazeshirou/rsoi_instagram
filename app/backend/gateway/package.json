@@ -27,6 +27,8 @@
     "mocha": "^6.2.2",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.4",
+    "passport": "^0.4.1",
+    "passport-http-bearer": "^1.0.1",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "redis": "^2.8.0",
