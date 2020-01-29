@@ -5,6 +5,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
 
+import IdleTimer from 'react-idle-timer';
+
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
@@ -62,9 +64,23 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            token: null
+            token: null,
+            timeout: 30*60*1000,
+            isTimedOut: false
         };
+
+
+        this.idleTimer = null;
     }
+
+    onAction = (e) => {
+        this.idleTimer.reset();
+    }
+
+    onIdle = (e) => {
+        this.token(null);
+    }
+
 
     logout = () => {
         this.setState({ token: null});
@@ -96,54 +112,63 @@ class App extends React.Component {
 
     render() {
         return (
-            <Router>
-                <Container className="p-3">
-                    <Jumbotron>
-                        <h2>
-                            <ButtonToolbar className="custom-btn-toolbar">
-                                <LinkContainer to="/">
-                                    <Button variant="dark">Home</Button>
-                                </LinkContainer>
-                                <LinkContainer to="/telescopes">
-                                    <Button variant="outline-dark">Telescopes</Button>
-                                </LinkContainer>
-                                <LinkContainer to="/objects">
-                                    <Button variant="outline-dark">Objects</Button>
-                                </LinkContainer>
-                                <LinkContainer to="/visibility">
-                                    <Button variant="outline-dark">Visibility</Button>
-                                </LinkContainer>
-                                {
-                                    this.state.token ? 
-                                        (<Button variant="secondary" onClick={this.logout}>Log out</Button>) :
-                                        (<LinkContainer to="/login">
-                                            <Button variant="outline-primary">Log in</Button>
-                                        </LinkContainer>)
-                                }
-                            </ButtonToolbar>
-                        </h2>
-                        <Switch>
-                            <Route path="/objects">
-                                <ObjectsPage />
-                            </Route>
-                            <Route path="/visibility">
-                                {this.state.token ? <VisibilityPage token={() => this.state.token.value}  refreshToken={this.refreshToken}/> : <Redirect push to="/login" />}
-                            </Route>
-                            <Route path="/telescopes">
-                                <TelescopesPage />
-                            </Route>
-                            <Route path="/login">
-                                {this.state.token ? <Redirect to='/' /> : <LoginPage login={this.login} user={() => this.state.user} token={this.token} />}               
-                            </Route>
-                            <Route path="/">
-                                <h1 className="header">
-                                    Welcome{this.state.token ? (", " + this.state.token.username) : null }!
-                                </h1>
-                            </Route>
-                        </Switch>
-                    </Jumbotron>
-                </Container>
-            </Router>
+            <>
+                <IdleTimer
+                    ref={ref => { this.idleTimer = ref }}
+                    element={document}
+                    onIdle={this.onIdle}
+                    onAction={this.onAction}
+                    debounce={250}
+                    timeout={this.state.timeout} />
+                <Router>
+                    <Container className="p-3">
+                        <Jumbotron>
+                            <h2>
+                                <ButtonToolbar className="custom-btn-toolbar">
+                                    <LinkContainer to="/">
+                                        <Button variant="dark">Home</Button>
+                                    </LinkContainer>
+                                    <LinkContainer to="/telescopes">
+                                        <Button variant="outline-dark">Telescopes</Button>
+                                    </LinkContainer>
+                                    <LinkContainer to="/objects">
+                                        <Button variant="outline-dark">Objects</Button>
+                                    </LinkContainer>
+                                    <LinkContainer to="/visibility">
+                                        <Button variant="outline-dark">Visibility</Button>
+                                    </LinkContainer>
+                                    {
+                                        this.state.token ? 
+                                            (<Button variant="secondary" onClick={this.logout}>Log out</Button>) :
+                                            (<LinkContainer to="/login">
+                                                <Button variant="outline-primary">Log in</Button>
+                                            </LinkContainer>)
+                                    }
+                                </ButtonToolbar>
+                            </h2>
+                            <Switch>
+                                <Route path="/objects">
+                                    <ObjectsPage />
+                                </Route>
+                                <Route path="/visibility">
+                                    {this.state.token ? <VisibilityPage token={() => this.state.token.value}  refreshToken={this.refreshToken}/> : <Redirect push to="/login" />}
+                                </Route>
+                                <Route path="/telescopes">
+                                    <TelescopesPage />
+                                </Route>
+                                <Route path="/login">
+                                    {this.state.token ? <Redirect to='/' /> : <LoginPage login={this.login} user={() => this.state.user} token={this.token} />}               
+                                </Route>
+                                <Route path="/">
+                                    <h1 className="header">
+                                        Welcome{this.state.token ? (", " + this.state.token.username) : null }!
+                                    </h1>
+                                </Route>
+                            </Switch>
+                        </Jumbotron>
+                    </Container>
+                </Router>
+            </>
         );
     }
 }
