@@ -118,7 +118,9 @@ exports.refreshToken = [
                 return res.status(401).end();
             } 
             token.expiration = Date.now() + 0.5 * 60 * 1e3;
-            Token.updateOne({ _id: token._id }, { expiration: token.expiration }, (err, result) => {
+            token.value = uid(256);
+            token.refreshToken = uid(256);
+            Token.updateOne({ _id: token._id }, { expiration: token.expiration, value: token.value, refreshToken: token.refreshToken  }, (err, result) => {
                 if (err) {
                     return res.status(401).end();
                 } 
