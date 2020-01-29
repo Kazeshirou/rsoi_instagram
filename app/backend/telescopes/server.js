@@ -8,6 +8,28 @@ var logger = require(path.join(__dirname, 'utilities/logger'));
 var server = http.createServer(app);
 var port = normalizePort(process.env.PORT || config.port);
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/telescopesdb', { useNewUrlParser: true });
+var dbmongo = mongoose.connection;
+dbmongo.on('error', console.error.bind(console, 'connection error:'));
+dbmongo.once('open', function () {
+    logger.info("mongo db connected")
+});
+mongoose.set('useCreateIndex', true)
+mongoose.set('debug', function (coll, method, query, doc, options) {
+    let set = {
+        coll: coll,
+        method: method,
+        query: query,
+        doc: doc,
+        options: options
+    };
+
+    logger.info({
+        dbQuery: set
+    });
+});
+
 db
     .sync()
     .then(() => {

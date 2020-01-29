@@ -25,6 +25,9 @@ function httpRequest(opt, resolve, reject, request_data) {
 
         res.on('end', () => {
             try {
+                if (res.statusCode === 401) {
+                    return resolve(res);
+                }
                 if (body.length)
                     body = JSON.parse(Buffer.concat(body).toString());
             } catch (err) {
@@ -70,11 +73,54 @@ function httpRequestWithCircuitBreaker(opt, resolve, reject, object) {
         err => { telescopesCircuitBreaker.log(); reject(err) }, () => new Promise((res, rej) => httpRequest(opt, res, rej, object)));
 }
 
+var token = null;
+var basicHeader = 'Basic ' + Buffer.from('telescopes:123456').toString('base64');
+function auth(opt, resolve, reject, object) {
+    if (token) {
+        opt.headers["Authorization"] = `Bearer ${token.value}`;
+    }
+    return httpRequestWithCircuitBreaker(opt, res => {
+        if (res.statusCode === 401) {
+            var authOpt = {
+                host: '127.0.0.1',
+                port: config.telescopes.port,
+                agent: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Transfer-Encoding': 'chunked',
+                    'Authorization': basicHeader
+                },
+                method: 'GET',
+                path: '/api/v1/token'
+            };
+            console.log(1);
+            httpRequest(authOpt, res => {
+                if (res.statusCode != 200) {
+                    return reject({
+                        statusCode: 501,
+                        body: {
+                            err: {
+                                message: "Can't get token.",
+                            }
+                        }
+                    })
+                } else {
+                    token = res.body;
+                    opt.headers["Authorization"] = `Bearer ${token.value}`;
+                    return httpRequestWithCircuitBreaker(opt, resolve, reject, object);
+                }
+            }, reject, object)
+        } else {
+            resolve(res);
+        }
+    }, reject, object)
+}
+
 function createTelescope(telescope) {
     return new Promise((resolve, reject) => {
         opt.method = 'POST';
         opt.path = '/api/v1/';
-        httpRequestWithCircuitBreaker(opt, resolve, reject, telescope);
+        auth(opt, resolve, reject, telescope);
     });
 }
 
@@ -82,7 +128,7 @@ function findByName(name) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = encodeURI('/api/v1/' + name);
-        httpRequestWithCircuitBreaker(opt, resolve, reject);
+        auth(opt, resolve, reject);
     });
 }
 
@@ -90,7 +136,7 @@ function findById(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/id/' + id;
-        httpRequestWithCircuitBreaker(opt, resolve, reject);
+        auth(opt, resolve, reject);
     });
 }
 
@@ -98,7 +144,7 @@ function findAll(page) {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/?page=' + page.page + '&limit=' + page.limit;
-        httpRequestWithCircuitBreaker(opt, resolve, reject);
+        auth(opt, resolve, reject);
     });
 }
 
@@ -106,7 +152,7 @@ function count() {
     return new Promise((resolve, reject) => {
         opt.method = 'GET';
         opt.path = '/api/v1/count';
-        httpRequestWithCircuitBreaker(opt, resolve, reject);
+        auth(opt, resolve, reject);
     });
 }
 
@@ -114,7 +160,7 @@ function deleteTelescope(id) {
     return new Promise((resolve, reject) => {
         opt.method = 'DELETE';
         opt.path = '/api/v1/' + id;
-        httpRequestWithCircuitBreaker(opt, resolve, reject);
+        auth(opt, resolve, reject);
     });
 }
 
@@ -122,7 +168,7 @@ function updateTelescope(telescope) {
     return new Promise((resolve, reject) => {
         opt.method = 'PUT';
         opt.path = '/api/v1/';
-        httpRequestWithCircuitBreaker(opt, resolve, reject, telescope);
+        auth(opt, resolve, reject, telescope);
     });
 }
 

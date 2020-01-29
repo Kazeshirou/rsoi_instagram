@@ -2,6 +2,8 @@ var express = require('express');
 var path = require('path');
 var morgan = require('morgan');
 var logger = require(path.join(__dirname, 'utilities/logger'));
+var auth = require(path.join(__dirname, 'utilities/auth'));
+
 var visibilityRouter = require(path.join(__dirname, 'components/visibility/router'));
 
 var app = express();
@@ -10,7 +12,13 @@ app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(express.json());
 
-app.use('/api/v1/', visibilityRouter);
+app.get('/api/v1/token', [auth.isAuthenticated, (req, res) => {
+    auth.generateToken(req.user._id)
+        .then(token => res.json(token))
+        .catch(() => res.status(501).end());
+}]);
+
+app.use('/api/v1/', [auth.isBearerAuthenticated, visibilityRouter]);
 
 app.use((req, res, next) => {
     next({
