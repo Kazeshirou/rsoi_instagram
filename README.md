@@ -1,1 +1,1 @@
-## Template for RSOI lab 2 Miroservices
+## Курсовой проект по РСОИ
