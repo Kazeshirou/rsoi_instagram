@@ -3,7 +3,9 @@ import logo from '../logo.svg';
 import { Link } from 'react-router-dom';
 
 export default class Header extends Component {
+    
     render() {
+        const { isLogIn } = this.props;
         return (
             <header>
                 <div className="container h-flex">
