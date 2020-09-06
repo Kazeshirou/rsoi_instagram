@@ -15,6 +15,7 @@
     "bootstrap": "^4.4.1",
     "bootstrap-less": "^3.3.8",
     "formik": "^2.1.1",
+    "json-server": "^0.16.1",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-crud-table": "0.0.8",
@@ -24,7 +25,7 @@
     "react-pagination": "^1.0.0",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.3",
     "styled-components": "^4.4.1",
     "yup": "^0.28.0"
   },
