@@ -11,7 +11,7 @@ var oauth2Controller = require('./controllers/oauth2');
 var clientController = require('./controllers/client');
 var logger = require('./utilities/logger')
 
-mongoose.connect('mongodb://localhost/telescopesdb', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/my_instagramdb', { useNewUrlParser: true });
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

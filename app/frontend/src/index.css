@@ -167,3 +167,77 @@ header {
     height: 300px;
     object-fit: cover;
 }
+
+.form {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 300px;
+    max-width: 400px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    background: #FFFFFF;
+}
+
+label,
+input {
+    margin-top: 5px;
+    margin-left: 5%;
+    display: block;
+    width: 90%;
+}
+
+label {
+    margin-bottom: 10px;
+    height: 22px;
+}
+
+input {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #777;
+}
+
+input.error {
+    border-color: red;
+}
+
+.input-feedback {
+    margin-top: -15px;
+    margin-left: 5%;
+    display: block;
+    width: 90%;
+    color: rgb(235, 54, 54);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    margin-top: 5px;
+    margin-left: 20%;
+    margin-bottom: 10px;
+    display: block;
+    width: 90%;
+}
+
+button {
+    padding: 10px 15px;
+    min-width: 100px;
+    margin-left: 2px;
+    border-radius: 15px;
+}
+
+.button__submit {
+    background-color: rgb(119, 179, 70);
+    color: white;
+    border: 1px solid rgb(92, 179, 70);
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: white;
+    color: rgb(146, 192, 134);
+}
