@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import RedirectButton from "./RedirectButton";
 
-export default class LoginForm extends Component {
+export default class RegistationForm extends Component {
     state = {}
     
     renderForm = props => {
@@ -14,7 +14,7 @@ export default class LoginForm extends Component {
             isSubmitting,
             handleChange,
             handleBlur,
-            handleSubmit,
+            handleSubmit
         } = props;
 
         const renderInputFeedback = field => {
@@ -55,7 +55,25 @@ export default class LoginForm extends Component {
                     />
                     {renderInputFeedback("username")}
                     {renderSubmitFeedback("username")}
+                </>
+            )
+        }
 
+        const renderEmail = () => {
+            return (
+                <>
+                    {renderLabel("email", "Почта")}
+                    < input
+                        name="email"
+                        type="email"
+                        placeholder="Введите почту"
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={inputClassName("email")}
+                    />
+                    {renderInputFeedback("email")}
+                    {renderSubmitFeedback("email")}
                 </>
             )
         }
@@ -79,6 +97,25 @@ export default class LoginForm extends Component {
             )
         }
 
+        const renderPasswordConfirmation = () => {
+            return (
+                <>
+                    {renderLabel("passwordConfirmation", "Подтверждение пароля")}
+                    <input
+                        name="passwordConfirmation"
+                        type="password"
+                        placeholder="Повторите пароль"
+                        value={values.passwordConfirmation}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={inputClassName("passwordConfirmation")}
+                    />
+                    {renderInputFeedback("passwordConfirmation")}
+                    {renderSubmitFeedback("passwordConfirmation")}
+                </>
+            )
+        }
+
         const renderButtonGroup = () => {
             return (
                 <div className="buttons">
@@ -86,16 +123,19 @@ export default class LoginForm extends Component {
                         className="button__submit"
                         type="submit"
                         disabled={isSubmitting} >
-                        Войти
+                        Регистрация
                     </button>
-                    <RedirectButton to="registration" text="Регистрация" />
+                    <RedirectButton to="/login" text="Войти" />
                 </div>
             )
         }
+
         return (
             <form onSubmit={handleSubmit}>
                 {renderUsername()}
+                {renderEmail()}
                 {renderPassword()}
+                {renderPasswordConfirmation()}
                 {renderButtonGroup()}
             </form>
         );
@@ -107,20 +147,27 @@ export default class LoginForm extends Component {
                 .required("Необходимо ввести логин.")
                 .min(3, "Логин слишком короткий (минимум 3 символа).")
                 .matches(/^[a-zA-Z_]+$/, "Логин должен содержать только латинские буквы и символ '_'."),
+            email: Yup.string()
+                .required("Необходимо ввести почту.")
+                .email("Некорректный формат почтового адреса."),
             password: Yup.string()
                 .required("Необходимо ввести пароль.")
                 .min(8, "Пароль слишком короткий (минимум 8 символов).")
                 .matches(/(?=.*[0-9])/, "Пароль должен содержать хотя бы одну цифру.")
-                .matches(/(?=.*[A-Za-zа-яА-Я])/, "Пароль должен содержать хотя бы одну букву.")
+                .matches(/(?=.*[A-Za-zа-яА-Я])/, "Пароль должен содержать хотя бы одну букву."),
+            passwordConfirmation: Yup.string()
+                .required("Необходимо подтвердить пароль.")
+                .oneOf([Yup.ref('password')], "Пароли должны совпадать.")
+            
         });
 
         return (
             <div className="container form">
                 <Formik
-                    initialValues={{ username: "", password: "" }}
+                    initialValues={{ username: "", email:"", password: "", passwordConfirmation: "" }}
                     onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
-                            console.log("Logging in", values);
+                            console.log("Registration ", values);
                             setSubmitting(false);
                         }, 500);
                     }}
