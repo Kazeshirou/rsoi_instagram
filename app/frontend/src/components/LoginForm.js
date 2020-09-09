@@ -5,7 +5,7 @@ import RedirectButton from "./RedirectButton";
 
 export default class LoginForm extends Component {
     state = {}
-    
+
     renderForm = props => {
         const {
             values,
@@ -114,18 +114,13 @@ export default class LoginForm extends Component {
                 .matches(/(?=.*[A-Za-zа-яА-Я])/, "Пароль должен содержать хотя бы одну букву.")
         });
 
-        const { setToken } = this.props;
         return (
             <div className="container form">
                 <h1>Вход</h1>
                 <Formik
                     initialValues={{ username: "", password: "" }}
                     onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                            console.log("Logging in", values);
-                            setToken(values.username);
-                            setSubmitting(false);
-                        }, 500);
+                        this.props.setToken(values.username);
                     }}
 
                     validationSchema={schema}

@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
-import InstaService from '../services/instaService';
+import React, { Component } from 'react';
 import ErrorMessage from './Error';
 
 export default class Profile extends Component {
-    InstaService = new InstaService();
+    service = this.props.service;
     state = {
         error: false,
         photos: []
@@ -14,7 +13,7 @@ export default class Profile extends Component {
     }
 
     updatePhotos() {
-        this.InstaService.getAllPhotos()
+        this.service().getAllPhotos()
             .then(this.onPhotosLoaded)
             .catch(this.onError);
     }
@@ -36,7 +35,7 @@ export default class Profile extends Component {
         return arr.map(item => {
             const { src, alt } = item;
             return (
-                <img src={src} alt={alt}></img> 
+                <img src={src} alt={alt}></img>
             )
         });
     }

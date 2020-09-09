@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import InstaService from '../services/instaService';
 import User from './User';
 import ErrorMessage from './Error';
 
 export default class Posts extends Component {
-    InstaService = new InstaService();
+    service = this.props.service;
     state = {
         posts: [],
         error: false
@@ -15,7 +14,7 @@ export default class Posts extends Component {
     }
 
     updatePosts() {
-        this.InstaService.getAllPosts()
+        this.service().getAllPosts()
             .then(this.onPostsLoaded)
             .catch(this.onError);
     }

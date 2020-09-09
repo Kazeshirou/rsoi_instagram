@@ -8,10 +8,18 @@ import Profile from './components/Profile';
 import LoginForm from './components/LoginForm';
 import RegistrationPage from './components/RegistrationPage';
 
+import InstaService from './services/instaService'
+
 export default class App extends Component {
     state = {
         timeout: 30 * 60 * 1000
     };
+
+    service = new InstaService(this.refreshToken);
+
+    getService = () => {
+        return this.service;
+    }
 
     onAction = (e) => {
         this.idleTimer.reset();
@@ -26,14 +34,7 @@ export default class App extends Component {
     }
 
     setToken = (token) => {
-        if (!token) {
-            this.refreshToken();
-        }
         this.setState({ token: token });
-    }
-
-    getToken = () => {
-        return this.state.token;
     }
 
     getUser = () => {
@@ -46,6 +47,14 @@ export default class App extends Component {
 
     loginForm = () => {
         return <LoginForm setToken={this.setToken} />;
+    }
+
+    feed = () => {
+        return <Feed service={this.getService} />
+    }
+
+    profile = () => {
+        return <Profile service={this.getService} />
     }
 
     render() {
@@ -62,8 +71,8 @@ export default class App extends Component {
                     <Header />
                     <Switch>
                         <Route path="/registration" component={RegistrationPage} exact />
-                        <Route path="/profile" component={this.protectedPage(Profile)} exact />
-                        <Route path="/" component={this.protectedPage(Feed)} exact />
+                        <Route path="/profile" component={this.protectedPage(this.profile)} exact />
+                        <Route path="/" component={this.protectedPage(this.feed)} exact />
                         <Redirect to="/" />
                     </Switch>
                 </div>
