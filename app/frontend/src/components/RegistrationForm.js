@@ -125,7 +125,7 @@ export default class RegistationForm extends Component {
                         disabled={isSubmitting} >
                         Регистрация
                     </button>
-                    <RedirectButton to="/login" text="Войти" />
+                    <RedirectButton to="/" text="Войти" />
                 </div>
             )
         }
@@ -163,6 +163,7 @@ export default class RegistationForm extends Component {
 
         return (
             <div className="container form">
+                <h1>Регистрация</h1>
                 <Formik
                     initialValues={{ username: "", email:"", password: "", passwordConfirmation: "" }}
                     onSubmit={(values, { setSubmitting }) => {
