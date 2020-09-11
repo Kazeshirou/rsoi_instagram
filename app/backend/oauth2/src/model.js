@@ -8,7 +8,7 @@ Users.init({
     profileId: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
-        primaryKey: true
+        unique: true,
     },
     username: {
         type: Sequelize.STRING,
@@ -16,48 +16,22 @@ Users.init({
         validate: {
             notEmpty: true,
         },
-        unique: true
+        primaryKey: true
     },
-    email: {
+    password: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
             notEmpty: true,
-        },
-        unique: true
-    },
-    profileImg: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    },
-    age: {
-        type: Sequelize.STRING,
-        validate: {
-            max: 150,
-            min: 0
         },
     },
 }, { sequelize: db, timestamps: true, modelName: "Users" });
 
 
-const byId = async (id) => {
+const byUsername = async (username) => {
     let res = {};
     try {
-        res = await Users.findOne({ where: { id: id } });
-    } catch (err) {
-        return err;
-    }
-
-    return res;
-}
-
-const all = async (page, limit) => {
-    let res = {};
-    try {
-        res = await Users.findAll({ offset: page * limit, limit: limit });
+        res = await Users.findOne({ where: { username } });
     } catch (err) {
         return err;
     }
@@ -76,4 +50,4 @@ const create = async (user) => {
     return res;
 }
 
-module.exports = { create, all, byId };
+module.exports = { create, byUsername };
