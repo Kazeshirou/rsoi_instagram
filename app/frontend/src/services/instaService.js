@@ -31,7 +31,7 @@ export default class InstaService {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({ "username": user.username, "password": user.password });
+        var raw = JSON.stringify({ "username": user.username, "password": user.password, "email": user.email });
 
         var requestOptions = {
             method: 'POST',

@@ -9,7 +9,7 @@ const server = http.createServer(app);
 
 const start = async () => {
     try {
-        await db.sync({});
+        await db.sync({ force: true });
         server.listen(process.env.PORT);
     } catch (err) {
         logger.error({ msg: "Db is disconnected", detail: err });

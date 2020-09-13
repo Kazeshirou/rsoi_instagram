@@ -10,6 +10,9 @@ router.post('/registration', [
     check('password').isLength({ min: 8 }).withMessage("Пароль слишком короткий (минимум 8 символов)."),
     check('password').matches(/(?=.*[0-9])/).withMessage("Пароль должен содержать хотя бы одну цифру."),
     check('password').matches(/(?=.*[A-Za-zа-яА-Я])/).withMessage("Пароль должен содержать хотя бы одну букву."),
+    check('email').not().isEmpty().withMessage("Необходимо ввести почту."),
+    check('email').isEmail().withMessage("Некорректный формат почтового адреса."),
+
     async (req, res, next) => {
         const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
             return msg;
@@ -24,8 +27,8 @@ router.post('/registration', [
         next();
     },
     async (req, res, next) => {
-        const { username, password } = req.body;
-        const result = await Users.create({ username, password });
+        const { username, password, email } = req.body;
+        const result = await Users.create({ username, password, email });
         if (result.errors) {
             const { msg, errors, statusCode } = result;
             res.status(statusCode ? statusCode : 501);

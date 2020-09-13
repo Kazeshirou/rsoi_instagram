@@ -1,4 +1,4 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const { Sequelize, Model, ValidationError, DataTypes } = require('sequelize');
 const logger = require('../logger');
 const db = require('../db.js');
 
@@ -11,10 +11,19 @@ Users.init({
         primaryKey: true
     },
     username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+        unique: true
+    },
+    email: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
             notEmpty: true,
+            isEmail: true
         },
         unique: true
     },
@@ -40,9 +49,22 @@ const create = async (user) => {
     try {
         await Users.create(user);
     } catch (err) {
-        logger.error(err)
-        let res = { statusCode: 400, msg: "Ошибки валидации", errors: { username: "Пользователь с таким ником уже существует" } }
+        let res = { statusCode: 400, msg: "Ошибки валидации", errors: {} }
+        if (err.original.constraint === 'Users_username_key') {
+            res.errors = {
+                username: 'Пользователь с таким логином уже существует.'
+            };
+        } else if (err.original.constraint === 'Users_email_key') {
+            res.errors = {
+                email: 'Почта уже привязана к другому пользователю.'
+            };
+        } else {
+            logger.error(err);
+            res.statusCode = 501;
+            res.msg = 'Не удалось зарегистрировать пользователя. Попробуйте позже.';
+        }
         return res;
+
     }
 
     return { msg: `Пользователь ${user.username} успешно зарегистрирован` };

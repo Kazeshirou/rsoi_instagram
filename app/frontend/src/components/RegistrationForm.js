@@ -175,10 +175,13 @@ export default class RegistationForm extends Component {
                     initialValues={{ username: "", email: "", password: "", passwordConfirmation: "" }}
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
-                        this.setState({ customErrors: {} });
+                        this.setState({ customErrors: false });
                         this.setState({ registerError: false });
                         let res = await this.service().registration(values, errors => this.setState({ customErrors: errors }));
                         setSubmitting(true);
+                        if (this.state.customErrors) {
+                            return;
+                        }
                         if (!res) {
                             this.setState({ registerError: true });
                         } else {
