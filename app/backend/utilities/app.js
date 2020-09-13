@@ -1,8 +1,11 @@
 const Express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const createApp = (router, logger) => {
     const app = Express();
+
+    app.use(cors({ credentials: true }));
 
     app.use(morgan('combined', { stream: logger.stream }));
 
@@ -29,7 +32,6 @@ const createApp = (router, logger) => {
                 body: {
                     err: {
                         msg: "Неожиданная ошибка сервера.",
-                        detail: err
                     }
                 }
             }

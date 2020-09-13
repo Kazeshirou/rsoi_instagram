@@ -1,14 +1,14 @@
-const path = require('path');
 const { Sequelize, Model, DataTypes } = require('sequelize');
+const logger = require('../logger');
 const db = require('../db.js');
 
 class Users extends Model { }
 
 Users.init({
-    profileId: {
+    id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
-        unique: true,
+        primaryKey: true
     },
     username: {
         type: Sequelize.STRING,
@@ -16,15 +16,12 @@ Users.init({
         validate: {
             notEmpty: true,
         },
-        primaryKey: true
+        unique: true
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    },
+        allowNull: false
+    }
 }, { sequelize: db, timestamps: true, modelName: "Users" });
 
 
@@ -40,14 +37,15 @@ const byUsername = async (username) => {
 }
 
 const create = async (user) => {
-    let res = {};
     try {
-        res = await Users.create(user);
+        await Users.create(user);
     } catch (err) {
-        return err;
+        logger.error(err)
+        let res = { statusCode: 400, msg: "Ошибки валидации", errors: { username: "Пользователь с таким ником уже существует" } }
+        return res;
     }
 
-    return res;
+    return { msg: `Пользователь ${user.username} успешно зарегистрирован` };
 }
 
 module.exports = { create, byUsername };

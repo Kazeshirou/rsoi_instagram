@@ -27,6 +27,46 @@ export default class InstaService {
 
     }
 
+    registration = async (user, setErrors) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({ "username": user.username, "password": user.password });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        let res;
+        try {
+            res = await fetch("http://localhost:49001/api/v1/registration", requestOptions);
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (res.ok) {
+            return true;
+        }
+
+        if (res.status === 400) {
+            res = await res.json();
+            setErrors(res.errors);
+            return true;
+        }
+
+        console.log("непонятная ошибка");
+        return false;
+
+    }
+
+    login = async (user) => {
+        console.log(user);
+        this.refreshToken(user.username)
+    }
+
     getRefreshToken = async () => {
         return false;
     }

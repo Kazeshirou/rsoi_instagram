@@ -3,9 +3,15 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import RedirectButton from "./RedirectButton";
 
+
 export default class RegistationForm extends Component {
-    state = {}
-    
+    state = {
+        customErrors: {},
+        registerError: false
+    };
+
+    service = this.props.service;
+
     renderForm = props => {
         const {
             values,
@@ -24,9 +30,9 @@ export default class RegistationForm extends Component {
         }
 
         const renderSubmitFeedback = field => {
-            const customErrors = this.state[`${field}Error`]
-            if (customErrors && touched[field]) {
-                return (<div className="input-feedback">{customErrors}</div>)
+            const errors = this.state.customErrors[`${field}`];
+            if (errors && touched[field]) {
+                return (<div className="input-feedback">{errors}</div>)
             }
         }
 
@@ -132,8 +138,9 @@ export default class RegistationForm extends Component {
 
         return (
             <form onSubmit={handleSubmit}>
-                {renderUsername()}
+                {this.state.registerError && <div className="input-feedback">Не удалось зарегистрировать пользователя. Попробуйте позже</div>}
                 {renderEmail()}
+                {renderUsername()}
                 {renderPassword()}
                 {renderPasswordConfirmation()}
                 {renderButtonGroup()}
@@ -158,19 +165,25 @@ export default class RegistationForm extends Component {
             passwordConfirmation: Yup.string()
                 .required("Необходимо подтвердить пароль.")
                 .oneOf([Yup.ref('password')], "Пароли должны совпадать.")
-            
+
         });
 
         return (
             <div className="container form">
                 <h1>Регистрация</h1>
                 <Formik
-                    initialValues={{ username: "", email:"", password: "", passwordConfirmation: "" }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                            console.log("Registration ", values);
-                            setSubmitting(false);
-                        }, 500);
+                    initialValues={{ username: "", email: "", password: "", passwordConfirmation: "" }}
+                    onSubmit={async (values, { setSubmitting }) => {
+                        setSubmitting(false);
+                        this.setState({ customErrors: {} });
+                        this.setState({ registerError: false });
+                        let res = await this.service().registration(values, errors => this.setState({ customErrors: errors }));
+                        setSubmitting(true);
+                        if (!res) {
+                            this.setState({ registerError: true });
+                        } else {
+                            this.service().login(values);
+                        }
                     }}
 
                     validationSchema={schema}
@@ -178,7 +191,7 @@ export default class RegistationForm extends Component {
                     {this.renderForm}
                 </Formik>
 
-            </div>
+            </div >
         );
     }
 }

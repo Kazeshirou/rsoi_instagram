@@ -1,10 +1,10 @@
 import React from 'react';
 import RegistationForm from './RegistrationForm';
 
-const RegistrationPage = () => {
+const RegistrationPage = (props) => {
     return (
         <div className="container">
-            <RegistationForm />
+            <RegistationForm service={props.service} />
         </div>
     );
 }

@@ -1,14 +1,18 @@
-const path = require('path');
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const db = require('../db.js');
 
-class Users extends Model { }
+class Profiles extends Model { }
 
-Users.init({
-    profileId: {
+Profiles.init({
+    id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
+    },
+    userId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     },
     username: {
         type: Sequelize.STRING,
@@ -23,6 +27,7 @@ Users.init({
         allowNull: false,
         validate: {
             notEmpty: true,
+            isEmail: true
         },
         unique: true
     },
@@ -31,6 +36,7 @@ Users.init({
         allowNull: false,
         validate: {
             notEmpty: true,
+            isUrl: true
         },
     },
     age: {
@@ -40,13 +46,13 @@ Users.init({
             min: 0
         },
     },
-}, { sequelize: db, timestamps: true, modelName: "Users" });
+}, { sequelize: db, timestamps: true, modelName: "Profiles" });
 
 
 const byId = async (id) => {
     let res = {};
     try {
-        res = await Users.findOne({ where: { id: id } });
+        res = await Profiles.findOne({ where: { id: id } });
     } catch (err) {
         return err;
     }
@@ -57,7 +63,7 @@ const byId = async (id) => {
 const all = async (page, limit) => {
     let res = {};
     try {
-        res = await Users.findAll({ offset: page * limit, limit: limit });
+        res = await Profiles.findAll({ offset: page * limit, limit: limit });
     } catch (err) {
         return err;
     }
@@ -68,7 +74,7 @@ const all = async (page, limit) => {
 const create = async (user) => {
     let res = {};
     try {
-        res = await Users.create(user);
+        res = await Profiles.create(user);
     } catch (err) {
         return err;
     }

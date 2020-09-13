@@ -15,7 +15,7 @@ export default class App extends Component {
         timeout: 30 * 60 * 1000
     };
 
-    service = new InstaService(this.refreshToken);
+    service = new InstaService((token) => this.refreshToken(token));
 
     getService = () => {
         return this.service;
@@ -29,8 +29,9 @@ export default class App extends Component {
         this.setState({ token: undefined });
     }
 
-    refreshToken = () => {
-        // some action to refresh token.
+    refreshToken = (token) => {
+        console.log('refreshToken');
+        this.setToken(token)
     }
 
     setToken = (token) => {
@@ -57,6 +58,10 @@ export default class App extends Component {
         return <Profile service={this.getService} />
     }
 
+    registrationPage = () => {
+        return <RegistrationPage service={this.getService} />
+    }
+
     render() {
         return (
             <Router>
@@ -70,7 +75,7 @@ export default class App extends Component {
                         timeout={this.state.timeout} />
                     <Header />
                     <Switch>
-                        <Route path="/registration" component={RegistrationPage} exact />
+                        {!this.state.token && <Route path="/registration" component={this.registrationPage} exact />}
                         <Route path="/profile" component={this.protectedPage(this.profile)} exact />
                         <Route path="/" component={this.protectedPage(this.feed)} exact />
                         <Redirect to="/" />
