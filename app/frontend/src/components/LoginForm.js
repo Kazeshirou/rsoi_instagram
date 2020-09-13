@@ -2,9 +2,15 @@ import React, { Component } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import RedirectButton from "./RedirectButton";
+import InstaService from "../services/instaService";
 
 export default class LoginForm extends Component {
-    state = {}
+    state = {
+        customErrors: {},
+        loginError: false
+    };
+
+    service = new InstaService();
 
     renderForm = props => {
         const {
@@ -24,7 +30,7 @@ export default class LoginForm extends Component {
         }
 
         const renderSubmitFeedback = field => {
-            const customErrors = this.state[`${field}Error`]
+            const customErrors = this.state.customErrors[`${field}`];
             if (customErrors && touched[field]) {
                 return (<div className="input-feedback">{customErrors}</div>)
             }
@@ -94,6 +100,7 @@ export default class LoginForm extends Component {
         }
         return (
             <form onSubmit={handleSubmit}>
+                {this.state.login && <div className="input-feedback">Не удалось войти в аккаунт. Попробуйте позже</div>}
                 {renderUsername()}
                 {renderPassword()}
                 {renderButtonGroup()}
@@ -119,8 +126,15 @@ export default class LoginForm extends Component {
                 <h1>Вход</h1>
                 <Formik
                     initialValues={{ username: "", password: "" }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        this.props.setToken(values.username);
+                    onSubmit={async (values, { setSubmitting }) => {
+                        setSubmitting(false);
+                        this.setState({ customErrors: {} });
+                        this.setState({ loginError: false });
+                        let res = await this.service.login(values);
+                        setSubmitting(true);
+                        if (!res) {
+                            this.setState({ loginError: true });
+                        }
                     }}
 
                     validationSchema={schema}

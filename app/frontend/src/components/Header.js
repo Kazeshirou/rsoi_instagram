@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import logo from '../logo.svg';
 import { Link } from 'react-router-dom';
 
 export default class Header extends Component {
-    
+
     render() {
         return (
             <header>
@@ -19,6 +19,11 @@ export default class Header extends Component {
                             <li>
                                 <Link to="/profile" className="menu__links">Профиль</Link>
                             </li>
+                            {this.props.auth && (
+                                <li>
+                                    <Link to="/logout" className="menu__links">Выход</Link>
+                                </li>
+                            )}
                         </ul>
                     </nav>
                 </div>

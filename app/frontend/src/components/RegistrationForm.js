@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import RedirectButton from "./RedirectButton";
-
+import InstaService from "../services/instaService";
 
 export default class RegistationForm extends Component {
     state = {
@@ -10,7 +10,7 @@ export default class RegistationForm extends Component {
         registerError: false
     };
 
-    service = this.props.service;
+    service = new InstaService();
 
     renderForm = props => {
         const {
@@ -175,17 +175,15 @@ export default class RegistationForm extends Component {
                     initialValues={{ username: "", email: "", password: "", passwordConfirmation: "" }}
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
-                        this.setState({ customErrors: false });
+                        this.setState({ customErrors: {} });
                         this.setState({ registerError: false });
-                        let res = await this.service().registration(values, errors => this.setState({ customErrors: errors }));
+                        let res = await this.service.registration(values, errors => this.setState({ customErrors: errors }));
                         setSubmitting(true);
                         if (this.state.customErrors) {
                             return;
                         }
                         if (!res) {
                             this.setState({ registerError: true });
-                        } else {
-                            this.service().login(values);
                         }
                     }}
 

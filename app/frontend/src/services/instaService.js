@@ -1,20 +1,32 @@
 export default class InstaService {
-    constructor(refreshToken) {
-        this.refreshToken = refreshToken;
+    _apiPost = 'http://localhost:3000';
+    _apiAuth = 'http://localhost:49001/api/v1';
+
+    getUser = () => {
+        return this.user;
     }
 
-    _apiBase = 'http://localhost:3000';
-
     getResource = async (url) => {
-        const res = await fetch(`${this._apiBase}${url}`);
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        const res = await fetch(url, requestOptions);
 
         if (res.ok) {
             return await res.json();
         }
 
         if (res.status === 401) {
-            if (await this.getRefreshToken()) {
-                const res = await fetch(`${this._apiBase}${url}`);
+            if (await this.tryRefreshToken()) {
+                myHeaders = new Headers();
+                myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+                requestOptions.headers = myHeaders;
+                const res = await fetch(url, requestOptions);
 
                 if (res.ok) {
                     return await res.json();
@@ -23,15 +35,13 @@ export default class InstaService {
                 return null;
             }
         }
-
-
     }
 
-    registration = async (user, setErrors) => {
+    tryRefreshToken = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({ "username": user.username, "password": user.password, "email": user.email });
+        myHeaders.append("Authorization", `Bearer ${localStorage.getItem('refreshToken')}`);
+        var raw = JSON.stringify({ token: localStorage.getItem('token') });
 
         var requestOptions = {
             method: 'POST',
@@ -40,45 +50,78 @@ export default class InstaService {
             redirect: 'follow'
         };
 
-        let res;
-        try {
-            res = await fetch("http://localhost:49001/api/v1/registration", requestOptions);
-        } catch (err) {
-            console.log(err);
+        const res = await fetch(`${this._apiAuth}/refresh`, requestOptions);
+        if (res.ok) {
+            const { token, refreshToken } = await res.json();
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            return true;
         }
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        return false;
+    }
+
+    postAuth = async (url, body) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(body);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        return await fetch(url, requestOptions);
+
+    }
+
+    registration = async (user, setErrors) => {
+        const res = await this.postAuth(`${this._apiAuth}/registration`, user);
 
         if (res.ok) {
+            const { token, refreshToken } = await res.json();
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
             return true;
         }
 
         if (res.status === 400) {
-            res = await res.json();
-            setErrors(res.errors);
+            const { errors } = await res.json();
+            setErrors(errors);
             return true;
         }
 
-        console.log("непонятная ошибка");
         return false;
 
     }
 
     login = async (user) => {
-        console.log(user);
-        this.refreshToken(user.username)
-    }
+        const res = await this.postAuth(`${this._apiAuth}/login`, user);
 
-    getRefreshToken = async () => {
+        if (res.ok) {
+            const { token, refreshToken } = await res.json();
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
+            return true;
+        }
+
         return false;
     }
 
     getAllPosts = async () => {
-        const res = await this.getResource('/posts/');
+        const res = await this.getResource(`${this._apiPost}/posts/`);
 
         return res;
     }
 
     getAllPhotos = async () => {
-        const res = await this.getResource('/posts/');
+        const res = await this.getResource(`${this._apiPost}/posts/`);
 
         return res.map(this._transformPosts);
     }

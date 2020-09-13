@@ -6,36 +6,22 @@ import Header from './components/Header';
 import Feed from './components/Feed';
 import Profile from './components/Profile';
 import LoginForm from './components/LoginForm';
-import RegistrationPage from './components/RegistrationPage';
-
-import InstaService from './services/instaService'
+import RegistrationForm from './components/RegistrationForm';
 
 export default class App extends Component {
     state = {
-        timeout: 30 * 60 * 1000
+        timeout: 30 * 60 * 1000,
+        auth: false
     };
-
-    service = new InstaService((token) => this.refreshToken(token));
-
-    getService = () => {
-        return this.service;
-    }
 
     onAction = (e) => {
         this.idleTimer.reset();
+        this.setState({ auth: localStorage.getItem('token') ? true : false });
     }
 
     onIdle = (e) => {
-        this.setState({ token: undefined });
-    }
-
-    refreshToken = (token) => {
-        console.log('refreshToken');
-        this.setToken(token)
-    }
-
-    setToken = (token) => {
-        this.setState({ token: token });
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
     }
 
     getUser = () => {
@@ -43,23 +29,7 @@ export default class App extends Component {
     }
 
     protectedPage = (component) => {
-        return this.state.token ? component : this.loginForm;
-    }
-
-    loginForm = () => {
-        return <LoginForm setToken={this.setToken} />;
-    }
-
-    feed = () => {
-        return <Feed service={this.getService} />
-    }
-
-    profile = () => {
-        return <Profile service={this.getService} />
-    }
-
-    registrationPage = () => {
-        return <RegistrationPage service={this.getService} />
+        return this.state.auth ? component : LoginForm;
     }
 
     render() {
@@ -73,11 +43,12 @@ export default class App extends Component {
                         onAction={this.onAction}
                         debounce={250}
                         timeout={this.state.timeout} />
-                    <Header />
+                    <Header auth={this.state.auth} />
                     <Switch>
-                        {!this.state.token && <Route path="/registration" component={this.registrationPage} exact />}
-                        <Route path="/profile" component={this.protectedPage(this.profile)} exact />
-                        <Route path="/" component={this.protectedPage(this.feed)} exact />
+                        {!this.state.auth && <Route path="/registration" component={RegistrationForm} exact />}
+                        {this.state.auth && <Route path="/logout" component={() => { localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); return null; }} />}
+                        <Route path="/profile" component={this.protectedPage(Profile)} exact />
+                        <Route path="/" component={this.protectedPage(Feed)} exact />
                         <Redirect to="/" />
                     </Switch>
                 </div>

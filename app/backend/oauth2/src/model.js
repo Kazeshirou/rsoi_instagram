@@ -35,14 +35,11 @@ Users.init({
 
 
 const byUsername = async (username) => {
-    let res = {};
     try {
-        res = await Users.findOne({ where: { username } });
+        return await Users.findOne({ where: { username } });
     } catch (err) {
-        return err;
+        return null;
     }
-
-    return res;
 }
 
 const create = async (user) => {
@@ -60,8 +57,8 @@ const create = async (user) => {
             };
         } else {
             logger.error(err);
-            res.statusCode = 501;
             res.msg = 'Не удалось зарегистрировать пользователя. Попробуйте позже.';
+            res.errors = {};
         }
         return res;
 

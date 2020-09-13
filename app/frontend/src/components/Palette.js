@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ErrorMessage from './Error';
+import InstaService from '../services/instaService';
 
 export default class Profile extends Component {
-    service = this.props.service;
+    service = new InstaService();
     state = {
         error: false,
         photos: []
@@ -13,7 +14,7 @@ export default class Profile extends Component {
     }
 
     updatePhotos() {
-        this.service().getAllPhotos()
+        this.service.getAllPhotos()
             .then(this.onPhotosLoaded)
             .catch(this.onError);
     }
