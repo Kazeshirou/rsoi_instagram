@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { check } = require('express-validator');
 const Users = require('.');
+const jwt = require('jsonwebtoken');
 
 const validateInput = require('../../utilities/validateInput');
 
@@ -56,14 +57,16 @@ router.get('/auth', [
     (req, res, next) => {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
-        if (token == null) return res.sendStatus(401);
+        if (token == null) {
+            return res.sendStatus(401);
+        }
 
         jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
-            res.json(user);
-        })
+            return res.json(user);
+        });
     }
 ]);
 
@@ -84,6 +87,10 @@ router.post('/refresh', [
             res.json({ token, refreshToken });
         })
     }
+]);
+
+router.post('/service_token', [
+    (req, res, next) => { }
 ]);
 
 module.exports = router;

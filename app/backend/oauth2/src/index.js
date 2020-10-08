@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const generateAccessToken = (data) => {
-    return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: '10s' });
+    return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: '2h' });
 }
 
 const generateRefreshToken = (data) => {
@@ -53,9 +53,9 @@ const checkUser = async ({ username, password }) => {
         return { msg: "Не удалось войти в аккаунт", errors: {} };
     }
 
-    res.token = generateAccessToken({ username });
-    res.refreshToken = generateRefreshToken({ token: res.token, user: { username } });
-    return res;
+    const token = generateAccessToken({ username });
+    const refreshToken = generateRefreshToken({ token: res.token, user: { username } });
+    return { token, refreshToken, user: { username } };
 }
 
 module.exports = { create, checkUser, generateAccessToken, generateRefreshToken };

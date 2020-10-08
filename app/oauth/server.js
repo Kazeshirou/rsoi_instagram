@@ -1,4 +1,4 @@
-var express = require('express');
+cvar express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -60,7 +60,7 @@ router.route('/')
     .get(authController.isBearerAuthenticated, (req, res) => res.json({ message: "OK" }));
 
 router.route('/login')
-    .get(authController.isAuthenticated, (req, res) => res.json({message: "success"}));
+    .get(authController.isAuthenticated, (req, res) => res.json({ message: "success" }));
 
 router.route('/users')
     .post(userController.postUsers)

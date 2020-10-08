@@ -9,11 +9,6 @@ Profiles.init({
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
-    userId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
     username: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -22,18 +17,9 @@ Profiles.init({
         },
         unique: true
     },
-    email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-            isEmail: true
-        },
-        unique: true
-    },
     profileImg: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: null,
         validate: {
             notEmpty: true,
             isUrl: true

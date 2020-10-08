@@ -6,8 +6,7 @@ import InstaService from '../services/instaService';
 export default class Posts extends Component {
     service = new InstaService();
     state = {
-        posts: [],
-        error: false
+        posts: []
     };
 
     componentDidMount() {
@@ -17,39 +16,31 @@ export default class Posts extends Component {
     updatePosts() {
         this.service.getAllPosts()
             .then(this.onPostsLoaded)
-            .catch(this.onError);
+            .catch(err => console.log(err));
     }
 
     onPostsLoaded = (posts) => {
         this.setState({
-            posts,
-            error: false
-        });
-    }
-
-    onError = () => {
-        this.setState({
-            error: true
+            posts
         });
     }
 
     renderItems(arr) {
         return arr.map(item => {
-            const { name, altname, photo, src, alt, descr, id } = item;
+            const { username, photo, src, description, id } = item;
 
             return (
                 <div key={id} className="post">
                     <User
                         src={photo}
-                        alt={altname}
-                        name={name}
+                        username={username}
                         min />
-                    <img src={src} alt={alt}></img>
+                    <img src={src} alt={src}></img>
                     <div className="post__name">
-                        {name}
+                        {username}
                     </div>
                     <div className="post__description">
-                        {descr}
+                        {description}
                     </div>
                 </div>
             )

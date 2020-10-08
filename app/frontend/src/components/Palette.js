@@ -34,9 +34,9 @@ export default class Profile extends Component {
 
     renderItems(arr) {
         return arr.map(item => {
-            const { src, alt } = item;
+            const { src } = item;
             return (
-                <img src={src} alt={alt}></img>
+                <img src={src} alt={src}></img>
             )
         });
     }

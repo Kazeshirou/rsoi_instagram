@@ -100,7 +100,8 @@ export default class LoginForm extends Component {
         }
         return (
             <form onSubmit={handleSubmit}>
-                {this.state.login && <div className="input-feedback">Не удалось войти в аккаунт. Попробуйте позже</div>}
+                {this.state.serverError && <div className="input-feedback-big">Не удалось войти в аккаунт. Попробуйте позже...</div>}
+                {this.state.loginErrorMsg && <div className="input-feedback-big">{this.state.loginErrorMsg}</div>}
                 {renderUsername()}
                 {renderPassword()}
                 {renderButtonGroup()}
@@ -128,13 +129,19 @@ export default class LoginForm extends Component {
                     initialValues={{ username: "", password: "" }}
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
-                        this.setState({ customErrors: {} });
-                        this.setState({ loginError: false });
                         let res = await this.service.login(values);
                         setSubmitting(true);
                         if (!res) {
-                            this.setState({ loginError: true });
+                            return this.setState({ serverError: true });
                         }
+                        if (!res.success) {
+                            return this.setState({ loginErrorMsg: res.msg, customErrors: res.errors });
+                        }
+                        this.setState({
+                            serverError: false,
+                            loginErrorMsg: null,
+                            customErrors: {}
+                        });
                     }}
 
                     validationSchema={schema}

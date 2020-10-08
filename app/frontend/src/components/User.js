@@ -1,12 +1,12 @@
 import React from 'react';
 
 const User = (props) => {
-    const { min, src, alt, name } = props;
+    const { min, src, username } = props;
 
     return (
-        <a href={`/users/${name}`} className={min ? "user min" : "user"}>
-            <img src={src} alt={alt}></img>
-            <div>{name}</div>
+        <a href={`/profile/${username}`} className={min ? "user min" : "user"}>
+            <img src={src} alt={src}></img>
+            <div>{username}</div>
         </a>
     );
 }

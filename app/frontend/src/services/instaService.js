@@ -108,10 +108,14 @@ export default class InstaService {
             const { token, refreshToken } = await res.json();
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
-            return true;
+            return { success: true };
+        }
+        if ((res.status >= 400) && (res.status < 500)) {
+            const { msg, errors } = await res.json();
+            return { success: false, msg, errors };
         }
 
-        return false;
+        return null;
     }
 
     getAllPosts = async () => {
@@ -131,5 +135,16 @@ export default class InstaService {
             src: post.src,
             alt: post.alt
         }
+    }
+
+    getUsers = async () => {
+        // const res = await this.getResource(`${this._apiUsers}/`);
+
+        return {
+            user: {
+                username: "test"
+            },
+            friends: []
+        };
     }
 }
