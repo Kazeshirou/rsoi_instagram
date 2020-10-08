@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import User from './User';
-import ErrorMessage from './Error';
+import Post from './Post';
 import InstaService from '../services/instaService';
 
 export default class Posts extends Component {
@@ -14,7 +13,7 @@ export default class Posts extends Component {
     }
 
     updatePosts() {
-        this.service.getAllPosts()
+        this.service.getAllPosts(this.props.params)
             .then(this.onPostsLoaded)
             .catch(err => console.log(err));
     }
@@ -27,32 +26,13 @@ export default class Posts extends Component {
 
     renderItems(arr) {
         return arr.map(item => {
-            const { username, photo, src, description, id } = item;
-
-            return (
-                <div key={id} className="post">
-                    <User
-                        src={photo}
-                        username={username}
-                        min />
-                    <img src={src} alt={src}></img>
-                    <div className="post__name">
-                        {username}
-                    </div>
-                    <div className="post__description">
-                        {description}
-                    </div>
-                </div>
-            )
+            const { name, photo, src, descr, id } = item;
+            return <Post id={id} user={{ name, photo }} src={src} description={descr} />
         });
     }
 
     render() {
         const { error, posts } = this.state;
-
-        if (error) {
-            return <ErrorMessage />;
-        }
 
         const items = this.renderItems(posts);
         return (

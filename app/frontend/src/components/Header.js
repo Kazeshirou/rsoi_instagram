@@ -1,31 +1,51 @@
 import React, { Component } from 'react';
-import logo from '../logo.svg';
 import { Link } from 'react-router-dom';
+import logo from '../logo.svg';
 
 export default class Header extends Component {
+    renderLogo() {
+        return (
+            <Link to="/" className="logo">
+                <img src={logo} alt="logo"></img>
+            </Link>
+        );
+    }
+
+    renderLink(to, value) {
+        return (
+            <Link to={to} className="menu__links">
+                {value}
+            </Link>
+        );
+    }
+
+    renderNav(auth) {
+        return (
+            <nav className="links">
+                <ul>
+                    <li>
+                        {this.renderLink("/", 'Лента')}
+                    </li>
+                    <li>
+                        {this.renderLink("/profile", 'Профиль')}
+                    </li>
+                    {auth && (
+                        <li>
+                            {this.renderLink("/logout", 'Выход')}
+                        </li>
+                    )}
+                </ul>
+            </nav>
+        );
+    }
 
     render() {
+        const { auth } = this.props;
         return (
             <header>
                 <div className="container h-flex">
-                    <Link to="/" className="logo">
-                        <img src={logo} alt="logo"></img>
-                    </Link>
-                    <nav className="links">
-                        <ul>
-                            <li>
-                                <Link to="/" className="menu__links">Лента</Link>
-                            </li>
-                            <li>
-                                <Link to="/profile" className="menu__links">Профиль</Link>
-                            </li>
-                            {this.props.auth && (
-                                <li>
-                                    <Link to="/logout" className="menu__links">Выход</Link>
-                                </li>
-                            )}
-                        </ul>
-                    </nav>
+                    {this.renderLogo()}
+                    {this.renderNav(auth)}
                 </div>
             </header>
         );

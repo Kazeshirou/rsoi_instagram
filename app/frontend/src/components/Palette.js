@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ErrorMessage from './Error';
 import InstaService from '../services/instaService';
 
 export default class Profile extends Component {
@@ -43,10 +42,6 @@ export default class Profile extends Component {
 
     render() {
         const { error, photos } = this.state;
-
-        if (error) {
-            return <ErrorMessage />;
-        }
 
         const items = this.renderItems(photos);
 
