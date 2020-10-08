@@ -27,7 +27,7 @@ export default class Posts extends Component {
     renderItems(arr) {
         return arr.map(item => {
             const { name, photo, src, descr, id } = item;
-            return <Post id={id} user={{ name, photo }} src={src} description={descr} />
+            return <Post key={id} id={id} user={{ name, photo }} src={src} description={descr} />
         });
     }
 

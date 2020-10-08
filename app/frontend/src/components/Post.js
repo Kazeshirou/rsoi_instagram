@@ -4,9 +4,8 @@ import User from './User';
 export default class Post extends Component {
     render() {
         const { id, user, src, description } = this.props;
-
         return (
-            <div key={id} className="post">
+            <div className="post">
                 <User
                     src={user.photo}
                     name={user.name}
