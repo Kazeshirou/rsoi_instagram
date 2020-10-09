@@ -10,19 +10,27 @@ export default class Users extends Component {
     };
 
     componentDidMount() {
-        this.updateUsers();
+        this.updateData();
     }
 
-    updateUsers() {
-        this.service.getUsers()
-            .then(this.onUsersLoaded)
+    updateData() {
+        this.service.getFriends()
+            .then(this.onFriendsLoaded)
+            .catch(err => console.log(err));
+        this.service.getUser()
+            .then(this.onUserLoaded)
             .catch(err => console.log(err));
     }
 
-    onUsersLoaded = ({ user, friends }) => {
+    onFriendsLoaded = async (friends) => {
         this.setState({
-            user,
             friends
+        });
+    }
+
+    onUserLoaded = async (user) => {
+        this.setState({
+            user
         });
     }
 
@@ -34,8 +42,7 @@ export default class Users extends Component {
                 <User
                     key={id}
                     src={profileImg}
-                    alt={profileImg}
-                    name={username}
+                    username={username}
                     min />
             )
         });
@@ -43,14 +50,12 @@ export default class Users extends Component {
 
     render() {
         const friends = this.renderItems(this.state.friends);
-        const { username, profileImg, id } = this.state.user;
+        const { username, profileImg } = this.state.user;
         return (
             <div className="right">
                 <User
-                    key={id}
                     src={profileImg}
-                    alt={profileImg}
-                    name={username} />
+                    username={username} />
                 <div className="users__block">
                     {friends}
                 </div>

@@ -22,6 +22,8 @@ export default class App extends Component {
     onIdle = (e) => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
     }
 
     getUser = () => {
@@ -46,7 +48,7 @@ export default class App extends Component {
                     <Header auth={this.state.auth} />
                     <Switch>
                         {!this.state.auth && <Route path="/registration" component={RegistrationForm} exact />}
-                        {this.state.auth && <Route path="/logout" component={() => { localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); return null; }} />}
+                        {this.state.auth && <Route path="/logout" component={() => { localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); localStorage.removeItem('userId'); localStorage.removeItem('username'); return null; }} />}
                         <Route path="/profile" component={this.protectedPage(Profile)} exact />
                         <Route path="/" component={this.protectedPage(Feed)} exact />
                         <Redirect to="/" />

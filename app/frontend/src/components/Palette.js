@@ -35,7 +35,7 @@ export default class Profile extends Component {
         return arr.map(item => {
             const { src } = item;
             return (
-                <img src={src} alt={src}></img>
+                <img key={src + this.props.id} src={src} alt={src}></img>
             )
         });
     }

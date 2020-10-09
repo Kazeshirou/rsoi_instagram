@@ -1,6 +1,7 @@
 const Users = require('./model');
 const logger = require('../logger');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
 const generateAccessToken = (data) => {
@@ -29,10 +30,27 @@ const create = async (user) => {
     if (res.errors) {
         return res;
     }
+    try {
+        const profile_res = await axios.post(`${process.env.PROFILES_URL}/`, {
+            username: user.username,
+            id: res.id
+        });
+    } catch (err) {
+        if (err.response) {
+            logger.error({ message: { info: 'Создание профиля пользователя', status: err.response.status, body: err.response.data } });
+        } else if (err.request) {
+            logger.error({ message: { info: 'Создание профиля пользователя', request: err.request } });
+        } else {
+            logger.error({ message: { info: 'Создание профиля пользователя', error: error.message } });
+        }
+        await Users.deleteById(res.id);
+        console.log(res);
+        return { statusCode: 501, msg: "Ошибка при создании пользователя", errors: "Не удалось создать профиль" };
 
-    res.token = generateAccessToken({ username: user.username });
-    res.refreshToken = generateRefreshToken({ token: res.token, user: { username: user.username } });
-    return res;
+    }
+    const token = generateAccessToken({ username: user.username, id: user.id });
+    const refreshToken = generateRefreshToken({ token: res.token, user: { username: user.username, id: user.id } });
+    return { token, refreshToken, user: { id: res.id, username: user.username } };
 }
 
 const checkUser = async ({ username, password }) => {
@@ -52,10 +70,9 @@ const checkUser = async ({ username, password }) => {
     } catch {
         return { msg: "Не удалось войти в аккаунт", errors: {} };
     }
-
-    const token = generateAccessToken({ username });
-    const refreshToken = generateRefreshToken({ token: res.token, user: { username } });
-    return { token, refreshToken, user: { username } };
+    const token = generateAccessToken({ username, id: res.id });
+    const refreshToken = generateRefreshToken({ token: res.token, user: { username, id: res.id } });
+    return { token, refreshToken, user: { id: res.id, username } };
 }
 
 module.exports = { create, checkUser, generateAccessToken, generateRefreshToken };

@@ -1,9 +1,14 @@
 export default class InstaService {
-    _apiPost = 'http://localhost:3000';
+    _apiPosts = 'http://localhost:3000';
     _apiAuth = 'http://localhost:49001/api/v1';
+    _apiProfiles = 'http://localhost:49002/api/v1';
 
-    getUser = () => {
-        return this.user;
+    getUserId = () => {
+        return localStorage.getItem('userId');
+    }
+
+    getUsername = () => {
+        return localStorage.getItem('username');
     }
 
     getResource = async (url) => {
@@ -52,15 +57,16 @@ export default class InstaService {
 
         const res = await fetch(`${this._apiAuth}/refresh`, requestOptions);
         if (res.ok) {
-            const { token, refreshToken } = await res.json();
+            const { token, refreshToken, user } = await res.json();
 
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('userId', user.id);
+            localStorage.setItem('username', user.username);
 
             return true;
         }
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        this.logout();
         return false;
     }
 
@@ -85,9 +91,12 @@ export default class InstaService {
         const res = await this.postAuth(`${this._apiAuth}/registration`, user);
 
         if (res.ok) {
-            const { token, refreshToken } = await res.json();
+            const { token, refreshToken, user } = await res.json();
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('userId', user.id);
+            localStorage.setItem('username', user.username);
+
             return true;
         }
 
@@ -105,9 +114,11 @@ export default class InstaService {
         const res = await this.postAuth(`${this._apiAuth}/login`, user);
 
         if (res.ok) {
-            const { token, refreshToken } = await res.json();
+            const { token, refreshToken, user } = await res.json();
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('username', user.username);
+            localStorage.setItem('userId', user.id);
             return { success: true };
         }
         if ((res.status >= 400) && (res.status < 500)) {
@@ -118,14 +129,21 @@ export default class InstaService {
         return null;
     }
 
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
+    }
+
     getAllPosts = async () => {
-        const res = await this.getResource(`${this._apiPost}/posts/`);
+        const res = await this.getResource(`${this._apiPosts}/posts/`);
 
         return res;
     }
 
     getAllPhotos = async () => {
-        const res = await this.getResource(`${this._apiPost}/posts/`);
+        const res = await this.getResource(`${this._apiPosts}/posts/`);
 
         return res.map(this._transformPosts);
     }
@@ -137,14 +155,25 @@ export default class InstaService {
         }
     }
 
-    getUsers = async () => {
-        // const res = await this.getResource(`${this._apiUsers}/`);
+    getFriends = async () => {
+        const res = await this.getResource(`${this._apiProfiles}/`);
 
-        return {
-            user: {
-                username: "test"
-            },
-            friends: []
-        };
+        if (res) {
+            return res.profiles;
+        }
+        return [];
+    }
+
+    getUser = async () => {
+        const username = this.getUsername();
+        const res = await this.getResource(`${this._apiProfiles}/profile/${username}`);
+
+        if (res) {
+            return res.profile;
+        }
+
+        alert('Ошибка сервера. Не возможно загрузить данные профиля.');
+
+        return {};
     }
 }

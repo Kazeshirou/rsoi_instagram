@@ -7,7 +7,7 @@ import InstaService from "../services/instaService";
 export default class RegistationForm extends Component {
     state = {
         customErrors: {},
-        registerError: false
+        serverError: false
     };
 
     service = new InstaService();
@@ -138,7 +138,7 @@ export default class RegistationForm extends Component {
 
         return (
             <form onSubmit={handleSubmit}>
-                {this.state.registerError && <div className="input-feedback">Не удалось зарегистрировать пользователя. Попробуйте позже</div>}
+                {this.state.serverError && <div className="input-feedback-big">Не удалось зарегистрировать пользователя. Попробуйте позже</div>}
                 {renderEmail()}
                 {renderUsername()}
                 {renderPassword()}
@@ -176,14 +176,11 @@ export default class RegistationForm extends Component {
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
                         this.setState({ customErrors: {} });
-                        this.setState({ registerError: false });
+                        this.setState({ serverError: false });
                         let res = await this.service.registration(values, errors => this.setState({ customErrors: errors }));
                         setSubmitting(true);
-                        if (this.state.customErrors) {
-                            return;
-                        }
                         if (!res) {
-                            this.setState({ registerError: true });
+                            this.setState({ serverError: true });
                         }
                     }}
 

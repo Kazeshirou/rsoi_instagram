@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { check } = require('express-validator');
-const Users = require('.');
+const Users = require('./oauth2');
 const jwt = require('jsonwebtoken');
 
 const validateInput = require('../../utilities/validateInput');
@@ -54,7 +54,7 @@ router.post('/login', [
 ]);
 
 router.get('/auth', [
-    (req, res, next) => {
+    async (req, res, next) => {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
         if (token == null) {

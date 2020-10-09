@@ -12,7 +12,6 @@ const checkAuth = async (token) => {
     };
     try {
         const res = await axios.get(`${process.env.AUTH_URL}/auth/`, opt);
-        console.log(res);
         return res.data;
     } catch (err) {
         if (err.response) {

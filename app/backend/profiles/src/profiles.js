@@ -12,4 +12,8 @@ const byId = async (id) => {
     return await Profiles.byId(id);
 }
 
-module.exports = { create, all, byId };
+const byUsername = async (username) => {
+    return await Profiles.byUsername(username);
+}
+
+module.exports = { create, all, byId, byUsername };

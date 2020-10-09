@@ -33,7 +33,6 @@ Users.init({
     }
 }, { sequelize: db, timestamps: true, modelName: "Users" });
 
-
 const byUsername = async (username) => {
     try {
         return await Users.findOne({ where: { username } });
@@ -43,8 +42,9 @@ const byUsername = async (username) => {
 }
 
 const create = async (user) => {
+    let res = {};
     try {
-        await Users.create(user);
+        res = await Users.create(user);
     } catch (err) {
         let res = { statusCode: 400, msg: "Ошибки валидации", errors: {} }
         if (err.original.constraint === 'Users_username_key') {
@@ -64,7 +64,16 @@ const create = async (user) => {
 
     }
 
-    return { msg: `Пользователь ${user.username} успешно зарегистрирован` };
+    return { msg: `Пользователь ${user.username} успешно зарегистрирован`, id: res.id };
 }
 
-module.exports = { create, byUsername };
+const deleteById = async (id) => {
+    try {
+        await Users.destroy({ where: { id } });
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+module.exports = { create, byUsername, deleteById };
