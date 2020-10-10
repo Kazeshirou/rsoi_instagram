@@ -1,19 +1,19 @@
-const Profiles = require('./model');
+const Posts = require('./model');
 
 const create = async (user) => {
-    return await Profiles.create(user);
+    return await Posts.create(user);
 }
 
 const all = async (page, limit) => {
-    return await Profiles.all(page, limit);
+    return await Posts.all(page, limit);
 }
 
 const byId = async (id) => {
-    return await Profiles.byId(id);
+    return await Posts.byId(id);
 }
 
 const byUserId = async (userId) => {
-    return await Profiles.byUserId(userId);
+    return await Posts.byUserId(userId);
 }
 
 module.exports = { create, all, byId, byUserId };
