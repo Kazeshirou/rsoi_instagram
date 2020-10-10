@@ -1,7 +1,7 @@
 export default class InstaService {
-    _apiPosts = 'http://localhost:3000';
     _apiAuth = 'http://localhost:49001/api/v1';
     _apiProfiles = 'http://localhost:49002/api/v1';
+    _apiPosts = 'http://localhost:49003/api/v1';
 
     getUserId = () => {
         return localStorage.getItem('userId');
@@ -137,21 +137,21 @@ export default class InstaService {
     }
 
     getAllPosts = async () => {
-        const res = await this.getResource(`${this._apiPosts}/posts/`);
+        const res = await this.getResource(`${this._apiPosts}/`);
 
-        return res;
+        return res.posts;
     }
 
     getAllPhotos = async () => {
-        const res = await this.getResource(`${this._apiPosts}/posts/`);
+        const res = await this.getResource(`${this._apiPosts}/user/${this.getUserId()}`);
 
-        return res.map(this._transformPosts);
+        return res.posts.map(this._transformPosts);
     }
 
     _transformPosts = (post) => {
         return {
             src: post.src,
-            alt: post.alt
+            id: post.id
         }
     }
 

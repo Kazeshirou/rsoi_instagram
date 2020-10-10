@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const { check, validationResult } = require('express-validator');
-const Profiles = require('./profiles');
+const Posts = require('./posts');
 const logger = require('../logger');
 const authentificator = require('../../utilities/autentificator')(logger);
 
 
 router.post('/', [
     async (req, res, next) => {
-        if (await Profiles.create(req.body)) {
+        if (await Posts.create(req.body)) {
             return res.status(201).end();
         }
         return res.status(501).end();
@@ -17,14 +17,21 @@ router.post('/', [
 router.get('/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.all() });
+        return res.json({ posts: await Posts.all() });
     }
 ]);
 
-router.get('/profile/:username', [
+router.get('/post/:id', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profile: await Profiles.byUsername(req.params.username) });
+        return res.json({ post: await Posts.byId(req.params.id) });
+    }
+]);
+
+router.get('/user/:id', [
+    authentificator.auth,
+    async (req, res, next) => {
+        return res.json({ posts: await Posts.byUserId(req.params.id) });
     }
 ]);
 

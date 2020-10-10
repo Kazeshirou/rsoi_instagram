@@ -1,22 +1,24 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
+const logger = require('../logger');
 const db = require('../db.js');
 
-class Profiles extends Model { }
+class Posts extends Model { }
 
-Profiles.init({
+Posts.init({
     id: {
         type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
-    username: {
-        type: Sequelize.STRING,
+    userId: {
+        type: DataTypes.UUID,
         allowNull: false,
         validate: {
             notEmpty: true
         },
         unique: true
     },
-    profileImg: {
+    src: {
         type: Sequelize.STRING,
         allowNull: true,
         validate: {
@@ -24,25 +26,17 @@ Profiles.init({
             isUrl: true
         }
     },
-    age: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        validate: {
-            max: 150,
-            min: 0
-        }
-    },
-    bio: {
+    description: {
         type: Sequelize.STRING,
         allowNull: true
     },
-}, { sequelize: db, timestamps: true, modelName: "Profiles" });
+}, { sequelize: db, timestamps: true, modelName: "Posts" });
 
 
 const byId = async (id) => {
     let res = {};
     try {
-        res = await Profiles.findOne({ where: { id } });
+        res = await Posts.findOne({ where: { id } });
     } catch (err) {
         return err;
     }
@@ -50,10 +44,10 @@ const byId = async (id) => {
     return res;
 }
 
-const byUsername = async (username) => {
+const byUserId = async (userId) => {
     let res = {};
     try {
-        res = await Profiles.findOne({ where: { username } });
+        res = await Posts.findAll({ where: { userId } });
         if (!res) {
             res = {};
         }
@@ -67,9 +61,9 @@ const all = async (page, limit) => {
     let res = {};
     try {
         if (page && limit) {
-            res = await Profiles.findAll({ offset: page * limit, limit });
+            res = await Posts.findAll({ offset: page * limit, limit });
         } else {
-            res = await Profiles.findAll();
+            res = await Posts.findAll();
         }
     } catch (err) {
         return err;
@@ -78,14 +72,14 @@ const all = async (page, limit) => {
     return res;
 }
 
-const create = async (user) => {
+const create = async (post) => {
     try {
-        await Profiles.create(user);
+        await Posts.create(post);
     } catch (err) {
-        logger.error({ message: { info: 'Не удалось создать профиль пользователя', error: err } });
+        logger.error({ message: { info: 'Не удалось создать пост', error: err } });
         return false;
     }
     return true;
 }
 
-module.exports = { create, all, byId, byUsername };
+module.exports = { create, all, byId, byUserId };
