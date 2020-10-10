@@ -3,6 +3,7 @@ export default class InstaService {
     _apiProfiles = 'http://localhost:49002/api/v1';
     _apiPosts = 'http://localhost:49003/api/v1';
     _postsLimit = 5;
+    _friendsLimit = 30;
 
     getUserId = () => {
         return localStorage.getItem('userId');
@@ -143,8 +144,11 @@ export default class InstaService {
             page = (length - 1) / this._postsLimit + 1;
         }
         const res = await this.getResource(`${this._apiPosts}/?page=${page}&limit=${this._postsLimit}`);
+        if (res) {
+            return res.posts;
+        }
 
-        return res.posts;
+        return [];
     }
 
     getAllPhotos = async () => {
@@ -160,8 +164,12 @@ export default class InstaService {
         }
     }
 
-    getFriends = async () => {
-        const res = await this.getResource(`${this._apiProfiles}/`);
+    getFriends = async (length) => {
+        let page = 0;
+        if (length) {
+            page = (length - 1) / this._postsLimit + 1;
+        }
+        const res = await this.getResource(`${this._apiProfiles}/?page=${page}&limit=${this._friendsLimit}`);
 
         if (res) {
             return res.profiles;

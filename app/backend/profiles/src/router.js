@@ -17,7 +17,7 @@ router.post('/', [
 router.get('/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.all() });
+        return res.json({ profiles: await Profiles.all(req.query.page, req.query.limit) });
     }
 ]);
 

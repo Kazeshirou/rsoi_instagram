@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import InstaService from '../services/instaService';
+import ScrollContainer from './ScrollContainer';
 import User from './User';
+import InstaService from '../services/instaService';
 
 export default class Users extends Component {
     service = new InstaService();
@@ -13,19 +14,23 @@ export default class Users extends Component {
         this.updateData();
     }
 
-    updateData() {
-        this.service.getFriends()
+    updateData = () => {
+        this.service.getFriends(this.state.friends.length)
             .then(this.onFriendsLoaded)
             .catch(err => console.log(err));
-        this.service.getUser()
-            .then(this.onUserLoaded)
-            .catch(err => console.log(err));
+        if (!this.state.user) {
+            this.service.getUser()
+                .then(this.onUserLoaded)
+                .catch(err => console.log(err));
+        }
     }
 
     onFriendsLoaded = async (friends) => {
-        this.setState({
-            friends
-        });
+        if (friends && friends.length) {
+            this.setState({
+                friends: [].concat(this.state.friends, friends)
+            });
+        }
     }
 
     onUserLoaded = async (user) => {
@@ -56,9 +61,9 @@ export default class Users extends Component {
                 <User
                     src={profileImg}
                     username={username} />
-                <scroll-container>
+                <ScrollContainer loadContent={this.updateData}>
                     {friends}
-                </scroll-container>
+                </ScrollContainer>
             </div>
         );
     }
