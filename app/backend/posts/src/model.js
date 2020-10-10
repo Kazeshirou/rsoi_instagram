@@ -15,15 +15,13 @@ Posts.init({
         allowNull: false,
         validate: {
             notEmpty: true
-        },
-        unique: true
+        }
     },
     src: {
         type: Sequelize.STRING,
         allowNull: true,
         validate: {
-            notEmpty: true,
-            isUrl: true
+            notEmpty: true
         }
     },
     description: {
@@ -34,14 +32,11 @@ Posts.init({
 
 
 const byId = async (id) => {
-    let res = {};
     try {
-        res = await Posts.findOne({ where: { id } });
+        const res = await Posts.findOne({ where: { id } });
     } catch (err) {
-        return err;
+        throw Error(`Не удалось найти пост с id = ${id}`);
     }
-
-    return res;
 }
 
 const byUserId = async (userId) => {
@@ -52,7 +47,6 @@ const byUserId = async (userId) => {
             res = {};
         }
     } catch (err) {
-        return err;
     }
     return res;
 }

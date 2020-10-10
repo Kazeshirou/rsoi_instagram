@@ -1172,3 +1172,5 @@ gradle-app.setting
 .log
 
 .env
+
+public/

@@ -1,5 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const db = require('../db.js');
+const logger = require('../logger.js')
 
 class Profiles extends Model { }
 
@@ -18,10 +19,10 @@ Profiles.init({
     },
     profileImg: {
         type: Sequelize.STRING,
-        allowNull: true,
+        defaultValue: `${process.env.USER_IMG_URL}/default.png`,
+        allowNull: false,
         validate: {
             notEmpty: true,
-            isUrl: true
         }
     },
     age: {
