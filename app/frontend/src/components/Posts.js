@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Post from './Post';
+import ScrollContainer from './ScrollContainer';
 import InstaService from '../services/instaService';
 
 export default class Posts extends Component {
@@ -12,16 +13,19 @@ export default class Posts extends Component {
         this.updatePosts();
     }
 
-    updatePosts() {
-        this.service.getAllPosts(this.props.params)
+    updatePosts = () => {
+        console.log('updatePosts')
+        this.service.getAllPosts(this.state.posts.length)
             .then(this.onPostsLoaded)
             .catch(err => console.log(err));
     }
 
     onPostsLoaded = (posts) => {
-        this.setState({
-            posts
-        });
+        if (posts && posts.length) {
+            this.setState({
+                posts: [].concat(this.state.posts, posts)
+            });
+        }
     }
 
     renderItems(arr) {
@@ -36,9 +40,9 @@ export default class Posts extends Component {
 
         const items = this.renderItems(posts);
         return (
-            <scroll-container>
+            <ScrollContainer loadContent={this.updatePosts}>
                 {items}
-            </scroll-container>
+            </ScrollContainer>
         );
     }
 }

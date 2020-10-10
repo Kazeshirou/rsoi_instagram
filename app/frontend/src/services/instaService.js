@@ -2,6 +2,7 @@ export default class InstaService {
     _apiAuth = 'http://localhost:49001/api/v1';
     _apiProfiles = 'http://localhost:49002/api/v1';
     _apiPosts = 'http://localhost:49003/api/v1';
+    _postsLimit = 5;
 
     getUserId = () => {
         return localStorage.getItem('userId');
@@ -136,8 +137,12 @@ export default class InstaService {
         localStorage.removeItem('username');
     }
 
-    getAllPosts = async () => {
-        const res = await this.getResource(`${this._apiPosts}/`);
+    getAllPosts = async (length) => {
+        let page = 0;
+        if (length) {
+            page = (length - 1) / this._postsLimit + 1;
+        }
+        const res = await this.getResource(`${this._apiPosts}/?page=${page}&limit=${this._postsLimit}`);
 
         return res.posts;
     }
