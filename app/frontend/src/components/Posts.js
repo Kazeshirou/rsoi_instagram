@@ -36,9 +36,9 @@ export default class Posts extends Component {
 
         const items = this.renderItems(posts);
         return (
-            <div className="left">
+            <scroll-container>
                 {items}
-            </div>
+            </scroll-container>
         );
     }
 }

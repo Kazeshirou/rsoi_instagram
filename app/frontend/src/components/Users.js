@@ -52,13 +52,13 @@ export default class Users extends Component {
         const friends = this.renderItems(this.state.friends);
         const { username, profileImg } = this.state.user;
         return (
-            <div className="right">
+            <div className="users">
                 <User
                     src={profileImg}
                     username={username} />
-                <div className="users__block">
+                <scroll-container>
                     {friends}
-                </div>
+                </scroll-container>
             </div>
         );
     }
