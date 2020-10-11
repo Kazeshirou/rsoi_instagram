@@ -100,10 +100,11 @@ scroll-container {
     border-radius: 4px;
     box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.1);
     align-items: start;
+    align-content: flex-start;
     margin-top: 20px;
     padding-left: 10px;
     width: 25vw;
-    max-height: calc(100vh - 90px - 15px - 70px - 20px);
+    max-height: calc(100vh - 90px - 15px - 70px - 30px - 150px);
 }
 
 .post {
@@ -139,6 +140,16 @@ scroll-container {
     text-decoration: none;
     color: #000;
 
+}
+
+.user__info {
+    max-width: 25vw;
+}
+
+.user__info>scroll-container {
+    margin-top: 10px;
+    max-height: 150px;
+    align-items: start;
 }
 
 .user img {

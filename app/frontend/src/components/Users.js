@@ -55,11 +55,10 @@ export default class Users extends Component {
         const friends = this.renderItems(this.state.friends);
         return (
             <div className="users">
-                {this.props.max ?
-                    <User user={this.state.user} max /> :
+                {this.props.info ?
+                    <User user={this.state.user} info /> :
                     <User user={this.state.user} />
                 }
-
                 <ScrollContainer loadContent={this.updateData}>
                     {friends}
                 </ScrollContainer>
