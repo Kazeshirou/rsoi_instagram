@@ -152,10 +152,18 @@ export default class InstaService {
         return [];
     }
 
-    getAllPhotos = async () => {
-        const res = await this.getResource(`${this._apiPosts}/user/${this.getUserId()}`);
+    getUserPosts = async (length) => {
+        let page = 0;
+        if (length) {
+            page = (length - 1) / this._postsLimit + 1;
+        }
+        const userId = this.getUserId();
+        const res = await this.getResource(`${this._apiPosts}/user/${userId}?page=${page}&limit=${this._postsLimit}`);
+        if (res) {
+            return res.posts;
+        }
 
-        return res.posts.map(this._transformPosts);
+        return [];
     }
 
     _transformPosts = (post) => {

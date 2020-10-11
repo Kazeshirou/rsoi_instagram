@@ -41,15 +41,29 @@ const byId = async (id) => {
     }
 }
 
-const byUserId = async (userId) => {
+const byUserId = async (userId, page, limit) => {
     let res = {};
     try {
-        res = await Posts.findAll({ where: { userId } });
-        if (!res) {
-            res = {};
+        if (page && limit) {
+            res = await Posts.findAll({
+                offset: page * limit, limit,
+                where: { userId },
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
+        } else {
+            res = await Posts.findAll({
+                where: { userId },
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
         }
     } catch (err) {
+        return err;
     }
+
     return res;
 }
 
@@ -58,7 +72,8 @@ const all = async (page, limit) => {
     try {
         if (page && limit) {
             res = await Posts.findAll({
-                offset: page * limit, limit,
+                offset: page * limit,
+                limit,
                 order: [
                     ['createdAt', 'DESC']
                 ],

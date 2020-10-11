@@ -31,7 +31,7 @@ router.get('/post/:id', [
 router.get('/user/:id', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ posts: await Posts.byUserId(req.params.id) });
+        return res.json({ posts: await Posts.byUserId(req.params.id, req.query.page, req.query.limit) });
     }
 ]);
 

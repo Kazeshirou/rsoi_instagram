@@ -16,7 +16,7 @@ export default class LikeButton extends Component {
                         this.service.like(this.props.postId, this.props.userId);
                         this.setState({ liked: true })
                     }}>
-                    👍
+                    <span role="img" aria-label="">&#128077;</span>
                 </button>
             )
         }
@@ -27,7 +27,7 @@ export default class LikeButton extends Component {
                     this.service.unlike(this.props.postId, this.props.userId);
                     this.setState({ liked: false })
                 }}>
-                👍
+                <span role="img" aria-label="">&#128077;</span>
             </button>
         )
     }

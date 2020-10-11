@@ -6,7 +6,6 @@ const create = async (user) => {
 
 const all = async (page, limit) => {
     const posts = await Posts.all(page, limit);
-    console.log(posts);
     return posts;
 }
 
@@ -14,8 +13,8 @@ const byId = async (id) => {
     return await Posts.byId(id);
 }
 
-const byUserId = async (userId) => {
-    return await Posts.byUserId(userId);
+const byUserId = async (userId, page, limit) => {
+    return await Posts.byUserId(userId, page, limit);
 }
 
 module.exports = { create, all, byId, byUserId };

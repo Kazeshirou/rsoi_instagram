@@ -4,24 +4,23 @@ import LikeButton from './LikeButton'
 
 export default class Post extends Component {
     render() {
-        const { id, username, profileImg, src, description, createdAt, liked } = this.props.post;
+        const post = this.props.post;
         return (
             <div className="post">
                 <User
-                    src={profileImg}
-                    name={username}
+                    user={post}
                     min />
-                <img src={src} alt={src}></img>
+                <img src={post.src} alt={post.src}></img>
                 <div className="h-flex ">
                     <div>
                         <div className="post__text">
-                            {new Date(createdAt).toLocaleString("ru-RU")}
+                            {new Date(post.createdAt).toLocaleString("ru-RU")}
                         </div>
                         <div className="post__text">
-                            {description}
+                            {post.description}
                         </div>
                     </div>
-                    <LikeButton liked={liked} />
+                    <LikeButton liked={post.liked} />
                 </div>
             </div>
         );

@@ -14,7 +14,12 @@ export default class Posts extends Component {
     }
 
     updatePosts = () => {
-        this.service.getAllPosts(this.state.posts.length)
+        if (this.props.user) {
+            return this.service.getUserPosts(this.state.posts.length)
+                .then(this.onPostsLoaded)
+                .catch(err => console.log(err));
+        }
+        return this.service.getAllPosts(this.state.posts.length)
             .then(this.onPostsLoaded)
             .catch(err => console.log(err));
     }
@@ -27,7 +32,7 @@ export default class Posts extends Component {
         }
     }
 
-    renderItems(arr) {
+    renderItems = (arr) => {
         return arr.map(item => {
             return <Post key={item.id} post={item} />
         });
@@ -35,7 +40,6 @@ export default class Posts extends Component {
 
     render() {
         const { posts } = this.state;
-        console.log(posts);
         const items = this.renderItems(posts);
         return (
             <ScrollContainer loadContent={this.updatePosts}>

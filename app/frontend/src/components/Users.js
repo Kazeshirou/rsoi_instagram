@@ -18,11 +18,11 @@ export default class Users extends Component {
         this.service.getFriends(this.state.friends.length)
             .then(this.onFriendsLoaded)
             .catch(err => console.log(err));
-        if (!this.state.user) {
-            this.service.getUser()
-                .then(this.onUserLoaded)
-                .catch(err => console.log(err));
-        }
+
+        this.service.getUser()
+            .then(this.onUserLoaded)
+            .catch(err => console.log(err));
+
     }
 
     onFriendsLoaded = async (friends) => {
@@ -41,13 +41,11 @@ export default class Users extends Component {
 
     renderItems(arr) {
         return arr.map(item => {
-            const { username, profileImg, id } = item;
 
             return (
                 <User
-                    key={id}
-                    src={profileImg}
-                    username={username}
+                    key={item.id}
+                    user={item}
                     min />
             )
         });
@@ -55,12 +53,13 @@ export default class Users extends Component {
 
     render() {
         const friends = this.renderItems(this.state.friends);
-        const { username, profileImg } = this.state.user;
         return (
             <div className="users">
-                <User
-                    src={profileImg}
-                    username={username} />
+                {this.props.max ?
+                    <User user={this.state.user} max /> :
+                    <User user={this.state.user} />
+                }
+
                 <ScrollContainer loadContent={this.updateData}>
                     {friends}
                 </ScrollContainer>
