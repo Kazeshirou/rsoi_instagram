@@ -33,6 +33,11 @@ const createLogger = (serviceName) => {
         }
     };
 
+    logger.custom = (error) => {
+        logger.error({ message: error });
+        return error;
+    }
+
     return logger;
 };
 

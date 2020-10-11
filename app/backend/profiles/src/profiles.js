@@ -1,19 +1,22 @@
 const Profiles = require('./model');
+const service = require('./service');
 
 const create = async (user) => {
     return await Profiles.create(user);
 }
 
-const all = async (page, limit) => {
-    return await Profiles.all(page, limit);
+const all = async (query) => {
+    return await Profiles.all(query);
 }
 
-const byId = async (id) => {
-    return await Profiles.byId(id);
+const full = async (id) => {
+    let userData = Promise.all(Profiles.byId(id), service.getUserByUserId(id))
+    let user = await Profiles.byId(id);
+    return
 }
 
 const byUsername = async (username) => {
     return await Profiles.byUsername(username);
 }
 
-module.exports = { create, all, byId, byUsername };
+module.exports = { create, all, full };

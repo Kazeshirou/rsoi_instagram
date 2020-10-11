@@ -33,10 +33,24 @@ Users.init({
     }
 }, { sequelize: db, timestamps: true, modelName: "Users" });
 
-const byUsername = async (username) => {
+const user = async (query) => {
+    if (!query) {
+        logger.custom_error('Не удалось найти пользователя.', 'Не заданы параметры поиска.');
+        return null;
+    }
+    const { username, id } = query;
     try {
-        return await Users.findOne({ where: { username } });
+        if (id) {
+            return await Users.findOne({ where: { id } });
+        }
+        if (username) {
+            return await Users.findOne({ where: { username } });
+        }
+        logger.custom_error('Не удалось найти пользователя.', 'Параметры поиска некорректны.');
+        return null;
+
     } catch (err) {
+        logger.custom_error('Не удалось найти пользователя.', err);
         return null;
     }
 }
@@ -76,4 +90,4 @@ const deleteById = async (id) => {
     }
 }
 
-module.exports = { create, byUsername, deleteById };
+module.exports = { create, deleteById, user };

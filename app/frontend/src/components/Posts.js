@@ -15,6 +15,11 @@ export default class Posts extends Component {
 
     updatePosts = () => {
         if (this.props.user) {
+            if (this.props.username) {
+                return this.service.getUserPosts(this.state.posts.length, this.props.username)
+                    .then(this.onPostsLoaded)
+                    .catch(err => console.log(err));
+            }
             return this.service.getUserPosts(this.state.posts.length)
                 .then(this.onPostsLoaded)
                 .catch(err => console.log(err));

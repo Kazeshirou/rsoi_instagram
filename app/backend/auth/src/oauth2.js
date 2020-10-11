@@ -1,11 +1,14 @@
-const Users = require('./model');
-const logger = require('../logger');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
-const generateAccessToken = (data) => {
-    return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: '2h' });
+const { CustomError, ValidationError } = require('../../utilities/customErrors');
+const logger = require('../logger');
+const Users = require('./userModel');
+const Clients = require('./clientsModel');
+
+const generateAccessToken = (data, expiresIn) => {
+    return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: expiresIn ? expiresIn : '2h' });
 }
 
 const generateRefreshToken = (data) => {
@@ -44,7 +47,6 @@ const create = async (user) => {
             logger.error({ message: { info: 'Создание профиля пользователя', error: error.message } });
         }
         await Users.deleteById(res.id);
-        console.log(res);
         return { statusCode: 501, msg: "Ошибка при создании пользователя", errors: "Не удалось создать профиль" };
 
     }
@@ -75,4 +77,80 @@ const checkUser = async ({ username, password }) => {
     return { token, refreshToken, user: { id: res.id, username } };
 }
 
-module.exports = { create, checkUser, generateAccessToken, generateRefreshToken };
+const user = async (query) => {
+    return await Users.user(query);
+}
+
+const createClient = async (clientData) => {
+    if (!clientData) {
+        const error = new CustomError('Клиент не создан.', 'Не заданы данные клиента.');
+        throw logger.custom(error);
+    }
+
+    const { client, password } = clientData;
+    let salt;
+    try {
+        salt = await bcrypt.genSalt(10);
+    } catch (err) {
+        const error = new CustomError('Ошибка при создании клиента.', { salt: err });
+        throw logger.custom(error);
+    }
+    try {
+        clientData.password = await bcrypt.hash(password, salt);
+    } catch (err) {
+        const error = new CustomError('Ошибка при создании клиента.', { hash: err });
+        throw logger.custom(error);
+    }
+    try {
+        const res = await Clients.create(clientData);
+    } catch (err) {
+        if (err instanceof CustomError) {
+            throw err;
+        }
+        const error = new CustomError('Неожиданная ошибка.', err);
+        return logger.custom(error);
+
+    }
+
+    const token = generateAccessToken({ client }, '30m');
+    return { token, client };
+}
+
+const checkClient = async (clientData) => {
+    if (!clientData) {
+        const error = new CustomError('Клиент не найден.', 'Не заданы данные клиента.');
+        throw logger.custom(error);
+    }
+
+    const { client, password } = clientData;
+    let result;
+    try {
+        result = await Clients.byClient(client);
+    } catch (err) {
+        if (err instanceof CustomError) {
+            throw err;
+        }
+        const error = new CustomError('Неожиданная ошибка.', err);
+        throw logger.custom(error);
+    }
+
+    if (!result) {
+        const error = new NotFoundError('Клиент не найден.');
+        throw logger.custom(error);
+    }
+    let compare;
+    try {
+        compare = await bcrypt.compare(password, result.password);
+    } catch (err) {
+        const error = new CustomError('Не удалось войти в аккаунт.', err);
+        throw logger.custom(error);
+    }
+    if (!compare) {
+        const error = new ValidationError('Не правильные имя клиента и/или пароль.');
+        throw logger.custom(error);
+    }
+    const token = generateAccessToken({ client }, '30m');
+    return { token, client };
+}
+
+module.exports = { create, checkUser, generateAccessToken, generateRefreshToken, user, createClient, checkClient };

@@ -64,13 +64,15 @@ const byUsername = async (username) => {
     return res;
 }
 
-const all = async (page, limit) => {
+const all = async (query) => {
     let res = {};
+    const { page, limit, username, id } = query;
+    const where = { username, id };
     try {
         if (page && limit) {
-            res = await Profiles.findAll({ offset: page * limit, limit });
+            res = await Profiles.findAll({ offset: page * limit, limit, where });
         } else {
-            res = await Profiles.findAll();
+            res = await Profiles.findAll(where);
         }
     } catch (err) {
         return err;

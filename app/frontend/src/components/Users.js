@@ -15,11 +15,11 @@ export default class Users extends Component {
     }
 
     updateData = () => {
-        this.service.getFriends(this.state.friends.length)
+        this.service.getFriends(this.state.friends.length, this.props.username)
             .then(this.onFriendsLoaded)
             .catch(err => console.log(err));
 
-        this.service.getUser()
+        this.service.getUser(this.props.username)
             .then(this.onUserLoaded)
             .catch(err => console.log(err));
 

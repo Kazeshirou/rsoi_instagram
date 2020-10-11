@@ -132,6 +132,12 @@ export default class InstaService {
         return null;
     }
 
+    updateProfile = async (profile, setErrors) => {
+        console.log('updateProfile ', profile);
+        return true;
+
+    }
+
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
@@ -152,13 +158,12 @@ export default class InstaService {
         return [];
     }
 
-    getUserPosts = async (length) => {
+    getUserPosts = async (length, username) => {
         let page = 0;
         if (length) {
             page = (length - 1) / this._postsLimit + 1;
         }
-        const userId = this.getUserId();
-        const res = await this.getResource(`${this._apiPosts}/user/${userId}?page=${page}&limit=${this._postsLimit}`);
+        const res = await this.getResource(`${this._apiPosts}/username/${username}?page=${page}&limit=${this._postsLimit}`);
         if (res) {
             return res.posts;
         }
@@ -173,12 +178,12 @@ export default class InstaService {
         }
     }
 
-    getFriends = async (length) => {
+    getFriends = async (length, username) => {
         let page = 0;
         if (length) {
             page = (length - 1) / this._postsLimit + 1;
         }
-        const res = await this.getResource(`${this._apiProfiles}/?page=${page}&limit=${this._friendsLimit}`);
+        const res = await this.getResource(`${this._apiProfiles}/friends/${username || this.getUsername()}?page=${page}&limit=${this._friendsLimit}`);
 
         if (res) {
             return res.profiles;
@@ -186,9 +191,8 @@ export default class InstaService {
         return [];
     }
 
-    getUser = async () => {
-        const username = this.getUsername();
-        const res = await this.getResource(`${this._apiProfiles}/profile/${username}`);
+    getUser = async (username) => {
+        const res = await this.getResource(`${this._apiProfiles}/profile/${username || this.getUsername()}`);
 
         if (res) {
             return res.profile;

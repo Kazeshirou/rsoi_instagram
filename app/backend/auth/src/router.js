@@ -1,9 +1,12 @@
 const router = require('express').Router();
 const { check } = require('express-validator');
-const Users = require('./oauth2');
 const jwt = require('jsonwebtoken');
 
+const { CustomError, ValidationError } = require('../../utilities/customErrors');
+const logger = require('../logger');
 const validateInput = require('../../utilities/validateInput');
+
+const Users = require('./oauth2');
 
 router.post('/registration', [
     check('username').not().isEmpty().withMessage("Необходимо ввести логин."),
@@ -52,21 +55,26 @@ router.post('/login', [
         return res.json(result);
     },
 ]);
+const auth = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.sendStatus(401);
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
+        req.user = user;
+        next();
+    });
+}
 
 router.get('/auth', [
-    async (req, res, next) => {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1];
-        if (token == null) {
-            return res.sendStatus(401);
-        }
-
-        jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-            return res.json(user);
-        });
+    auth,
+    (req, res, next) => {
+        return res.json(req.user);
     }
 ]);
 
@@ -91,6 +99,56 @@ router.post('/refresh', [
 
 router.post('/service_token', [
     (req, res, next) => { }
+]);
+
+router.get('/user', [
+    auth,
+    async (req, res, next) => {
+        const user = await Users.user(req.query);
+        if (user) {
+            return res.json({ user });
+        }
+        return res.status(404).end();
+    }
+]);
+
+router.post('/client', [
+    async (req, res, next) => {
+        try {
+            const client = await Users.createClient(req.body);
+            return res.json(client);
+        } catch (err) {
+            if (err instanceof ValidationError) {
+                return res.status(403).json(err);
+            }
+
+            if (err instanceof CustomError) {
+                return next(err);
+            }
+            const error = new CustomError('Неожиданная ошибка', err);
+            return next(logger.custom(error));
+        }
+    }
+]);
+
+router.get('/client', [
+    async (req, res, next) => {
+        try {
+            const client = await Users.checkClient(req.query);
+            return res.json(client);
+        } catch (err) {
+            if (err instanceof ValidationError) {
+                return res.status(403).json(err);
+            }
+
+            if (err instanceof CustomError) {
+                return next(err);
+            }
+            const error = new CustomError('Неожиданная ошибка', err);
+            return next(logger.custom(error));
+
+        }
+    }
 ]);
 
 module.exports = router;

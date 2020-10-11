@@ -30,9 +30,7 @@ const createApp = (router, logger) => {
             error = {
                 statusCode: 501,
                 body: {
-                    err: {
-                        msg: "Неожиданная ошибка сервера.",
-                    }
+                    err
                 }
             }
         } else {

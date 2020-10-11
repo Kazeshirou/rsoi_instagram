@@ -28,10 +28,17 @@ router.get('/post/:id', [
     }
 ]);
 
-router.get('/user/:id', [
+router.get('/userid/:id', [
     authentificator.auth,
     async (req, res, next) => {
         return res.json({ posts: await Posts.byUserId(req.params.id, req.query.page, req.query.limit) });
+    }
+]);
+
+router.get('/username/:username', [
+    authentificator.auth,
+    async (req, res, next) => {
+        return res.json({ posts: await Posts.byUsername(req.params.username, req.query.page, req.query.limit) });
     }
 ]);
 
