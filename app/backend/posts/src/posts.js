@@ -5,7 +5,9 @@ const create = async (user) => {
 }
 
 const all = async (page, limit) => {
-    return await Posts.all(page, limit);
+    const posts = await Posts.all(page, limit);
+    console.log(posts);
+    return posts;
 }
 
 const byId = async (id) => {

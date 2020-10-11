@@ -33,7 +33,9 @@ Posts.init({
 
 const byId = async (id) => {
     try {
-        const res = await Posts.findOne({ where: { id } });
+        const res = await Posts.findOne({
+            where: { id }
+        });
     } catch (err) {
         throw Error(`Не удалось найти пост с id = ${id}`);
     }
@@ -55,9 +57,18 @@ const all = async (page, limit) => {
     let res = {};
     try {
         if (page && limit) {
-            res = await Posts.findAll({ offset: page * limit, limit });
+            res = await Posts.findAll({
+                offset: page * limit, limit,
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
         } else {
-            res = await Posts.findAll();
+            res = await Posts.findAll({
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
         }
     } catch (err) {
         return err;

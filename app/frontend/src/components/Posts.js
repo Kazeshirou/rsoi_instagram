@@ -14,7 +14,6 @@ export default class Posts extends Component {
     }
 
     updatePosts = () => {
-        console.log('updatePosts')
         this.service.getAllPosts(this.state.posts.length)
             .then(this.onPostsLoaded)
             .catch(err => console.log(err));
@@ -30,14 +29,13 @@ export default class Posts extends Component {
 
     renderItems(arr) {
         return arr.map(item => {
-            const { name, photo, src, descr, id } = item;
-            return <Post key={id} id={id} user={{ name, photo }} src={src} description={descr} />
+            return <Post key={item.id} post={item} />
         });
     }
 
     render() {
-        const { error, posts } = this.state;
-
+        const { posts } = this.state;
+        console.log(posts);
         const items = this.renderItems(posts);
         return (
             <ScrollContainer loadContent={this.updatePosts}>

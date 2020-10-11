@@ -2,6 +2,7 @@ export default class InstaService {
     _apiAuth = 'http://localhost:49001/api/v1';
     _apiProfiles = 'http://localhost:49002/api/v1';
     _apiPosts = 'http://localhost:49003/api/v1';
+    _apiTags = 'http://localhost:49004/api/v1';
     _postsLimit = 5;
     _friendsLimit = 30;
 
@@ -188,5 +189,13 @@ export default class InstaService {
         alert('Ошибка сервера. Не возможно загрузить данные профиля.');
 
         return {};
+    }
+
+    like = async (postId, userId) => {
+
+    }
+
+    unlike = async (postId, userId) => {
+
     }
 }

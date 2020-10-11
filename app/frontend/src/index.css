@@ -99,15 +99,10 @@ scroll-container {
     object-fit: cover;
 }
 
-.post__name {
-    padding: 10px 20px;
+.post__text {
     font-weight: 500;
-    font-size: 18px;
-}
-
-.post__descr {
-    padding: 0 20px;
-    margin: 0px 0 20px 0;
+    font-size: 15px;
+    padding-left: 10px;
 }
 
 .user {
@@ -263,6 +258,21 @@ button {
     color: white;
     border: 1px solid rgb(92, 179, 70);
 }
+
+.button_liked {
+    font-size: 20px;
+    background-color: rgb(204, 32, 32);
+}
+
+.button_unliked {
+    font-size: 20px;
+}
+
+.button_unliked:hover {
+    font-size: 20px;
+    background-color: rgb(204, 32, 32);
+}
+
 
 button:hover {
     cursor: pointer;
