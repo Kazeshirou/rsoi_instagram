@@ -55,6 +55,7 @@ router.post('/login', [
         return res.json(result);
     },
 ]);
+
 const auth = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -67,6 +68,7 @@ const auth = async (req, res, next) => {
             return res.sendStatus(403);
         }
         req.user = user;
+
         next();
     });
 }
@@ -97,10 +99,6 @@ router.post('/refresh', [
     }
 ]);
 
-router.post('/service_token', [
-    (req, res, next) => { }
-]);
-
 router.get('/user', [
     auth,
     async (req, res, next) => {
@@ -112,6 +110,7 @@ router.get('/user', [
     }
 ]);
 
+// Регистрация клиентов.
 router.post('/client', [
     async (req, res, next) => {
         try {
@@ -131,7 +130,8 @@ router.post('/client', [
     }
 ]);
 
-router.get('/client', [
+// Получение токена клиентом.
+router.get('/client_token', [
     async (req, res, next) => {
         try {
             const client = await Users.checkClient(req.query);

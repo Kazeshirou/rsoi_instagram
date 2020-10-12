@@ -192,13 +192,12 @@ export default class InstaService {
     }
 
     getUser = async (username) => {
-        const res = await this.getResource(`${this._apiProfiles}/profile/${username || this.getUsername()}`);
+        username = username || this.getUsername();
+        const res = await this.getResource(`${this._apiProfiles}/?username=${username}`);
 
         if (res) {
-            return res.profile;
+            return res.profiles[0];
         }
-
-        alert('Ошибка сервера. Не возможно загрузить данные профиля.');
 
         return {};
     }

@@ -18,6 +18,15 @@ export default class User extends Component {
 
     render() {
         const { min, user, info } = this.props;
+        if (!user) {
+            return (
+                <div className="user__info">
+                    <scroll-container>
+                        <p>Не удалось загрузить данные пользователя</p>
+                    </scroll-container>
+                </div>
+            )
+        }
         const editable = user.username === this.service.getUsername();
         return (
             <div className="user__info">

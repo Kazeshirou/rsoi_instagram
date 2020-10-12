@@ -67,12 +67,18 @@ const byUsername = async (username) => {
 const all = async (query) => {
     let res = {};
     const { page, limit, username, id } = query;
-    const where = { username, id };
+    let where = {};
+    if (username) {
+        where.username = username;
+    } else if (id) {
+        where.id = id;
+    }
+
     try {
         if (page && limit) {
             res = await Profiles.findAll({ offset: page * limit, limit, where });
         } else {
-            res = await Profiles.findAll(where);
+            res = await Profiles.findAll({ where });
         }
     } catch (err) {
         return err;

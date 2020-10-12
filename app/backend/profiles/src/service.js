@@ -23,4 +23,4 @@ const getUserByUserId = async (token, userid) => {
     }
 }
 
-module.exports = { getUserByUserId, getUserByUsername };
+module.exports = { getUserByUserId };

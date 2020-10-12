@@ -56,7 +56,7 @@ const create = async (user) => {
 }
 
 const checkUser = async ({ username, password }) => {
-    const res = await Users.byUsername(username);
+    const res = await Users.user({ username });
     if (!res) {
         return {
             statusCode: 403, msg: "Не верный логин или пароль.", errors: {}

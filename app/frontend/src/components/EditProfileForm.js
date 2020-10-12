@@ -118,7 +118,7 @@ export default class EditProfileForm extends Component {
             <form onSubmit={handleSubmit}>
                 {this.state.serverError && <div className="input-feedback-big">Не удалось обновить данные профиля. Попробуйте позже</div>}
                 {this.state.succes && <h2>Успех!</h2>}
-                {renderEmail()}
+                {/* {renderEmail()} */}
                 {renderAge()}
                 {renderBio()}
                 {renderButtonGroup()}
@@ -128,20 +128,20 @@ export default class EditProfileForm extends Component {
 
     render() {
         const schema = Yup.object().shape({
-            email: Yup.string()
-                .required("Необходимо ввести почту.")
-                .email("Некорректный формат почтового адреса."),
+            // email: Yup.string()
+            //     .required("Необходимо ввести почту.")
+            //     .email("Некорректный формат почтового адреса."),
             age: Yup.number(),
             bio: Yup.string().max(3000, "Слишком много символов. Сократите до 3000.")
 
         });
 
-        const { email, age, bio } = this.props.user;
+        const { /*email,*/ age, bio } = this.props.user;
         return (
             <div className="container form">
                 <h1>Изменение профиля</h1>
                 <Formik
-                    initialValues={{ email: email ? email : "", age: age ? age : "", bio: bio ? bio : "" }}
+                    initialValues={{ /*email: email ? email : "",*/ age: age ? age : "", bio: bio ? bio : "" }}
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
                         this.setState({ customErrors: {} });
