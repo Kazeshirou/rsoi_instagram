@@ -34,7 +34,7 @@ header {
     display: block;
 }
 
-.logo img {
+.logo>img {
     width: 60px;
     -webkit-filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.25));
     filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.25));

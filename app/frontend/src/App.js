@@ -7,16 +7,18 @@ import Feed from './components/Feed';
 import Profile from './components/Profile';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
+import InstaService from './services/instaService';
 
 export default class App extends Component {
+    service = new InstaService();
     state = {
         timeout: 30 * 60 * 1000,
-        auth: false
+        auth: this.service.getUsername()
     };
 
     onAction = (e) => {
         this.idleTimer.reset();
-        this.setState({ auth: localStorage.getItem('token') ? true : false });
+        this.setState({ auth: this.service.getUsername() ? true : false });
     }
 
     onIdle = (e) => {
@@ -48,7 +50,7 @@ export default class App extends Component {
                     <Header auth={this.state.auth} />
                     <Switch>
                         {!this.state.auth && <Route path="/registration" component={RegistrationForm} exact />}
-                        {this.state.auth && <Route path="/logout" component={() => { localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); localStorage.removeItem('userId'); localStorage.removeItem('username'); return null; }} />}
+                        {this.state.auth && <Route path="/logout" component={() => { this.service.logout(); return null; }} />}
                         <Route path="/profile/:username" component={this.protectedPage(Profile)} exact />
                         <Route path="/profile" component={this.protectedPage(Profile)} exact />
                         <Route path="/" component={this.protectedPage(Feed)} exact />

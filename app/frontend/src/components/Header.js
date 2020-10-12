@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PopupButton from './PopupButton';
 import logo from '../logo.svg';
+
 
 export default class Header extends Component {
     renderLogo() {
@@ -8,6 +10,16 @@ export default class Header extends Component {
             <Link to="/" className="logo">
                 <img src={logo} alt="logo"></img>
             </Link>
+        );
+    }
+
+    renderCreateButton() {
+        return (
+            <PopupButton
+                className="logo"
+                text={"Создать"}
+                onClick={() => { }}
+            />
         );
     }
 
@@ -45,6 +57,7 @@ export default class Header extends Component {
             <header>
                 <div className="container h-flex">
                     {this.renderLogo()}
+                    {auth && this.renderCreateButton()}
                     {this.renderNav(auth)}
                 </div>
             </header>
