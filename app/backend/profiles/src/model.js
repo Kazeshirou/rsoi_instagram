@@ -14,8 +14,7 @@ Profiles.init({
         allowNull: false,
         validate: {
             notEmpty: true
-        },
-        unique: true
+        }
     },
     profileImg: {
         type: Sequelize.STRING,
@@ -39,6 +38,8 @@ Profiles.init({
     },
 }, { sequelize: db, timestamps: true, modelName: "Profiles" });
 
+Profiles.belongsToMany(Profiles, { as: 'friend', foreignKey: 'friendId', through: 'Friends' });
+Profiles.belongsToMany(Profiles, { as: 'user', foreignKey: 'userId', through: 'Friends' });
 
 const byId = async (id) => {
     let res = {};
@@ -55,6 +56,7 @@ const byUsername = async (username) => {
     let res = {};
     try {
         res = await Profiles.findOne({ where: { username } });
+        await res.addFriend({ where: { username: 'admin' } });
         if (!res) {
             res = {};
         }
@@ -97,4 +99,26 @@ const create = async (user) => {
     return true;
 }
 
-module.exports = { create, all, byId, byUsername };
+const friends = async ({ page, limit, username }) => {
+    let res = {};
+    try {
+        res = await Profiles.findOne({ where: { username } });
+
+        if (page && limit) {
+            return await res.getFriend({ offset: page * limit, limit });
+        }
+        return await res.getFriends();
+
+    } catch (err) {
+        return err;
+    }
+    return res;
+}
+
+const addFriend = async ({ username, friendUsername }) => {
+    const res = await Profiles.findOne({ where: { username } });
+    const friend = await Profiles.findOne({ where: { username: friendUsername } });
+    res.addFriend(friend);
+}
+
+module.exports = { create, all, byId, byUsername, friends, addFriend };

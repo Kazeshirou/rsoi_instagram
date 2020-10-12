@@ -21,4 +21,18 @@ router.get('/', [
     }
 ]);
 
+router.get('/friends/', [
+    authentificator.auth,
+    async (req, res, next) => {
+        return res.json({ profiles: await Profiles.friends(req.query) });
+    }
+]);
+
+router.post('/friends/', [
+    authentificator.auth,
+    async (req, res, next) => {
+        return res.json({ profiles: await Profiles.addFriend(req.body) });
+    }
+]);
+
 module.exports = router;

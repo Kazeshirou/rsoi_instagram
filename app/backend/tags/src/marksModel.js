@@ -5,9 +5,12 @@ const db = require('../db.js');
 class Marks extends Model { }
 
 Marks.init({
-    userId: {
-        type: Sequelize.UUID,
+    username: {
+        type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true
+        },
         unique: 'compositeIndex'
     },
     postId: {
@@ -17,10 +20,10 @@ Marks.init({
     }
 }, { sequelize: db, timestamps: true, modelName: "Marks" });
 
-const byUserId = async (userId) => {
+const byUsername = async (username) => {
     let res = {};
     try {
-        res = await Marks.findAll({ where: { userId } });
+        res = await Marks.findAll({ where: { username } });
         if (!res) {
             res = {};
         }
@@ -53,4 +56,4 @@ const create = async (post) => {
     return true;
 }
 
-module.exports = { create, byUserId, byPostId };
+module.exports = { create, byUsername, byPostId };

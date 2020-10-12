@@ -10,9 +10,12 @@ Tags.init({
         allowNull: false,
         unique: 'compositeIndex'
     },
-    userId: {
-        type: Sequelize.UUID,
+    username: {
+        type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true
+        },
         unique: 'compositeIndex'
     },
     postId: {
@@ -34,10 +37,10 @@ const byValue = async (value) => {
     return res;
 }
 
-const byUserId = async (userId) => {
+const byUsername = async (username) => {
     let res = {};
     try {
-        res = await Tags.findAll({ where: { userId } });
+        res = await Tags.findAll({ where: { username } });
         if (!res) {
             res = {};
         }
@@ -81,4 +84,4 @@ const create = async (post) => {
     return true;
 }
 
-module.exports = { create, all, byValue, byUserId, byPostId };
+module.exports = { create, all, byValue, byUsername, byPostId };

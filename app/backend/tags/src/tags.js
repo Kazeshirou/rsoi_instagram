@@ -12,12 +12,12 @@ const byValue = async (value) => {
     return await Tags.byValue(value);
 }
 
-const byUserId = async (userId) => {
-    return await Tags.byUserId(userId);
+const byUsername = async (username) => {
+    return await Tags.byUsername(username);
 }
 
-const byPostId = async (userId) => {
-    return await Tags.byPostId(userId);
+const byPostId = async (postId) => {
+    return await Tags.byPostId(postId);
 }
 
-module.exports = { create, all, byValue, byUserId, byPostId };
+module.exports = { create, all, byValue, byUsername, byPostId };

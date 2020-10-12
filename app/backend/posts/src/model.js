@@ -10,12 +10,13 @@ Posts.init({
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
-    userId: {
-        type: DataTypes.UUID,
+    username: {
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
             notEmpty: true
-        }
+        },
+        unique: true
     },
     src: {
         type: Sequelize.STRING,

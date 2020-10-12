@@ -183,7 +183,7 @@ export default class InstaService {
         if (length) {
             page = (length - 1) / this._postsLimit + 1;
         }
-        const res = await this.getResource(`${this._apiProfiles}/friends/${username || this.getUsername()}?page=${page}&limit=${this._friendsLimit}`);
+        const res = await this.getResource(`${this._apiProfiles}/friends/?username=${username || this.getUsername()}&page=${page}&limit=${this._friendsLimit}`);
 
         if (res) {
             return res.profiles;

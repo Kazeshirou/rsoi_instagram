@@ -35,10 +35,10 @@ router.get('/tag/post/:id', [
     }
 ]);
 
-router.get('/tag/user/:id', [
+router.get('/tag/user/:username', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ tags: await Tags.byUserId(req.params.id) });
+        return res.json({ tags: await Tags.byUsername(req.params.username) });
     }
 ]);
 
@@ -59,10 +59,10 @@ router.get('/mark/post/:id', [
     }
 ]);
 
-router.get('/mark/user/:id', [
+router.get('/mark/user/:username', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ tags: await Tags.byUserId(req.params.id) });
+        return res.json({ tags: await Tags.byUsername(req.params.username) });
     }
 ]);
 

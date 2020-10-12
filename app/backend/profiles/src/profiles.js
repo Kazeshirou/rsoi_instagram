@@ -15,8 +15,12 @@ const full = async (id) => {
     return
 }
 
-const byUsername = async (username) => {
-    return await Profiles.byUsername(username);
+const friends = async (query) => {
+    return await Profiles.friends(query);
 }
 
-module.exports = { create, all, full };
+const addFriend = async (query) => {
+    return await Profiles.addFriend(query);
+}
+
+module.exports = { create, all, full, friends, addFriend };
