@@ -15,21 +15,20 @@ export default class PopupButton extends Component {
     }
 
     render() {
-        const { text, content } = this.props;
+        const { text, content, popupContent } = this.props;
         return (
             <>
                 {
                     this.state.showPopup &&
                     <Popup
-                        content={content}
+                        content={popupContent}
                         outsideAction={this.togglePopup}
 
                     />
                 }
-                <button
-                    type="button" onClick={this.togglePopup}>
-                    {text}
-                </button>
+                <div onClick={this.togglePopup} className="popup_button">
+                    {content}
+                </div>
             </>
         )
     }

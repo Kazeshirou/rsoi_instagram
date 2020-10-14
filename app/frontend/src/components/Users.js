@@ -18,7 +18,7 @@ export default class Users extends Component {
         this.service.getFriends(this.state.friends.length, this.props.username)
             .then(this.onFriendsLoaded)
             .catch(err => console.log(err));
-
+        console.log(this.props.username)
         this.service.getUser(this.props.username)
             .then(this.onUserLoaded)
             .catch(err => console.log(err));

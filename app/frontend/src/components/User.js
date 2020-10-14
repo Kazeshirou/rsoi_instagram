@@ -26,7 +26,8 @@ export default class User extends Component {
                 </a>
                 {info &&
                     <scroll-container>
-                        {editable && <PopupButton text={'Изменить'} content={<EditProfileForm user={user} />} />}
+                        {editable && <PopupButton content={<h3>Изменить</h3>} popupContent={<EditProfileForm user={user} />} />}
+                        {!editable && <PopupButton content={<h3>Дружить</h3>} popupContent={null} />}
                         <h4>Возраст:</h4>
                         <p>{user.age}</p>
                         <h4>Био:</h4>

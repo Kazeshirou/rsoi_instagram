@@ -51,8 +51,8 @@ export default class App extends Component {
                     <Switch>
                         {!this.state.auth && <Route path="/registration" component={RegistrationForm} exact />}
                         {this.state.auth && <Route path="/logout" component={() => { this.service.logout(); return null; }} />}
-                        <Route path="/profile/:username" component={this.protectedPage(Profile)} exact />
                         <Route path="/profile" component={this.protectedPage(Profile)} exact />
+                        <Route path="/profile/:username" component={this.protectedPage(Profile)} exact />
                         <Route path="/" component={this.protectedPage(Feed)} exact />
                         <Redirect to="/" />
                     </Switch>

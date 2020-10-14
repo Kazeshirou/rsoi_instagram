@@ -16,9 +16,8 @@ export default class Header extends Component {
     renderCreateButton() {
         return (
             <PopupButton
-                className="logo"
-                text={"Создать"}
-                onClick={() => { }}
+                content={<h3>Создать</h3>}
+                popupContent={null}
             />
         );
     }
