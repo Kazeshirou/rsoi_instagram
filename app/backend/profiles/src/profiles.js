@@ -5,22 +5,20 @@ const create = async (user) => {
     return await Profiles.create(user);
 }
 
-const all = async (query) => {
-    return await Profiles.all(query);
+const get = async (query) => {
+    return await Profiles.get(query);
 }
 
-const full = async (id) => {
-    let userData = Promise.all(Profiles.byId(id), service.getUserByUserId(id))
-    let user = await Profiles.byId(id);
-    return
+const update = async (id, user) => {
+    return await Profiles.update(id, user);
 }
 
 const friends = async (query) => {
     return await Profiles.friends(query);
 }
 
-const addFriend = async (query) => {
-    return await Profiles.addFriend(query);
+const addFriend = async (id, friendId) => {
+    return await Profiles.addFriend(id, friendId);
 }
 
-module.exports = { create, all, full, friends, addFriend };
+module.exports = { create, get, friends, addFriend, update };

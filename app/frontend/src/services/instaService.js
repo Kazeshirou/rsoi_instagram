@@ -43,6 +43,7 @@ export default class InstaService {
                 return null;
             }
         }
+        return null;
     }
 
     tryRefreshToken = async () => {
@@ -106,9 +107,36 @@ export default class InstaService {
 
         const res = await fetch(url, requestOptions);
 
-        if (res.ok) {
-            return await res.json();
+        if (res.status === 401) {
+            if (await this.tryRefreshToken()) {
+                myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+                requestOptions.headers = myHeaders;
+                const res = await fetch(url, requestOptions);
+
+                return res;
+            }
         }
+
+        return res;
+    }
+
+    put = async (url, body) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+
+        var raw = JSON.stringify(body);
+
+        var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        const res = await fetch(url, requestOptions);
 
         if (res.status === 401) {
             if (await this.tryRefreshToken()) {
@@ -118,13 +146,10 @@ export default class InstaService {
                 requestOptions.headers = myHeaders;
                 const res = await fetch(url, requestOptions);
 
-                if (res.ok) {
-                    return await res.json();
-                }
-
-                return null;
+                return res;
             }
         }
+        return res;
     }
 
     del = async (url, body) => {
@@ -143,12 +168,6 @@ export default class InstaService {
 
         const res = await fetch(url, requestOptions);
 
-
-
-        if (res.ok) {
-            return await res.json();
-        }
-
         if (res.status === 401) {
             if (await this.tryRefreshToken()) {
                 myHeaders = new Headers();
@@ -157,13 +176,11 @@ export default class InstaService {
                 requestOptions.headers = myHeaders;
                 const res = await fetch(url, requestOptions);
 
-                if (res.ok) {
-                    return await res.json();
-                }
-
-                return null;
+                return res;
             }
         }
+
+        return res;
 
     }
 
@@ -209,9 +226,16 @@ export default class InstaService {
         return null;
     }
 
-    updateProfile = async (profile, setErrors) => {
-        console.log('updateProfile ', profile);
-        return true;
+    updateProfile = async (profile) => {
+        const res = await this.put(`${this._apiProfiles}/`, { profile });
+        if (res.ok) {
+            return true;
+        }
+        if (res.status === 403) {
+            const { errors } = await res.json();
+            return { customErrors: errors };
+        }
+        return false;
 
     }
 

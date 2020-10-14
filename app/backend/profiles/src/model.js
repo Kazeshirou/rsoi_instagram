@@ -41,32 +41,8 @@ Profiles.init({
 Profiles.belongsToMany(Profiles, { as: 'friend', foreignKey: 'friendId', through: 'Friends' });
 Profiles.belongsToMany(Profiles, { as: 'user', foreignKey: 'userId', through: 'Friends' });
 
-const byId = async (id) => {
-    let res = {};
-    try {
-        res = await Profiles.findOne({ where: { id } });
-    } catch (err) {
-        return err;
-    }
 
-    return res;
-}
-
-const byUsername = async (username) => {
-    let res = {};
-    try {
-        res = await Profiles.findOne({ where: { username } });
-        await res.addFriend({ where: { username: 'admin' } });
-        if (!res) {
-            res = {};
-        }
-    } catch (err) {
-        return err;
-    }
-    return res;
-}
-
-const all = async (query) => {
+const get = async (query) => {
     let res = {};
     const { page, limit, username, id } = query;
     let where = {};
@@ -83,7 +59,7 @@ const all = async (query) => {
             res = await Profiles.findAll({ where });
         }
     } catch (err) {
-        return err;
+        throw err;
     }
 
     return res;
@@ -91,34 +67,42 @@ const all = async (query) => {
 
 const create = async (user) => {
     try {
-        await Profiles.create(user);
+        return await Profiles.create(user);
     } catch (err) {
-        logger.error({ message: { info: 'Не удалось создать профиль пользователя', error: err } });
-        return false;
+        throw err
     }
-    return true;
+}
+
+const update = async (id, user) => {
+    try {
+        return await Profiles.update(user, { where: { id } });
+    } catch (err) {
+        throw err
+    }
 }
 
 const friends = async ({ page, limit, username }) => {
-    let res = {};
     try {
-        res = await Profiles.findOne({ where: { username } });
+        const res = await Profiles.findOne({ where: { username } });
 
         if (page && limit) {
             return await res.getFriend({ offset: page * limit, limit });
         }
-        return await res.getFriends();
+        return await res.getFriend();
 
     } catch (err) {
-        return err;
+        throw err;
     }
-    return res;
 }
 
-const addFriend = async ({ username, friendUsername }) => {
-    const res = await Profiles.findOne({ where: { username } });
-    const friend = await Profiles.findOne({ where: { username: friendUsername } });
-    res.addFriend(friend);
+const addFriend = async (id, friendId) => {
+    try {
+        const res = await Profiles.findOne({ where: { id } });
+        const friend = await Profiles.findOne({ where: { id: friendId } });
+        res.addFriend(friend);
+    } catch (err) {
+        throw err;
+    }
 }
 
-module.exports = { create, all, byId, byUsername, friends, addFriend };
+module.exports = { create, get, friends, addFriend, update };

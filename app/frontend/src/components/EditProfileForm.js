@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Formik } from "formik";
+import { Formik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import InstaService from "../services/instaService";
 
@@ -83,6 +83,24 @@ export default class EditProfileForm extends Component {
             )
         }
 
+        const renderProfileImg = () => {
+            return (
+                <>
+                    {renderLabel("profileImg", "URL изображения профиля")}
+                    <input
+                        name="profileImg"
+                        type="text"
+                        value={values.profileImg || this.props.user.profileImg || ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={inputClassName("profileImg")}
+                    />
+                    {renderInputFeedback("profileImg")}
+                    {renderSubmitFeedback("profileImg")}
+                </>
+            )
+        }
+
         const renderBio = () => {
             return (
                 <>
@@ -119,6 +137,7 @@ export default class EditProfileForm extends Component {
                 {this.state.serverError && <div className="input-feedback-big">Не удалось обновить данные профиля. Попробуйте позже</div>}
                 {this.state.succes && <h2>Успех!</h2>}
                 {/* {renderEmail()} */}
+                {renderProfileImg()}
                 {renderAge()}
                 {renderBio()}
                 {renderButtonGroup()}
@@ -131,26 +150,31 @@ export default class EditProfileForm extends Component {
             // email: Yup.string()
             //     .required("Необходимо ввести почту.")
             //     .email("Некорректный формат почтового адреса."),
+            profileImg: Yup.string(),
             age: Yup.number(),
             bio: Yup.string().max(3000, "Слишком много символов. Сократите до 3000.")
 
         });
 
-        const { /*email,*/ age, bio } = this.props.user;
+        const { /*email,*/ age, bio, profileImg } = this.props.user;
         return (
             <div className="container form">
                 <h1>Изменение профиля</h1>
                 <Formik
-                    initialValues={{ /*email: email ? email : "",*/ age: age ? age : "", bio: bio ? bio : "" }}
+                    initialValues={{ /*email: email ? email : "",*/ age: age ? age : "", bio: bio ? bio : "", profileImg }}
                     onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
                         this.setState({ customErrors: {} });
                         this.setState({ serverError: false });
                         let res = await this.service.updateProfile(values, errors => this.setState({ customErrors: errors }));
                         setSubmitting(true);
+                        console.log(res);
                         if (!res) {
                             this.setState({ serverError: true, succes: false });
                         } else {
+                            if (res.customErrors) {
+                                this.setState({ customErrors: res.customErrors, succes: false })
+                            }
                             this.setState({ succes: true })
                         }
                     }}

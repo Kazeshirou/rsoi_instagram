@@ -14,38 +14,72 @@ router.post('/private/', [
         if (req.user.client !== process.env.AUTH_NAME) {
             return res.status(401).end();
         }
-        if (await Profiles.create(req.body)) {
-            return res.status(201).end();
+        try {
+            const user = await Profiles.create(req.body);
+            return res.status(201).json(user);
+        } catch (err) {
+            next(err);
         }
-        return res.status(501).end();
     }
 ]);
 
 router.get('/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.all(req.query) });
+        try {
+            return res.json({ profiles: await Profiles.get(req.query) });
+        } catch (err) {
+            next(err);
+        }
+    }
+]);
+
+router.put('/', [
+    authentificator.auth,
+    // check('age').isNumeric().withMessage("Возраст должен быть числом"),
+    // validateInput,
+    async (req, res, next) => {
+        try {
+            req.body.id = undefined;
+            req.body.username = req.user.username;
+            return res.json({ profiles: await Profiles.update(req.user.id, req.body) });
+        } catch (err) {
+            next(err)
+        }
     }
 ]);
 
 router.get('/friends/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.friends(req.query) });
+        try {
+            return res.json({ profiles: await Profiles.friends(req.query) });
+        } catch (err) {
+            next(err);
+        }
     }
 ]);
 
 router.post('/friends/', [
     authentificator.auth,
+    check('friendId').not().isEmpty().withMessage("Необходимо указать friendId."),
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.addFriend(req.body) });
+        try {
+            return res.json({ profiles: await Profiles.addFriend(req.user.id, req.body.friendId) });
+        } catch (err) {
+            next(err);
+        }
     }
 ]);
 
 router.get('/private/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ profiles: await Profiles.all(req.query) });
+        try {
+            return res.json({ profiles: await Profiles.get(req.query) });
+        } catch (err) {
+            next(err);
+        }
     }
 ]);
 
