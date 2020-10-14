@@ -4,7 +4,7 @@ import InstaService from '../services/instaService';
 export default class LikeButton extends Component {
     service = new InstaService();
     state = {
-        liked: this.props.liked
+        liked: this.props.post.liked
     };
 
 
@@ -13,7 +13,7 @@ export default class LikeButton extends Component {
             return (
                 <button className="button_unliked"
                     type="button" onClick={() => {
-                        this.service.like(this.props.postId, this.props.userId);
+                        this.service.like(this.props.post.id);
                         this.setState({ liked: true })
                     }}>
                     <span role="img" aria-label="">&#128077;</span>
@@ -24,7 +24,7 @@ export default class LikeButton extends Component {
 
             <button className="button_liked"
                 type="button" onClick={() => {
-                    this.service.unlike(this.props.postId, this.props.userId);
+                    this.service.unlike(this.props.post.id);
                     this.setState({ liked: false })
                 }}>
                 <span role="img" aria-label="">&#128077;</span>

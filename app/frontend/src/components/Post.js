@@ -20,7 +20,7 @@ export default class Post extends Component {
                             {post.description}
                         </div>
                     </div>
-                    <LikeButton liked={post.liked} />
+                    <LikeButton post={post} />
                 </div>
             </div>
         );

@@ -90,6 +90,83 @@ export default class InstaService {
 
     }
 
+    post = async (url, body) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+
+        var raw = JSON.stringify(body);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        const res = await fetch(url, requestOptions);
+
+        if (res.ok) {
+            return await res.json();
+        }
+
+        if (res.status === 401) {
+            if (await this.tryRefreshToken()) {
+                myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+                requestOptions.headers = myHeaders;
+                const res = await fetch(url, requestOptions);
+
+                if (res.ok) {
+                    return await res.json();
+                }
+
+                return null;
+            }
+        }
+    }
+
+    del = async (url, body) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+
+        var raw = JSON.stringify(body);
+
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        const res = await fetch(url, requestOptions);
+
+
+
+        if (res.ok) {
+            return await res.json();
+        }
+
+        if (res.status === 401) {
+            if (await this.tryRefreshToken()) {
+                myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Authorization", `Bearer ${localStorage.getItem('token')}`);
+                requestOptions.headers = myHeaders;
+                const res = await fetch(url, requestOptions);
+
+                if (res.ok) {
+                    return await res.json();
+                }
+
+                return null;
+            }
+        }
+
+    }
+
     registration = async (user, setErrors) => {
         const res = await this.postAuth(`${this._apiAuth}/registration`, user);
 
@@ -202,11 +279,11 @@ export default class InstaService {
         return {};
     }
 
-    like = async (postId, userId) => {
-
+    like = async (postId) => {
+        this.post(`${this._apiTags}/marks/`, { postId });
     }
 
-    unlike = async (postId, userId) => {
-
+    unlike = async (postId) => {
+        this.del(`${this._apiTags}/marks/`, { postId });
     }
 }
