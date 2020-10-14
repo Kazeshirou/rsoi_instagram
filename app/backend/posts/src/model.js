@@ -1,5 +1,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const logger = require('../logger');
+const { NotFoundError } = require('../../utilities/customErrors');
 const db = require('../db.js');
 
 class Posts extends Model { }
@@ -15,8 +16,14 @@ Posts.init({
         allowNull: false,
         validate: {
             notEmpty: true
-        },
-        unique: true
+        }
+    },
+    userId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     src: {
         type: Sequelize.STRING,
@@ -31,76 +38,44 @@ Posts.init({
     },
 }, { sequelize: db, timestamps: true, modelName: "Posts" });
 
-
-const byId = async (id) => {
+const get = async (query) => {
     try {
-        const res = await Posts.findOne({
-            where: { id }
-        });
-    } catch (err) {
-        throw Error(`Не удалось найти пост с id = ${id}`);
-    }
-}
-
-const byUserId = async (userId, page, limit) => {
-    let res = {};
-    try {
-        if (page && limit) {
-            res = await Posts.findAll({
-                offset: page * limit, limit,
-                where: { userId },
-                order: [
-                    ['createdAt', 'DESC']
-                ],
-            });
-        } else {
-            res = await Posts.findAll({
-                where: { userId },
+        if (!query) {
+            return await Posts.findAll({
                 order: [
                     ['createdAt', 'DESC']
                 ],
             });
         }
-    } catch (err) {
-        return err;
-    }
-
-    return res;
-}
-
-const all = async (page, limit) => {
-    let res = {};
-    try {
+        const { page, limit, where } = query;
         if (page && limit) {
-            res = await Posts.findAll({
+            return await Posts.findAll({
                 offset: page * limit,
                 limit,
+                where,
                 order: [
                     ['createdAt', 'DESC']
                 ],
             });
         } else {
-            res = await Posts.findAll({
+            return await Posts.findAll({
+                where,
                 order: [
                     ['createdAt', 'DESC']
                 ],
             });
         }
     } catch (err) {
-        return err;
+        throw err;
     }
-
-    return res;
 }
 
 const create = async (post) => {
     try {
-        await Posts.create(post);
+        return await Posts.create(post);
     } catch (err) {
-        logger.error({ message: { info: 'Не удалось создать пост', error: err } });
-        return false;
+        throw err;
     }
-    return true;
 }
 
-module.exports = { create, all, byId, byUserId };
+module.exports = { create, get };

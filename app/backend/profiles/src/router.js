@@ -35,4 +35,11 @@ router.post('/friends/', [
     }
 ]);
 
+router.get('/private/', [
+    authentificator.auth,
+    async (req, res, next) => {
+        return res.json({ profiles: await Profiles.all(req.query) });
+    }
+]);
+
 module.exports = router;

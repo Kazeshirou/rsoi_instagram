@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const { ValidationError } = require('./customErrors');
 
 const validateInput = (req, res, next) => {
     const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
@@ -6,10 +7,7 @@ const validateInput = (req, res, next) => {
     };
     const errors = validationResult(req).formatWith(errorFormatter);
     if (!errors.isEmpty()) {
-        return res.status(400).json({
-            msg: "Ошибки валидации",
-            errors: errors.mapped()
-        });
+        next(new ValidationError('Ошибки валидации', errors.mapped()));
     }
     next();
 }

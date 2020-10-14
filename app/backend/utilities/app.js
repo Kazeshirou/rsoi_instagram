@@ -2,6 +2,8 @@ const Express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const { NotFoundError, ValidationError, CustomError } = require('./customErrors');
+
 const createApp = (router, logger) => {
     const app = Express();
 
@@ -14,32 +16,21 @@ const createApp = (router, logger) => {
     app.use('/api/v1/', [router]);
 
     app.use((req, res, next) => {
-        next({
-            statusCode: 404,
-            body: {
-                err: {
-                    msg: "Запрашиваемый ресурс не найден."
-                }
-            }
-        });
+        next(new NotFoundError('Запрашиваемый ресурс не найден.'));
     })
 
     app.use((err, req, res, next) => {
-        let error = {}
-        if (!err.statusCode) {
-            error = {
-                statusCode: 501,
-                body: {
-                    err
-                }
-            }
+        if (err instanceof NotFoundError) {
+            res.status(404);
+        } else if (err instanceof ValidationError) {
+            res.status(403);
+        } else if (err instanceof CustomError) {
+            res.status(501)
         } else {
-            error = err;
+            res.status(501);
+            err = logger.custom(new CustomError('Неожиданная ошибка', err));
         }
-
-        res.status(error.statusCode);
-        res.json(error.body);
-        logger.error(error.body);
+        res.json(err);
     })
 
     return app;

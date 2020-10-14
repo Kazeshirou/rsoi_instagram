@@ -1,33 +1,35 @@
 const Posts = require('./model');
 const service = require('./service');
 
-const create = async (user) => {
-    return await Posts.create(user);
+const create = async (post) => {
+    return await Posts.create(post);
 }
 
-const all = async (page, limit) => {
-    const posts = await Posts.all(page, limit);
-    return posts;
-}
+const get = async (query) => {
+    let posts;
 
-const byId = async (id) => {
-    return await Posts.byId(id);
-}
-
-const byUserId = async (userId, page, limit) => {
-    return await Posts.byUserId(userId, page, limit);
-}
-
-const byUsername = async (username, page, limit) => {
-    const userId = await userIdByUsername(username);
-    if (!userId) {
-        return [];
+    try {
+        posts = await Posts.get(query);
+    } catch (err) {
+        throw err;
     }
-    return await Posts.byUserId(userId, page, limit);
+
+    if (posts.length === 0) {
+        return posts
+    }
+
+    const promises = posts.map((post) => { return new Promise(async (res) => res(await service.getUserByUserId(post.userId))) });
+    const users = await Promise.all(promises);
+    return posts.map((post, i) => {
+        if (!users[i]) {
+            return post;
+        }
+
+        const { username, profileImg } = users[i].profiles[0];
+        post.dataValues.username = username;
+        post.dataValues.profileImg = profileImg;
+        return post;
+    });
 }
 
-const userIdByUsername = async (username) => {
-    return await service.getUserByUsername(username);
-}
-
-module.exports = { create, all, byId, byUserId, byUsername };
+module.exports = { create, get };

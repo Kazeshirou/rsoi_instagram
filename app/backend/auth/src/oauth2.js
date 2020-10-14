@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
-const { CustomError, ValidationError } = require('../../utilities/customErrors');
+const { CustomError, ValidationError, NotFoundError } = require('../../utilities/customErrors');
 const logger = require('../logger');
 const Users = require('./userModel');
 const Clients = require('./clientsModel');

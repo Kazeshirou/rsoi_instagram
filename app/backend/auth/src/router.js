@@ -117,15 +117,7 @@ router.post('/client', [
             const client = await Users.createClient(req.body);
             return res.json(client);
         } catch (err) {
-            if (err instanceof ValidationError) {
-                return res.status(403).json(err);
-            }
-
-            if (err instanceof CustomError) {
-                return next(err);
-            }
-            const error = new CustomError('Неожиданная ошибка', err);
-            return next(logger.custom(error));
+            return next(err);
         }
     }
 ]);
@@ -137,15 +129,7 @@ router.get('/client_token', [
             const client = await Users.checkClient(req.query);
             return res.json(client);
         } catch (err) {
-            if (err instanceof ValidationError) {
-                return res.status(403).json(err);
-            }
-
-            if (err instanceof CustomError) {
-                return next(err);
-            }
-            const error = new CustomError('Неожиданная ошибка', err);
-            return next(logger.custom(error));
+            return next(err);
 
         }
     }
