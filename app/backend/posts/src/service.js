@@ -8,7 +8,7 @@ const getUserByUserId = async (userId) => {
         const req = async (opt) => {
             return await axios.get(`${process.env.PROFILES_URL}/?id=${userId}`, opt);
         }
-        const res = await request(req, 'Не удалось получить пользователя по userId');
+        const res = await request.get(req, 'Не удалось получить пользователя по userId');
         return res;
     } catch (err) {
         if (err instanceof CustomError) {
@@ -24,7 +24,7 @@ const getTagsByPostId = async (postId) => {
         const req = async (opt) => {
             return await axios.get(`${process.env.TAGS_URL}/?postId=${postId}`, opt);
         }
-        const res = await request(req, 'Не удалось получить теги и оценки по postId');
+        const res = await request.get(req, 'Не удалось получить теги и оценки по postId');
         return res;
     } catch (err) {
         if (err instanceof CustomError) {

@@ -30,7 +30,7 @@ router.get('/', [
             if (!req.query) {
                 posts = await Posts.get({}, req.user.id);
             } else {
-                const { page, limit, id, userId } = req.query;
+                const { page, limit, id, userId, username } = req.query;
                 let query = {};
                 if (page && limit) {
                     query.page = page;
@@ -43,6 +43,10 @@ router.get('/', [
                 } else if (userId) {
                     query.where = {
                         userId
+                    };
+                } else if (username) {
+                    query.where = {
+                        username
                     };
                 }
                 posts = await Posts.get(query, req.user.id);

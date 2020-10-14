@@ -15,14 +15,25 @@ export default class Users extends Component {
     }
 
     updateData = () => {
-        this.service.getFriends(this.state.friends.length, this.props.username)
+        if (this.props.user) {
+            this.service.getFriends(this.state.friends.length, this.props.user.username)
+                .then(this.onFriendsLoaded)
+                .catch(err => console.log(err));
+            console.log(this.service.ge)
+            this.service.getUser(this.props.user.username)
+                .then(this.onUserLoaded)
+                .catch(err => console.log(err));
+            return;
+        }
+
+        this.service.getFriends(this.state.friends.length, this.service.getUsername())
             .then(this.onFriendsLoaded)
             .catch(err => console.log(err));
-        console.log(this.props.username)
-        this.service.getUser(this.props.username)
+        console.log(this.service.ge)
+        this.service.getUser(this.service.getUsername())
             .then(this.onUserLoaded)
             .catch(err => console.log(err));
-
+        return;
     }
 
     onFriendsLoaded = async (friends) => {

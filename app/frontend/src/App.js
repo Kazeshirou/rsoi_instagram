@@ -5,6 +5,7 @@ import IdleTimer from 'react-idle-timer';
 import Header from './components/Header';
 import Feed from './components/Feed';
 import Profile from './components/Profile';
+import FriendProfile from './components/FriendProfile';
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 import InstaService from './services/instaService';
@@ -52,7 +53,7 @@ export default class App extends Component {
                         {!this.state.auth && <Route path="/registration" component={RegistrationForm} exact />}
                         {this.state.auth && <Route path="/logout" component={() => { this.service.logout(); return null; }} />}
                         <Route path="/profile" component={this.protectedPage(Profile)} exact />
-                        <Route path="/profile/:username" component={this.protectedPage(Profile)} exact />
+                        <Route path="/profile/:username" component={this.protectedPage(FriendProfile)} exact />
                         <Route path="/" component={this.protectedPage(Feed)} exact />
                         <Redirect to="/" />
                     </Switch>

@@ -228,6 +228,7 @@ export default class InstaService {
             page = (length - 1) / this._postsLimit + 1;
         }
         const res = await this.getResource(`${this._apiPosts}/?page=${page}&limit=${this._postsLimit}`);
+        console.log(res);
         if (res) {
             return res.posts;
         }
@@ -240,7 +241,8 @@ export default class InstaService {
         if (length) {
             page = (length - 1) / this._postsLimit + 1;
         }
-        const res = await this.getResource(`${this._apiPosts}/username/${username}?page=${page}&limit=${this._postsLimit}`);
+        const res = await this.getResource(`${this._apiPosts}/?username=${username}&page=${page}&limit=${this._postsLimit}`);
+        console.log(`userposts ${username}`, res);
         if (res) {
             return res.posts;
         }

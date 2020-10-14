@@ -6,12 +6,13 @@ import InstaService from '../services/instaService';
 export default class Profile extends Component {
     service = new InstaService();
     render() {
-        console.log('user profile', this.service.getUsername());
+        console.log('friend profile')
         return (
-            <div className="container profile" >
-                <Posts user={{ username: this.service.getUsername() }} profile />
+            <div className="container profile">
+                <Posts user={{ username: this.props.match.params.username }} profile />
                 <Users info user={{ username: this.props.match.params.username }} />
             </div>
         );
     }
+
 }

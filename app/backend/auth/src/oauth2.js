@@ -2,9 +2,11 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
+
 const { CustomError, ValidationError, NotFoundError } = require('../../utilities/customErrors');
 const logger = require('../logger');
 const Users = require('./userModel');
+const service = require('./service');
 const Clients = require('./clientsModel');
 
 const generateAccessToken = (data, expiresIn) => {
@@ -34,23 +36,16 @@ const create = async (user) => {
         return res;
     }
     try {
-        const profile_res = await axios.post(`${process.env.PROFILES_URL}/`, {
+        const profile_res = service.createProfile({
             username: user.username,
             id: res.id
         });
     } catch (err) {
-        if (err.response) {
-            logger.error({ message: { info: 'Создание профиля пользователя', status: err.response.status, body: err.response.data } });
-        } else if (err.request) {
-            logger.error({ message: { info: 'Создание профиля пользователя', request: err.request } });
-        } else {
-            logger.error({ message: { info: 'Создание профиля пользователя', error: error.message } });
-        }
         await Users.deleteById(res.id);
-        return { statusCode: 501, msg: "Ошибка при создании пользователя", errors: "Не удалось создать профиль" };
+        next(err);
 
     }
-    const token = generateAccessToken({ username: user.username, id: user.id });
+    const token = generateAccessToken({ username: user.username, id: res.id });
     const refreshToken = generateRefreshToken({ token: res.token, user: { username: user.username, id: user.id } });
     return { token, refreshToken, user: { id: res.id, username: user.username } };
 }
