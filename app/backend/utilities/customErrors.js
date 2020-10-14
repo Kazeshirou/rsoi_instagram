@@ -18,4 +18,10 @@ class NotFoundError extends CustomError {
     }
 }
 
-module.exports = { CustomError, ValidationError, NotFoundError };
+class AxiosError extends CustomError {
+    constructor(msg, errors) {
+        super(msg, errors);
+    }
+}
+
+module.exports = { CustomError, ValidationError, NotFoundError, AxiosError };
