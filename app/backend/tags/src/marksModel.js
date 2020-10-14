@@ -58,4 +58,15 @@ const create = async (mark) => {
     }
 }
 
-module.exports = { create, get };
+const deleteMark = async (query) => {
+    try {
+        const { where } = query;
+        return await Marks.destroy({
+            where
+        });
+    } catch (err) {
+        throw err;
+    }
+}
+
+module.exports = { create, get, deleteMark };

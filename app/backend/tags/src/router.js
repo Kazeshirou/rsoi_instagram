@@ -13,8 +13,8 @@ router.post('/tags', [
     validateInput,
     async (req, res, next) => {
         try {
-            req.body.username = tagreq.user.username;
-            req.body.userId = tagreq.user.id;
+            req.body.username = req.user.username;
+            req.body.userId = req.user.id;
             let tag = await Tags.create(req.body);
             return res.status(201).json(tag);
         } catch (err) {
@@ -29,10 +29,24 @@ router.post('/marks', [
     validateInput,
     async (req, res, next) => {
         try {
-            req.body.userId = tagreq.user.id;
-            req.body.username = tagreq.user.username;
+            req.body.userId = req.user.id;
+            req.body.username = req.user.username;
             let mark = await Marks.create(req.body);
             return res.status(201).json(mark);
+        } catch (err) {
+            next(err);
+        }
+    }
+]);
+
+router.delete('/marks', [
+    authentificator.auth,
+    validateInput,
+    async (req, res, next) => {
+        try {
+            req.body.userId = req.user.id;
+            let mark = await Marks.deleteMark({ where: { userId: req.user.id } });
+            return res.status(200).end();
         } catch (err) {
             next(err);
         }

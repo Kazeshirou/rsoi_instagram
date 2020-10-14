@@ -12,4 +12,12 @@ const get = async (query) => {
     }
 }
 
-module.exports = { create, get };
+const deleteMark = async (query) => {
+    try {
+        return await Marks.deleteMark(query);
+    } catch (err) {
+        throw err;
+    }
+}
+
+module.exports = { create, get, deleteMark };
