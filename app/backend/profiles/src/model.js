@@ -74,6 +74,7 @@ const create = async (user) => {
 }
 
 const update = async (id, user) => {
+    console.log(id, user);
     try {
         return await Profiles.update(user, { where: { id } });
     } catch (err) {

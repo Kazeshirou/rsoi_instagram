@@ -18,6 +18,7 @@ export default class User extends Component {
             )
         }
         const editable = user.username === this.service.getUsername();
+        console.log(user);
         return (
             <div className="user__info">
                 <a href={`/profile/${user.username}`} className={min ? "user min" : "user"}>

@@ -42,6 +42,9 @@ router.put('/', [
         try {
             req.body.id = undefined;
             req.body.username = req.user.username;
+            if (req.body.age === "") {
+                req.body.age = undefined;
+            }
             return res.json({ profiles: await Profiles.update(req.user.id, req.body) });
         } catch (err) {
             next(err)

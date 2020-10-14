@@ -227,7 +227,8 @@ export default class InstaService {
     }
 
     updateProfile = async (profile) => {
-        const res = await this.put(`${this._apiProfiles}/`, { profile });
+        console.log(profile)
+        const res = await this.put(`${this._apiProfiles}/`, profile);
         if (res.ok) {
             return true;
         }
