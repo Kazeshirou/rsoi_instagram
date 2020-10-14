@@ -10,7 +10,7 @@ Tags.init({
         allowNull: false,
         unique: 'compositeIndex'
     },
-    username: {
+    userId: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
@@ -18,70 +18,50 @@ Tags.init({
         },
         unique: 'compositeIndex'
     },
-    postId: {
-        type: Sequelize.UUID,
+    username: {
+        type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true
+        }
+    },
+    postId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        },
         unique: 'compositeIndex'
     }
 }, { sequelize: db, timestamps: true, modelName: "Tags" });
 
-
-const byValue = async (value) => {
-    let res = {};
+const get = async (query) => {
     try {
-        res = await Tags.findOne({ where: { value } });
-    } catch (err) {
-        return err;
-    }
-
-    return res;
-}
-
-const byUsername = async (username) => {
-    let res = {};
-    try {
-        res = await Tags.findAll({ where: { username } });
-        if (!res) {
-            res = {};
+        if (!query) {
+            return await Tags.findAll({
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
         }
+        const { where } = query;
+        return await Tags.findAll({
+            where,
+            order: [
+                ['createdAt', 'DESC']
+            ],
+        });
     } catch (err) {
-        return err;
+        throw err;
     }
-    return res;
 }
 
-const byPostId = async (postId) => {
-    let res = {};
+const create = async (tag) => {
     try {
-        res = await Tags.findAll({ where: { postId } });
-        if (!res) {
-            res = {};
-        }
+        return await Tags.create(tag);
     } catch (err) {
-        return err;
+        throw err;
     }
-    return res;
 }
 
-const all = async () => {
-    let res = {};
-    try {
-        res = Tags.aggregate('id', { plain: false, group: ['tags'] });
-    } catch (err) {
-        return err;
-    }
-
-    return res;
-}
-
-const create = async (post) => {
-    try {
-        await Tags.create(post);
-    } catch (err) {
-        logger.error({ message: { info: 'Не удалось создать тег', error: err } });
-        return false;
-    }
-    return true;
-}
-
-module.exports = { create, all, byValue, byUsername, byPostId };
+module.exports = { create, get };

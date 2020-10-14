@@ -1,68 +1,177 @@
 const router = require('express').Router();
-const { check, validationResult } = require('express-validator');
-const Tags = require('./tags');
-const Marks = require('./marks');
+const { check } = require('express-validator');
 const logger = require('../logger');
 const authentificator = require('../../utilities/autentificator')(logger);
+const validateInput = require('../../utilities/validateInput');
+const Tags = require('./tags');
+const Marks = require('./marks');
 
-router.post('/tag', [
+router.post('/tags', [
+    authentificator.auth,
+    check('value').not().isEmpty().withMessage("Необходимо указать значение тега."),
+    check('postId').not().isEmpty().withMessage("Необходимо указать id поста."),
+    validateInput,
     async (req, res, next) => {
-        if (await Tags.create(req.body)) {
-            return res.status(201).end();
+        try {
+            req.body.username = tagreq.user.username;
+            req.body.userId = tagreq.user.id;
+            let tag = await Tags.create(req.body);
+            return res.status(201).json(tag);
+        } catch (err) {
+            next(err);
         }
-        return res.status(501).end();
     }
 ]);
 
-router.get('/tag', [
+router.post('/marks', [
     authentificator.auth,
+    check('postId').not().isEmpty().withMessage("Необходимо указать id поста."),
+    validateInput,
     async (req, res, next) => {
-        return res.json({ tags: await Tags.all() });
-    }
-]);
-
-router.get('/tag/:value', [
-    authentificator.auth,
-    async (req, res, next) => {
-        return res.json({ tags: await Tags.byValue(req.params.value) });
-    }
-]);
-
-router.get('/tag/post/:id', [
-    authentificator.auth,
-    async (req, res, next) => {
-        return res.json({ tags: await Tags.byPostId(req.params.id) });
-    }
-]);
-
-router.get('/tag/user/:username', [
-    authentificator.auth,
-    async (req, res, next) => {
-        return res.json({ tags: await Tags.byUsername(req.params.username) });
-    }
-]);
-
-
-router.post('/mark', [
-    async (req, res, next) => {
-        if (await Tags.create(req.body)) {
-            return res.status(201).end();
+        try {
+            req.body.userId = tagreq.user.id;
+            req.body.username = tagreq.user.username;
+            let mark = await Marks.create(req.body);
+            return res.status(201).json(mark);
+        } catch (err) {
+            next(err);
         }
-        return res.status(501).end();
     }
 ]);
 
-router.get('/mark/post/:id', [
+router.get('/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ tags: await Tags.byPostId(req.params.id) });
+        try {
+            let tags;
+            let marks
+            if (!req.query) {
+                return next();
+            } else {
+                const { userId, postId, username } = req.query;
+                let query = {};
+                if (postId) {
+                    query.where = {
+                        postId
+                    };
+                } else if (userId) {
+                    query.where = {
+                        userId
+                    };
+                } else if (username) {
+                    query.where = {
+                        username
+                    };
+                }
+                tags = await Tags.get(query);
+                marks = await Marks.get(query);
+            }
+            return res.json({ marks, tags });
+        } catch (err) {
+            next(err);
+        }
     }
 ]);
 
-router.get('/mark/user/:username', [
+router.get('/marks/', [
     authentificator.auth,
     async (req, res, next) => {
-        return res.json({ tags: await Tags.byUsername(req.params.username) });
+        try {
+            let marks
+            if (!req.query) {
+                return next();
+            } else {
+                const { userId, postId, username } = req.query;
+                let query = {};
+                if (postId) {
+                    query.where = {
+                        postId
+                    };
+                } else if (userId) {
+                    query.where = {
+                        userId
+                    };
+                } else if (username) {
+                    query.where = {
+                        username
+                    };
+                }
+                marks = await Marks.get(query);
+            }
+            return res.json({ marks });
+        } catch (err) {
+            next(err);
+        }
+    }
+]);
+
+router.get('/tags/', [
+    authentificator.auth,
+    async (req, res, next) => {
+        try {
+            let tags
+            if (!req.query) {
+                return next();
+            } else {
+                const { userId, postId, value, username } = req.query;
+                let query = {};
+                if (postId) {
+                    query.where = {
+                        postId
+                    };
+                } else if (userId) {
+                    query.where = {
+                        userId
+                    };
+                } else if (value) {
+                    query.where = {
+                        value
+                    };
+                } else if (username) {
+                    query.where = {
+                        username
+                    };
+                }
+                tags = await Tags.get(query);
+            }
+            return res.json({ tags });
+        } catch (err) {
+            next(err);
+        }
+    }
+]);
+
+router.get('/private/', [
+    authentificator.auth,
+    async (req, res, next) => {
+        try {
+            let tags;
+            let marks
+            if (!req.query) {
+                return next();
+            } else {
+                const { userId, postId, username } = req.query;
+                let query = {};
+                if (postId) {
+                    query.where = {
+                        postId
+                    };
+                } else if (userId) {
+                    query.where = {
+                        userId
+                    };
+                } else if (username) {
+                    query.where = {
+                        username
+                    };
+                }
+                tags = await Tags.get(query);
+                marks = await Marks.get(query);
+            }
+            return res.json({ marks, tags });
+        } catch (err) {
+            next(err);
+        }
     }
 ]);
 

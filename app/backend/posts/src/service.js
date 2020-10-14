@@ -1,45 +1,38 @@
 const axios = require('axios');
-const axiosErrorAnalizator = require('../../utilities/axiosErrorAnalizator');
 const logger = require('../logger');
 const request = require('../../utilities/request')(logger);
 const { CustomError } = require('../../utilities/customErrors');
 
-const getUserByUserId = async (userid) => {
+const getUserByUserId = async (userId) => {
     try {
         const req = async (opt) => {
-            return await axios.get(`${process.env.PROFILES_URL}/?id=${userid}`, opt);
+            return await axios.get(`${process.env.PROFILES_URL}/?id=${userId}`, opt);
         }
-        const res = await request(req, 'Не удалось получить пользователя по userid');
+        const res = await request(req, 'Не удалось получить пользователя по userId');
         return res;
     } catch (err) {
         if (err instanceof CustomError) {
             return null;
         }
-        logger.custom(new CustomError('Неожиданная ошибка при получении пользователя по userid', err));
+        logger.custom(new CustomError('Неожиданная ошибка при получении пользователя по userId', err));
         return null;
     }
 }
 
-const getPostMarkAndTag = async (postId) => {
+const getTagsByPostId = async (postId) => {
     try {
-        const token = await tokenManager.getToken();
-        if (!token) {
-            return null;
+        const req = async (opt) => {
+            return await axios.get(`${process.env.TAGS_URL}/?postId=${postId}`, opt);
         }
-        const opt = {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }
-        const res = await axios.get(`${process.env.PROFILES_URL}/?id=${userid}`, opt);
-        return res.data;
+        const res = await request(req, 'Не удалось получить теги и оценки по postId');
+        return res;
     } catch (err) {
         if (err instanceof CustomError) {
             return null;
         }
-        axiosErrorAnalizator('Не удалось получить пользователя по userid', err);
+        logger.custom(new CustomError('Неожиданная ошибка при получении тегов и оценок по postId', err));
         return null;
     }
 }
 
-module.exports = { getUserByUserId };
+module.exports = { getUserByUserId, getTagsByPostId };

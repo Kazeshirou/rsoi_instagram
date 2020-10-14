@@ -1,6 +1,4 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const logger = require('../logger');
-const { NotFoundError } = require('../../utilities/customErrors');
 const db = require('../db.js');
 
 class Posts extends Model { }

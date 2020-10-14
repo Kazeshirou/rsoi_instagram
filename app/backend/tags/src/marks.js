@@ -1,15 +1,15 @@
-const Marks = require('./tagsModel');
+const Marks = require('./marksModel');
 
-const create = async (user) => {
-    return await Marks.create(user);
+const create = async (mark) => {
+    return await Marks.create(mark);
 }
 
-const byUsername = async (username) => {
-    return await Marks.byUserId(username);
+const get = async (query) => {
+    try {
+        return await Marks.get(query);
+    } catch (err) {
+        throw err;
+    }
 }
 
-const byPostId = async (userId) => {
-    return await Marks.byPostId(userId);
-}
-
-module.exports = { create, byUsername, byPostId };
+module.exports = { create, get };

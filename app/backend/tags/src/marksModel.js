@@ -1,11 +1,10 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
-const logger = require('../logger');
+const { Sequelize, Model } = require('sequelize');
 const db = require('../db.js');
 
 class Marks extends Model { }
 
 Marks.init({
-    username: {
+    userId: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
@@ -13,47 +12,50 @@ Marks.init({
         },
         unique: 'compositeIndex'
     },
-    postId: {
-        type: Sequelize.UUID,
+    username: {
+        type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true
+        }
+    },
+    postId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        },
         unique: 'compositeIndex'
     }
 }, { sequelize: db, timestamps: true, modelName: "Marks" });
 
-const byUsername = async (username) => {
-    let res = {};
+const get = async (query) => {
     try {
-        res = await Marks.findAll({ where: { username } });
-        if (!res) {
-            res = {};
+        if (!query) {
+            return await Marks.findAll({
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+            });
         }
+        const { where } = query;
+        return await Marks.findAll({
+            where,
+            order: [
+                ['createdAt', 'DESC']
+            ],
+        });
     } catch (err) {
-        return err;
+        throw err;
     }
-    return res;
 }
 
-const byPostId = async (postId) => {
-    let res = {};
+const create = async (mark) => {
     try {
-        res = await Marks.findAll({ where: { postId } });
-        if (!res) {
-            res = {};
-        }
+        return await Marks.create(mark);
     } catch (err) {
-        return err;
+        throw err;
     }
-    return res;
 }
 
-const create = async (post) => {
-    try {
-        await Marks.create(post);
-    } catch (err) {
-        logger.error({ message: { info: 'Не удалось создать тег', error: err } });
-        return false;
-    }
-    return true;
-}
-
-module.exports = { create, byUsername, byPostId };
+module.exports = { create, get };

@@ -9,15 +9,15 @@ const Posts = require('./posts');
 router.post('/', [
     authentificator.auth,
     check('src').not().isEmpty().withMessage("Необходимо указать url изображения."),
-    check('userId').not().isEmpty().withMessage("Необходимо указать Id пользователя."),
-    check('username').not().isEmpty().withMessage("Необходимо указать username пользователя."),
     validateInput,
     async (req, res, next) => {
         try {
+            req.body.userId = req.user.id;
+            req.body.username = req.user.username;
             let post = await Posts.create(req.body);
             return res.status(201).json(post);
         } catch (err) {
-            next(err);
+            return next(err);
         }
     }
 ]);
@@ -28,7 +28,7 @@ router.get('/', [
         try {
             let posts;
             if (!req.query) {
-                posts = await Posts.get();
+                posts = await Posts.get({}, req.user.id);
             } else {
                 const { page, limit, id, userId } = req.query;
                 let query = {};
@@ -45,7 +45,7 @@ router.get('/', [
                         userId
                     };
                 }
-                posts = await Posts.get(query);
+                posts = await Posts.get(query, req.user.id);
             }
             return res.json({ posts });
         } catch (err) {

@@ -1,4 +1,5 @@
 const axiosErrorAnalizator = require('./axiosErrorAnalizator');
+const { CustomError } = require('./customErrors');
 
 let logger;
 
