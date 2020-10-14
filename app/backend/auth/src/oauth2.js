@@ -45,9 +45,9 @@ const create = async (user) => {
         next(err);
 
     }
-    const token = generateAccessToken({ username: user.username, id: res.id });
-    const refreshToken = generateRefreshToken({ token: res.token, user: { username: user.username, id: user.id } });
-    return { token, refreshToken, user: { id: res.id, username: user.username } };
+    const token = generateAccessToken({ username: user.username, id: res.id, isAdmin: res.isAdmin });
+    const refreshToken = generateRefreshToken({ token: res.token, user: { username: user.username, id: user.id, isAdmin: res.isAdmin } });
+    return { token, refreshToken, user: { id: res.id, username: user.username, isAdmin: res.isAdmin } };
 }
 
 const checkUser = async ({ username, password }) => {
@@ -67,9 +67,9 @@ const checkUser = async ({ username, password }) => {
     } catch {
         return { msg: "Не удалось войти в аккаунт", errors: {} };
     }
-    const token = generateAccessToken({ username, id: res.id });
-    const refreshToken = generateRefreshToken({ token: res.token, user: { username, id: res.id } });
-    return { token, refreshToken, user: { id: res.id, username } };
+    const token = generateAccessToken({ username, id: res.id, isAdmin: res.isAdmin });
+    const refreshToken = generateRefreshToken({ token: res.token, user: { username, id: res.id, isAdmin: res.isAdmin } });
+    return { token, refreshToken, user: { id: res.id, username, isAdmin: res.isAdmin } };
 }
 
 const user = async (query) => {

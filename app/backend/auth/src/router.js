@@ -112,7 +112,11 @@ router.get('/user', [
 
 // Регистрация клиентов.
 router.post('/client', [
+    auth,
     async (req, res, next) => {
+        if (!req.user.isAdmin) {
+            return res.status(401).end();
+        }
         try {
             const client = await Users.createClient(req.body);
             return res.json(client);
