@@ -4,8 +4,8 @@ const axiosErrorAnalizator = require('./axiosErrorAnalizator');
 let logger;
 
 class TokenManager {
-    constructor() {
-        this.client_credentials = `client=${process.env.SERVICE_NAME}&password=${process.env.CLIENT_SECRET}`;
+    constructor(client, secret) {
+        this.client_credentials = `client=${client}&password=${secret}`;
         this.token = null;
     }
 

@@ -28,7 +28,7 @@ const get = async (req, errMsg) => {
 
 const post = async (req, body, errMsg) => {
     const TokenManager = require('./tokenManager')(logger);
-    const tokenManager = new TokenManager;
+    const tokenManager = new TokenManager(process.env.SERVICE_NAME, process.env.CLIENT_SECRET);
     try {
         const token = await tokenManager.getToken();
         if (!token) {

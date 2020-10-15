@@ -6,7 +6,7 @@ const { CustomError, ValidationError } = require('../../utilities/customErrors')
 const logger = require('../logger');
 const validateInput = require('../../utilities/validateInput');
 
-const Users = require('./oauth2');
+const Users = require('./auth');
 
 router.post('/registration', [
     check('username').not().isEmpty().withMessage("Необходимо ввести логин."),
