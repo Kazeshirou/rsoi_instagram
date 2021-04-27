@@ -51,7 +51,7 @@
     "password-hash": "^1.2.2",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "sequelize": "^5.21.1",
     "sinon": "^8.1.0",
     "winston": "^3.2.1"
